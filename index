@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paxton LLC CRM</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      background: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .admin-tab {
+      background: #ef4444;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border: none;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .admin-tab:hover {
+      background: #dc2626;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    }
+
+    .banner {
+      background: linear-gradient(135deg, #1e40af, #3b82f6);
+      color: white;
+      text-align: center;
+      padding: 50px 20px;
+      margin-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+      transform: translateX(-100%);
+      animation: shine 3s infinite;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .banner h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .banner .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.95;
+      font-weight: 400;
+      position: relative;
+      z-index: 1;
+    }
+
+    .main-tabs {
+      display: flex;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      overflow-x: auto;
+    }
+
+    .main-tab {
+      flex: 1;
+      min-width: 120px;
+      background: white;
+      padding: 18px 24px;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #6b7280;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .main-tab::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, rgba(59, 130, 246, 0.05), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .main-tab:hover::before {
+      opacity: 1;
+    }
+
+    .main-tab:hover {
+      color: #3b82f6;
+      transform: translateY(-2px);
+    }
+
+    .main-tab.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+      background: white;
+      font-weight: 600;
+    }
+
+    .main-tab.active::before {
+      opacity: 1;
+    }
+
+    .main-tab.disabled {
+      color: #9ca3af;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .main-tab.disabled:hover {
+      color: #9ca3af;
+      transform: none;
+    }
+
+    .main-tab.disabled::before {
+      display: none;
+    }
+
+    .content-area {
+      background: white;
+      min-height: 65vh;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      border-radius: 0 0 12px 12px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .iframe-container {
+      position: relative;
+      width: 100%;
+      height: 65vh;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .error-state {
+      display: none;
+      padding: 60px 40px;
+      text-align: center;
+      color: #ef4444;
+    }
+
+    .error-state.show {
+      display: block;
+    }
+
+    .error-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .error-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+
+    .error-text {
+      color: #6b7280;
+      font-size: 1rem;
+    }
+
+    .page-content {
+      padding: 60px 40px;
+      text-align: center;
+      min-height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .empty-state {
+      color: #6b7280;
+      max-width: 400px;
+    }
+
+    .empty-state-icon {
+      font-size: 4rem;
+      margin-bottom: 24px;
+      opacity: 0.6;
+    }
+
+    .empty-state-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #374151;
+    }
+
+    .empty-state-text {
+      font-size: 1.1rem;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    .loading {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 10;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .loading.show {
+      display: flex;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    .loading-text {
+      color: #6b7280;
+      font-weight: 500;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .status-indicator {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 15px;
+      }
+
+      .banner {
+        padding: 40px 20px;
+      }
+
+      .banner h1 {
+        font-size: 2.2rem;
+      }
+
+      .banner .subtitle {
+        font-size: 1rem;
+      }
+
+      .main-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .main-tab {
+        flex: none;
+        min-width: 100px;
+        padding: 16px 20px;
+      }
+
+      .iframe-container {
+        height: 60vh;
+      }
+
+      .content-area {
+        min-height: 60vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <a href="admin users.html" class="admin-tab">
+        Admin
+      </a>
+    </div>
+
+    <div class="banner">
+      <div class="status-indicator"></div>
+      <h1>PAXTON LLC</h1>
+      <div class="subtitle">Customer Relationship Management System</div>
+    </div>
+
+    <div class="main-tabs" id="mainTabs">
+      <div class="main-tab active" onclick="loadPage('reps crm.html', this, 'CRM')">
+        CRM
+      </div>
+      <div class="main-tab" onclick="loadPage('final dashboard.html', this, 'Dashboard')">
+        Dashboard
+      </div>
+      <div class="main-tab" onclick="loadPage('upa-codes.html', this, 'UPA Codes')">
+        UPA Codes
+      </div>
+      <div class="main-tab" onclick="loadPage('price-list.html', this, 'Price List')">
+        Price List
+      </div>
+      <div class="main-tab disabled">
+        Coming Soon
+      </div>
+    </div>
+
+    <div class="content-area">
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text">Loading...</div>
+      </div>
+      
+      <div class="iframe-container">
+        <iframe id="iframe" src="crm.html" onload="handleIframeLoad()" onerror="handleIframeError()"></iframe>
+      </div>
+      
+      <div class="error-state" id="errorState">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Page Not Found</div>
+        <div class="error-text">The requested file could not be loaded. Please check if the file exists in your repository.</div>
+      </div>
+
+      <div class="page-content" id="pageContent" style="display: none;">
+        <div class="empty-state">
+          <div class="empty-state-icon">📊</div>
+          <div class="empty-state-title">CRM System</div>
+          <div class="empty-state-text">Your customer relationship management tools will appear here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPage = 'crm.html';
+    let loadingTimeout;
+
+    function loadPage(fileName, el, displayName) {
+      // Don't load if it's disabled
+      if (el && el.classList.contains('disabled')) {
+        return;
+      }
+
+      // Show loading
+      showLoading(displayName);
+      
+      // Update active tab
+      if (el && el.classList.contains('main-tab')) {
+        document.querySelectorAll(".main-tab").forEach(t => t.classList.remove("active"));
+        el.classList.add("active");
+      }
+      
+      // Update iframe source
+      currentPage = fileName;
+      document.getElementById("iframe").src = fileName;
+      
+      // Set timeout to show error if page doesn't load
+      loadingTimeout = setTimeout(() => {
+        handleIframeError();
+      }, 5000);
+    }
+
+    function showLoading(pageName) {
+      const loading = document.getElementById("loading");
+      const errorState = document.getElementById("errorState");
+      const pageContent = document.getElementById("pageContent");
+      
+      loading.querySelector('.loading-text').textContent = `Loading ${pageName}...`;
+      loading.classList.add("show");
+      errorState.classList.remove("show");
+      pageContent.style.display = "none";
+    }
+
+    function hideLoading() {
+      const loading = document.getElementById("loading");
+      loading.classList.remove("show");
+      
+      if (loadingTimeout) {
+        clearTimeout(loadingTimeout);
+      }
+    }
+
+    function handleIframeLoad() {
+      hideLoading();
+      document.getElementById("errorState").classList.remove("show");
+      document.getElementById("pageContent").style.display = "none";
+    }
+
+    function handleIframeError() {
+      hideLoading();
+      document.getElementById("errorState").classList.add("show");
+      document.getElementById("pageContent").style.display = "none";
+    }
+
+    // Check if iframe content failed to load
+    function checkIframeContent() {
+      const iframe = document.getElementById("iframe");
+      try {
+        // This will throw an error if the page doesn't exist
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        if (iframeDoc.readyState === 'complete') {
+          if (iframeDoc.body && iframeDoc.body.innerHTML.trim() === '') {
+            handleIframeError();
+          }
+        }
+      } catch (e) {
+        // Cross-origin or file not found
+        setTimeout(handleIframeError, 100);
+      }
+    }
+
+    // Initialize
+    window.addEventListener('load', function() {
+      // Try to load the initial page
+      setTimeout(checkIframeContent, 1000);
+    });
+
+    // Handle iframe load events
+    document.getElementById("iframe").addEventListener('load', function() {
+      setTimeout(checkIframeContent, 100);
+    });
+  </script>
+</body>
+</html>
