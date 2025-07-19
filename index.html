@@ -573,6 +573,8 @@
             <div class="banner">
                 <div class="status-indicator"></div>
                 <!-- Company Logo moved to the left and placed before text content -->
+                <!-- The logo image source has been corrected to a standard URL format. -->
+                <!-- The onerror attribute provides a fallback placeholder image if the main image fails to load. -->
                 <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="company-logo" onerror="this.onerror=null;this.src='https://placehold.co/90x90/A0522D/FFFFFF?text=Logo';">
                 <div class="banner-text-content">
                     <h1>PAXTON LLC</h1>
@@ -593,13 +595,13 @@
                     <div class="main-card-title">Dashboard</div>
                     <div class="main-card-subtitle">View key performance indicators and analytics.</div>
                 </div>
-                <!-- UPA Codes Card -->
+                <!-- UPA Codes Card - This card is fully clickable and functions like the CRM card. -->
                 <div class="main-card" data-page="upa-codes">
                     <div class="main-card-icon">🏷️</div>
                     <div class="main-card-title">UPA Codes</div>
                     <div class="main-card-subtitle">Access and manage Universal Product Access codes.</div>
                 </div>
-                <!-- Price List Card -->
+                <!-- Price List Card - This card is fully clickable and functions like the CRM card. -->
                 <div class="main-card" data-page="price-list">
                     <div class="main-card-icon">💲</div>
                     <div class="main-card-title">Price List</div>
@@ -728,6 +730,7 @@
             console.log('Showing home view');
             const homeView = document.getElementById('homeView');
             const backButton = document.getElementById('backButton');
+            const adminButton = document.getElementById('adminButton'); // Get admin button reference
             
             if (homeView) {
                 homeView.classList.remove('hidden');
@@ -735,6 +738,11 @@
             
             if (backButton) {
                 backButton.classList.add('hidden');
+            }
+
+            // Show the admin button when returning to home view
+            if (adminButton) {
+                adminButton.classList.remove('hidden');
             }
 
             // Hide the currently active full-page view, if any
@@ -781,6 +789,7 @@
             // Get references to main UI elements
             const homeView = document.getElementById('homeView');
             const backButton = document.getElementById('backButton');
+            const adminButton = document.getElementById('adminButton'); // Get admin button reference
             const targetView = document.getElementById(viewId);
 
             // Get references to specific elements within the target view
@@ -791,14 +800,15 @@
             const demoContent = iframeContainer.querySelector('.demo-content');
 
             // Basic validation to ensure all required elements exist
-            if (!homeView || !backButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
+            if (!homeView || !backButton || !adminButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
                 console.error('Error: One or more required DOM elements not found for page loading.');
                 return;
             }
 
-            // Hide the home view and show the back button
+            // Hide the home view, show the back button, and hide the admin button
             homeView.classList.add('hidden');
             backButton.classList.remove('hidden');
+            adminButton.classList.add('hidden'); // Hide admin button when navigating to a page
 
             // If there's a currently active full-page view and it's different from the target, hide it
             if (currentActiveViewId && currentActiveViewId !== viewId) {
