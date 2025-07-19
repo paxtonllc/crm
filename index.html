@@ -12,7 +12,7 @@
             --coffee-light: #8B5E3C; /* Light coffee/tan */
             --coffee-dark: #6F4E37;  /* Rich coffee brown */
             --coffee-gradient-start: #4A2C2A; /* Darker, almost black coffee */
-            --coffee-gradient-end: #8B5E3C;   /* Matches coffee-light */
+            --coffee-gradient-end: #8B5E3C;    /* Matches coffee-light */
 
             --primary-red: #ef4444;
             --primary-red-dark: #dc2626;
@@ -533,10 +533,10 @@
             <button id="backButton" class="back-button hidden" onclick="showHome()">
                 &#x2190; Back to Home
             </button>
-            <!-- Admin tab link -->
-            <a href="admin users.html" class="admin-tab">
+            <!-- Admin tab button, now using loadPage for consistent behavior -->
+            <button class="admin-tab" onclick="loadPage('admin users.html', 'adminView', 'Admin')">
                 Admin
-            </a>
+            </button>
         </div>
 
         <!-- Home View: This section will display the main navigation cards -->
@@ -650,6 +650,22 @@
             </div>
         </div>
 
+        <!-- Admin Full Page View (newly added) -->
+        <div id="adminView" class="full-page-view hidden">
+            <div class="loading" id="loadingAdmin">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading Admin Panel...</div>
+            </div>
+            <div class="error-state" id="errorAdmin">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">Admin Page Not Found</div>
+                <div class="error-text">The Admin file could not be loaded. Please check its path.</div>
+            </div>
+            <div class="iframe-container-fpv">
+                <iframe id="iframeAdmin" src="" onload="handleIframeLoad('adminView')" onerror="handleIframeError('adminView')"></iframe>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -758,10 +774,17 @@
             // Additional check for empty iframe content after load
             const iframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
             try {
-                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                if (iframeDoc.readyState === 'complete' && iframeDoc.body && iframeDoc.body.innerHTML.trim() === '') {
-                    // If the iframe loaded but its body is empty, treat as an error
-                    handleIframeError(viewId);
+                // Check if contentDocument is accessible and not null
+                if (iframe.contentDocument && iframe.contentDocument.body) {
+                    const iframeDoc = iframe.contentDocument;
+                    if (iframeDoc.readyState === 'complete' && iframeDoc.body.innerHTML.trim() === '') {
+                        // If the iframe loaded but its body is empty, treat as an error
+                        handleIframeError(viewId);
+                    }
+                } else {
+                    // If contentDocument is null or body is not available, it might be a security error or still loading
+                    console.warn(`Iframe contentDocument not ready or accessible for ${viewId}`);
+                    // We'll let the timeout handle this if it persists, or assume it's loading.
                 }
             } catch (e) {
                 // Cross-origin or other access errors will be caught here
