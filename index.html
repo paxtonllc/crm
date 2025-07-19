@@ -76,7 +76,7 @@
             gap: 15px; /* Space between buttons */
         }
 
-        /* admin tab button styling */
+        /* Admin tab button styling */
         .admin-tab, .logout-button {
             background: var(--primary-red);
             color: var(--white);
@@ -731,8 +731,8 @@
                     Manager
                 </label>
                 <label>
-                    <input type="radio" name="userRole" value="admin">
-                    admin
+                    <input type="radio" name="userRole" value="Admin">
+                    Admin
                 </label>
             </div>
 
@@ -767,9 +767,9 @@
             <button id="logoutButton" class="logout-button hidden">
                 Logout
             </button>
-            <!-- admin tab button -->
+            <!-- Admin tab button -->
             <button id="adminButton" class="admin-tab">
-                admin
+                Admin
             </button>
         </div>
 
@@ -902,21 +902,21 @@
             </div>
         </div>
 
-        <!-- admin Full Page View -->
+        <!-- Admin Full Page View -->
         <div id="adminView" class="full-page-view hidden">
-            <div class="loading" id="loadingadmin">
+            <div class="loading" id="loadingAdmin">
                 <div class="spinner"></div>
-                <div class="loading-text">Loading admin Panel...</div>
+                <div class="loading-text">Loading Admin Panel...</div>
             </div>
-            <div class="error-state" id="erroradmin">
+            <div class="error-state" id="errorAdmin">
                 <div class="error-icon">⚠️</div>
-                <div class="error-title">admin Page Not Found</div>
-                <div class="error-text">The admin file could not be loaded. Please check its path.</div>
+                <div class="error-title">Admin Page Not Found</div>
+                <div class="error-text">The Admin file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
                 <iframe src="" class="hidden"></iframe>
                 <div class="demo-content">
-                    <h2>admin Panel</h2>
+                    <h2>Admin Panel</h2>
                     <p>This would be your administrative interface for user management and system settings. Currently showing demo content since the external file is not available.</p>
                 </div>
             </div>
@@ -965,8 +965,8 @@
             document.getElementById('mainAppContent').classList.remove('hidden');
             // Show relevant header buttons
             document.getElementById('logoutButton').classList.remove('hidden');
-            // admin button visibility depends on the user's role
-            if (loggedInUser && loggedInUser.role === 'admin') {
+            // Admin button visibility depends on the user's role
+            if (loggedInUser && loggedInUser.role === 'Admin') {
                 document.getElementById('adminButton').classList.remove('hidden');
             } else {
                 document.getElementById('adminButton').classList.add('hidden');
@@ -988,10 +988,10 @@
                         case 'Medical Representative':
                             initialPage = 'crm';
                             break;
-                        case 'District Manager': // Changed from 'Manager'
+                        case 'District Manager':
                             initialPage = 'dashboard';
                             break;
-                        case 'admin':
+                        case 'Admin':
                             initialPage = 'admin';
                             break;
                         default:
@@ -1017,7 +1017,7 @@
             const usernameInputGroup = document.getElementById('usernameInputGroup');
             const usernameDropdown = document.getElementById('usernameDropdown');
 
-            if (selectedRole === 'admin') {
+            if (selectedRole === 'Admin') {
                 usernameDropdownGroup.classList.add('hidden');
                 usernameInputGroup.classList.remove('hidden');
             } else {
@@ -1079,7 +1079,7 @@
         async function handleLogin() {
             const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
             let username;
-            if (selectedRole === 'admin') {
+            if (selectedRole === 'Admin') {
                 username = document.getElementById('usernameInput').value.trim();
             } else {
                 username = document.getElementById('usernameDropdown').value;
@@ -1123,7 +1123,7 @@
                     loggedInUser = {
                         id: data.id,
                         username: data.username,
-                        role: data.title // This will be 'Medical Representative', 'District Manager', or 'admin'
+                        role: data.title // This will be 'Medical Representative', 'District Manager', or 'Admin'
                     };
                     sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
                     console.log('Login successful for:', loggedInUser.username, loggedInUser.role);
@@ -1133,10 +1133,10 @@
                         case 'Medical Representative':
                             redirectPage = 'crm';
                             break;
-                        case 'District Manager': // Changed from 'Manager'
+                        case 'District Manager':
                             redirectPage = 'dashboard';
                             break;
-                        case 'admin':
+                        case 'Admin':
                             redirectPage = 'admin';
                             break;
                         default:
@@ -1195,7 +1195,7 @@
             }
 
             // Show admin button only if logged in as admin
-            if (loggedInUser && loggedInUser.role === 'admin') {
+            if (loggedInUser && loggedInUser.role === 'Admin') {
                 adminButton.classList.remove('hidden');
             } else {
                 adminButton.classList.add('hidden');
@@ -1238,7 +1238,7 @@
                 'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html', allowedRoles: ['District Manager'] },
                 'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html', allowedRoles: ['Medical Representative', 'District Manager'] },
                 'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html', allowedRoles: ['Medical Representative', 'District Manager'] },
-                'admin': { viewId: 'adminView', displayName: 'admin', fileName: 'admin users.html', allowedRoles: ['admin'] }
+                'admin': { viewId: 'adminView', displayName: 'Admin', fileName: 'admin users.html', allowedRoles: ['Admin'] }
             };
 
             const config = pageConfig[page];
@@ -1248,8 +1248,8 @@
                 return;
             }
 
-            // Role-based access control: admin has full access, otherwise check specific roles
-            if (loggedInUser.role !== 'admin' && !config.allowedRoles.includes(loggedInUser.role)) {
+            // Role-based access control: Admin has full access, otherwise check specific roles
+            if (loggedInUser.role !== 'Admin' && !config.allowedRoles.includes(loggedInUser.role)) {
                 console.warn(`Access denied: User '${loggedInUser.username}' with role '${loggedInUser.role}' attempted to access '${page}'.`);
                 alert('You do not have permission to access this page.'); // Using alert for simplicity, replace with custom modal
                 showHome(); // Go back to home or a permitted page
@@ -1305,8 +1305,8 @@
             // Hide the home view, show the back button
             homeView.classList.add('hidden');
             backButton.classList.remove('hidden'); 
-            // admin button visibility depends on the user's role and the page being loaded
-            if (loggedInUser && loggedInUser.role === 'admin' && page !== 'admin') {
+            // Admin button visibility depends on the user's role and the page being loaded
+            if (loggedInUser && loggedInUser.role === 'Admin' && page !== 'admin') {
                 adminButton.classList.remove('hidden'); // Show admin button if admin, but not on admin page itself
             } else {
                 adminButton.classList.add('hidden'); // Hide admin button if not admin or if on admin page
@@ -1348,6 +1348,22 @@
                 console.log(`${displayName} iframe loaded successfully from ${fileName}.`);
                 loadingOverlay.classList.remove('show'); // Hide spinner
                 errorState.classList.remove('show');     // Hide error
+
+                // Post message to the iframe with login data
+                if (iframe.contentWindow && loggedInUser) {
+                    // A small delay to ensure the iframe's content and JavaScript context are fully ready
+                    setTimeout(() => {
+                        try {
+                            iframe.contentWindow.postMessage({ 
+                                type: 'loggedInUserSession', 
+                                user: loggedInUser 
+                            }, window.location.origin); // Specify targetOrigin for security
+                            console.log(`Posted login data to ${displayName} iframe.`);
+                        } catch (e) {
+                            console.error(`Error posting message to iframe for ${displayName}:`, e);
+                        }
+                    }, 100); // Small delay to ensure iframe is ready
+                }
             };
 
             iframe.onerror = function() {
@@ -1384,7 +1400,7 @@
                 });
             });
 
-            // Add click event listener to the admin button
+            // Add click event listener to the Admin button
             document.getElementById('adminButton').addEventListener('click', function() {
                 loadPage('admin');
             });
