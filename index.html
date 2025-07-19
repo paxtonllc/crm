@@ -669,196 +669,188 @@
     </div>
 
     <script>
-        // Store the ID of the currently active full-page view
-        let currentActiveViewId = null;
-        // Store timeout IDs for loading indicators to clear them effectively
-        const loadingTimeouts = {};
+    // Store the ID of the currently active full-page view
+    let currentActiveViewId = null;
+    // Store timeout IDs for loading indicators to clear them effectively
+    const loadingTimeouts = {};
 
-        /**
-         * Shows the home view and hides any active full-page view.
-         */
-        function showHome() {
-            document.getElementById('homeView').classList.remove('hidden');
-            document.getElementById('backButton').classList.add('hidden');
+    /**
+     * Shows the home view and hides any active full-page view.
+     */
+    function showHome() {
+        document.getElementById('homeView').classList.remove('hidden');
+        document.getElementById('backButton').classList.add('hidden');
 
-            // Hide the currently active full-page view, if any
-            if (currentActiveViewId) {
-                const activeView = document.getElementById(currentActiveViewId);
-                if (activeView) {
-                    activeView.classList.remove('active');
-                    // Add hidden class after transition for better performance/layout
-                    setTimeout(() => activeView.classList.add('hidden'), 300);
-                }
-                currentActiveViewId = null;
+        // Hide the currently active full-page view, if any
+        if (currentActiveViewId) {
+            const activeView = document.getElementById(currentActiveViewId);
+            if (activeView) {
+                activeView.classList.remove('active');
+                // Add hidden class after transition for better performance/layout
+                setTimeout(() => activeView.classList.add('hidden'), 300);
             }
+            currentActiveViewId = null;
+        }
+    }
+
+    /**
+     * Loads a specific page into its dedicated full-page view.
+     * @param {Event} event - The event object from the click.
+     * @param {string} fileName - The URL of the HTML file to load into the iframe.
+     * @param {string} viewId - The ID of the full-page view container (e.g., 'crmView').
+     * @param {string} displayName - The user-friendly name of the page (e.g., 'CRM').
+     */
+    function loadPage(event, fileName, viewId, displayName) {
+        // Prevent default link behavior if this were an <a> tag, though it's a div/button
+        if (event && event.preventDefault) {
+            event.preventDefault();
         }
 
-        /**
-         * Loads a specific page into its dedicated full-page view.
-         * @param {Event} event - The event object from the click.
-         * @param {string} fileName - The URL of the HTML file to load into the iframe.
-         * @param {string} viewId - The ID of the full-page view container (e.g., 'crmView').
-         * @param {string} displayName - The user-friendly name of the page (e.g., 'CRM').
-         */
-        function loadPage(event, fileName, viewId, displayName) {
-            // Prevent default link behavior if this were an <a> tag, though it's a div/button
-            if (event && event.preventDefault) {
-                event.preventDefault();
-            }
-
-            const cardElement = event.currentTarget; // Get the clicked card element
-            if (cardElement && cardElement.classList.contains('disabled')) {
-                console.log(`Card ${displayName} is disabled. Action prevented.`);
-                return; // Do nothing if disabled
-            }
-
-            console.log(`Attempting to load page: ${fileName} into view: ${viewId}`);
-
-            // Get references to all necessary elements
-            const homeView = document.getElementById('homeView');
-            const backButton = document.getElementById('backButton');
-            const targetView = document.getElementById(viewId);
-            const targetIframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
-            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
-
-            // Log the elements to see if they are found
-            console.log('Elements found:', { homeView, backButton, targetView, targetIframe, loadingElement, errorElement });
-
-            // Provide more specific error messages if elements are not found
-            if (!homeView) console.error('Error: Element "homeView" not found!');
-            if (!backButton) console.error('Error: Element "backButton" not found!');
-            if (!targetView) console.error(`Error: Target view element with ID "${viewId}" not found!`);
-            if (!targetIframe) console.error(`Error: Target iframe element with ID "iframe${viewId.replace('View', '')}" not found!`);
-            if (!loadingElement) console.error(`Error: Loading element with ID "loading${viewId.replace('View', '')}" not found!`);
-            if (!errorElement) console.error(`Error: Error element with ID "error${viewId.replace('View', '')}" not found!`);
-
-
-            if (targetView && targetIframe && loadingElement && errorElement) {
-                // Hide the home view
-                homeView.classList.add('hidden');
-                // Show the back button
-                backButton.classList.remove('hidden');
-
-                // Hide any previously active full-page view
-                if (currentActiveViewId && currentActiveViewId !== viewId) {
-                    const prevActiveView = document.getElementById(currentActiveViewId);
-                    if (prevActiveView) {
-                        prevActiveView.classList.remove('active');
-                        setTimeout(() => prevActiveView.classList.add('hidden'), 300);
-                    }
-                }
-
-                // Set the new active view
-                currentActiveViewId = viewId;
-                
-                // Show the target full-page view and loading spinner
-                targetView.classList.remove('hidden');
-                // Use a small delay to allow hidden class to apply before active for transition
-                setTimeout(() => targetView.classList.add('active'), 10);
-
-                loadingElement.querySelector('.loading-text').textContent = `Loading ${displayName}...`;
-                loadingElement.classList.add('show');
-                errorElement.classList.remove('show');
-
-                // Set iframe source
-                targetIframe.src = fileName;
-
-                // Set a timeout to show error if page doesn't load within 5 seconds
-                if (loadingTimeouts[viewId]) {
-                    clearTimeout(loadingTimeouts[viewId]);
-                }
-                loadingTimeouts[viewId] = setTimeout(() => {
-                    handleIframeError(viewId);
-                }, 5000);
-            } else {
-                console.error(`Fatal Error: One or more critical elements for viewId: ${viewId} were not found. Falling back to home.`);
-                showHome();
-            }
+        const cardElement = event.currentTarget; // Get the clicked card element
+        if (cardElement && cardElement.classList.contains('disabled')) {
+            console.log(`Card ${displayName} is disabled. Action prevented.`);
+            return; // Do nothing if disabled
         }
 
-        /**
-         * Handles the iframe load event for a specific view.
-         * Hides loading spinner and error state.
-         * @param {string} viewId - The ID of the full-page view container.
-         */
-        function handleIframeLoad(viewId) {
-            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+        console.log(`Attempting to load page: ${fileName} into view: ${viewId}`);
 
+        // Get references to all necessary elements
+        const homeView = document.getElementById('homeView');
+        const backButton = document.getElementById('backButton');
+        const targetView = document.getElementById(viewId);
+        const targetIframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
+        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+
+        // Log the elements to see if they are found
+        console.log('Elements found:', { homeView, backButton, targetView, targetIframe, loadingElement, errorElement });
+
+        // Provide more specific error messages if elements are not found
+        if (!homeView) console.error('Error: Element "homeView" not found!');
+        if (!backButton) console.error('Error: Element "backButton" not found!');
+        if (!targetView) console.error(`Error: Target view element with ID "${viewId}" not found!`);
+        if (!targetIframe) console.error(`Error: Target iframe element with ID "iframe${viewId.replace('View', '')}" not found!`);
+        if (!loadingElement) console.error(`Error: Loading element with ID "loading${viewId.replace('View', '')}" not found!`);
+        if (!errorElement) console.error(`Error: Error element with ID "error${viewId.replace('View', '')}" not found!`);
+
+        if (targetView && targetIframe && loadingElement && errorElement) {
+            // Hide the home view
+            homeView.classList.add('hidden');
+            // Show the back button
+            backButton.classList.remove('hidden');
+
+            // Hide any previously active full-page view
+            if (currentActiveViewId && currentActiveViewId !== viewId) {
+                const prevActiveView = document.getElementById(currentActiveViewId);
+                if (prevActiveView) {
+                    prevActiveView.classList.remove('active');
+                    setTimeout(() => prevActiveView.classList.add('hidden'), 300);
+                }
+            }
+
+            // Set the new active view
+            currentActiveViewId = viewId;
+
+            // Show the target full-page view and loading spinner
+            targetView.classList.remove('hidden');
+            // Use a small delay to allow hidden class to apply before active for transition
+            setTimeout(() => targetView.classList.add('active'), 10);
+            loadingElement.querySelector('.loading-text').textContent = `Loading ${displayName}...`;
+            loadingElement.classList.add('show');
+            errorElement.classList.remove('show');
+
+            // Set iframe source
+            targetIframe.src = fileName;
+
+            // Set a timeout to show error if page doesn't load within 5 seconds
             if (loadingTimeouts[viewId]) {
                 clearTimeout(loadingTimeouts[viewId]);
-                delete loadingTimeouts[viewId];
             }
-
-            if (loadingElement) loadingElement.classList.remove('show');
-            if (errorElement) errorElement.classList.remove('show');
-
-            // Additional check for empty iframe content after load
-            const iframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
-            try {
-                // Check if contentDocument is accessible and not null
-                if (iframe && iframe.contentDocument && iframe.contentDocument.body) {
-                    const iframeDoc = iframe.contentDocument;
-                    if (iframeDoc.readyState === 'complete' && iframeDoc.body.innerHTML.trim() === '') {
-                        // If the iframe loaded but its body is empty, treat as an error
-                        console.warn(`Iframe for ${viewId} loaded, but content is empty.`);
-                        handleIframeError(viewId);
-                    }
-                } else {
-                    // If contentDocument is null or body is not available, it might be a security error or still loading
-                    console.warn(`Iframe contentDocument not ready or accessible for ${viewId}. This might be a cross-origin security restriction.`);
-                    // We'll let the timeout handle this if it persists, or assume it's loading.
-                }
-            } catch (e) {
-                // Cross-origin or other access errors will be caught here
-                console.warn(`Could not access iframe content for ${viewId} due to security or other error:`, e);
-                // If it's a security error (cross-origin), it means the file likely didn't load correctly or is inaccessible.
-                // We'll still show the error state.
+            loadingTimeouts[viewId] = setTimeout(() => {
                 handleIframeError(viewId);
-            }
+            }, 5000);
+        } else {
+            console.error(`Fatal Error: One or more critical elements for viewId: ${viewId} were not found. Falling back to home.`);
+            showHome();
         }
+    }
 
-        /**
-         * Handles the iframe error event for a specific view.
-         * Hides loading spinner and shows error state.
-         * @param {string} viewId - The ID of the full-page view container.
-         */
-        function handleIframeError(viewId) {
-            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
-
-            if (loadingTimeouts[viewId]) {
-                clearTimeout(loadingTimeouts[viewId]);
-                delete loadingTimeouts[viewId];
-            }
-
-            if (loadingElement) loadingElement.classList.remove('show');
-            if (errorElement) {
-                errorElement.classList.add('show');
-                console.error(`Error loading content for ${viewId}. Displaying error state.`);
-            } else {
-                console.error(`Error: Could not find error element for ${viewId}.`);
-            }
+    /**
+     * Handles the iframe load event for a specific view.
+     * Hides loading spinner and error state.
+     * @param {string} viewId - The ID of the full-page view container.
+     */
+    function handleIframeLoad(viewId) {
+        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+        if (loadingTimeouts[viewId]) {
+            clearTimeout(loadingTimeouts[viewId]);
+            delete loadingTimeouts[viewId];
         }
+        if (loadingElement) loadingElement.classList.remove('show');
+        if (errorElement) errorElement.classList.remove('show');
 
-        // Initialize the view and attach iframe event listeners on window load
-        window.addEventListener('load', function() {
-            showHome(); // Start by showing the home view
-
-            // Attach event listeners to iframes programmatically
-            const iframeIds = ['Crm', 'Dashboard', 'UpaCodes', 'PriceList', 'Admin'];
-            iframeIds.forEach(idSuffix => {
-                const iframe = document.getElementById(`iframe${idSuffix}`);
-                const viewId = `${idSuffix.charAt(0).toLowerCase() + idSuffix.slice(1)}View`; // Convert 'Crm' to 'crmView' etc.
-                if (iframe) {
-                    iframe.addEventListener('load', () => handleIframeLoad(viewId));
-                    iframe.addEventListener('error', () => handleIframeError(viewId));
-                } else {
-                    console.warn(`Warning: Iframe with ID 'iframe${idSuffix}' not found during event listener attachment.`);
+        // Additional check for empty iframe content after load
+        const iframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
+        try {
+            // Check if contentDocument is accessible and not null
+            if (iframe && iframe.contentDocument && iframe.contentDocument.body) {
+                const iframeDoc = iframe.contentDocument;
+                if (iframeDoc.readyState === 'complete' && iframeDoc.body.innerHTML.trim() === '') {
+                    // If the iframe loaded but its body is empty, treat as an error
+                    console.warn(`Iframe for ${viewId} loaded, but content is empty.`);
+                    handleIframeError(viewId);
                 }
-            });
+            } else {
+                // If contentDocument is null or body is not available, it might be a security error or still loading
+                console.warn(`Iframe contentDocument not ready or accessible for ${viewId}. This might be a cross-origin security restriction.`);
+            }
+        } catch (e) {
+            // Cross-origin or other access errors will be caught here
+            console.warn(`Could not access iframe content for ${viewId} due to security or other error:`, e);
+            // If it's a security error (cross-origin), it means the file likely didn't load correctly or is inaccessible.
+            handleIframeError(viewId);
+        }
+    }
+
+    /**
+     * Handles the iframe error event for a specific view.
+     * Hides loading spinner and shows error state.
+     * @param {string} viewId - The ID of the full-page view container.
+     */
+    function handleIframeError(viewId) {
+        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+        if (loadingTimeouts[viewId]) {
+            clearTimeout(loadingTimeouts[viewId]);
+            delete loadingTimeouts[viewId];
+        }
+        if (loadingElement) loadingElement.classList.remove('show');
+        if (errorElement) {
+            errorElement.classList.add('show');
+            console.error(`Error loading content for ${viewId}. Displaying error state.`);
+        } else {
+            console.error(`Error: Could not find error element for ${viewId}.`);
+        }
+    }
+
+    // Initialize the view and attach iframe event listeners on window load
+    window.addEventListener('load', function() {
+        showHome(); // Start by showing the home view
+
+        // Attach event listeners to iframes programmatically
+        const iframeIds = ['Crm', 'Dashboard', 'UpaCodes', 'PriceList', 'Admin'];
+        iframeIds.forEach(idSuffix => {
+            const iframe = document.getElementById(`iframe${idSuffix}`);
+            const viewId = `${idSuffix.charAt(0).toLowerCase() + idSuffix.slice(1)}View`; // Convert 'Crm' to 'crmView' etc.
+            if (iframe) {
+                iframe.addEventListener('load', () => handleIframeLoad(viewId));
+                iframe.addEventListener('error', () => handleIframeError(viewId));
+            } else {
+                console.warn(`Warning: Iframe with ID 'iframe${idSuffix}' not found during event listener attachment.`);
+            }
         });
-    </script>
+    });
+</script>
 </body>
 </html>
