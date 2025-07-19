@@ -792,16 +792,36 @@
             const adminButton = document.getElementById('adminButton'); // Get admin button reference
             const targetView = document.getElementById(viewId);
 
-            // Get references to specific elements within the target view
-            const loadingOverlay = document.getElementById(`loading${page.charAt(0).toUpperCase() + page.slice(1)}`);
-            const errorState = document.getElementById(`error${page.charAt(0).toUpperCase() + page.slice(1)}`);
-            const iframeContainer = targetView.querySelector('.iframe-container-fpv');
-            const iframe = iframeContainer.querySelector('iframe');
-            const demoContent = iframeContainer.querySelector('.demo-content');
+            // Initialize variables for elements inside targetView
+            let loadingOverlay = null;
+            let errorState = null;
+            let iframeContainer = null;
+            let iframe = null;
+            let demoContent = null;
+
+            // Ensure targetView exists before querying its children
+            if (targetView) {
+                loadingOverlay = document.getElementById(`loading${page.charAt(0).toUpperCase() + page.slice(1)}`);
+                errorState = document.getElementById(`error${page.charAt(0).toUpperCase() + page.slice(1)}`);
+                iframeContainer = targetView.querySelector('.iframe-container-fpv');
+                if (iframeContainer) {
+                    iframe = iframeContainer.querySelector('iframe');
+                    demoContent = iframeContainer.querySelector('.demo-content');
+                }
+            }
 
             // Basic validation to ensure all required elements exist
             if (!homeView || !backButton || !adminButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
-                console.error('Error: One or more required DOM elements not found for page loading.');
+                console.error('Error: One or more required DOM elements not found for page loading. Debug details:');
+                console.error('  homeView:', homeView);
+                console.error('  backButton:', backButton);
+                console.error('  adminButton:', adminButton);
+                console.error('  targetView:', targetView);
+                console.error('  loadingOverlay:', loadingOverlay);
+                console.error('  errorState:', errorState);
+                console.error('  iframeContainer:', iframeContainer);
+                console.error('  iframe:', iframe);
+                console.error('  demoContent:', demoContent);
                 return;
             }
 
