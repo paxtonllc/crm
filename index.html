@@ -76,8 +76,8 @@
             gap: 15px; /* Space between buttons */
         }
 
-        /* Admin tab button styling */
-        .admin-tab {
+        /* admin tab button styling */
+        .admin-tab, .logout-button {
             background: var(--primary-red);
             color: var(--white);
             padding: 10px 20px;
@@ -93,7 +93,7 @@
             gap: 8px; /* Space between text and icon */
         }
 
-        .admin-tab:hover {
+        .admin-tab:hover, .logout-button:hover {
             background: var(--primary-red-dark);
             transform: translateY(-2px); /* Slight lift effect */
             box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25); /* Enhanced shadow on hover */
@@ -456,6 +456,154 @@
             max-width: 600px; /* Limit width for readability */
         }
 
+        /* Login Page Styles */
+        .login-page {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: var(--bg-medium);
+            padding: 20px;
+            width: 100%;
+        }
+
+        .login-box {
+            background: var(--white);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            font-size: 2.2rem;
+            color: var(--coffee-dark);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .role-selection {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 25px;
+            gap: 10px;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .role-selection label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .role-selection input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--coffee-light);
+            border-radius: 50%;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .role-selection input[type="radio"]:checked {
+            background-color: var(--coffee-light);
+            border-color: var(--coffee-light);
+        }
+
+        .role-selection input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 8px;
+            height: 8px;
+            background: var(--white);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .role-selection label:hover {
+            background: var(--bg-light);
+            border-color: var(--coffee-dark);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color-dark);
+            font-size: 1rem;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-color-dark);
+            background-color: var(--bg-light);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--coffee-light);
+            box-shadow: 0 0 0 3px rgba(139, 94, 60, 0.2);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            background: var(--coffee-light);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .login-button:hover {
+            background: var(--coffee-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(111, 78, 55, 0.3);
+        }
+
+        .login-error {
+            color: var(--primary-red);
+            margin-top: 15px;
+            font-size: 0.95rem;
+            min-height: 20px; /* Reserve space for error message */
+        }
+
         /* Responsive adjustments for smaller screens */
         @media (max-width: 1024px) {
             .container {
@@ -495,7 +643,7 @@
                 justify-content: space-between; /* Space out buttons */
                 padding: 8px 15px; /* Slimmer header on mobile */
             }
-            .admin-tab, .back-button {
+            .admin-tab, .back-button, .logout-button {
                 padding: 8px 15px;
                 font-size: 0.85rem;
             }
@@ -532,6 +680,17 @@
             .full-page-view {
                 height: calc(100vh - 90px); /* Adjust height for mobile header */
             }
+            .login-box {
+                padding: 30px 20px;
+            }
+            .login-box h2 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+            .role-selection label {
+                font-size: 1rem;
+                padding: 8px 12px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -548,23 +707,69 @@
             .banner .subtitle {
                 font-size: 0.8rem;
             }
-            .admin-tab, .back-button {
+            .admin-tab, .back-button, .logout-button {
                 font-size: 0.8rem;
                 padding: 6px 12px;
             }
         }
     </style>
+    <!-- Supabase CDN for client-side usage -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Page -->
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <h2>Login to Paxton LLC CRM</h2>
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="userRole" value="Medical Representative" checked>
+                    Medical Representative
+                </label>
+                <label>
+                    <input type="radio" name="userRole" value="Manager">
+                    Manager
+                </label>
+                <label>
+                    <input type="radio" name="userRole" value="admin">
+                    admin
+                </label>
+            </div>
+
+            <div class="form-group" id="usernameDropdownGroup">
+                <label for="usernameDropdown">Select Username:</label>
+                <select id="usernameDropdown"></select>
+            </div>
+
+            <div class="form-group hidden" id="usernameInputGroup">
+                <label for="usernameInput">Username:</label>
+                <input type="text" id="usernameInput" placeholder="Enter username">
+            </div>
+
+            <div class="form-group">
+                <label for="passwordInput">Password:</label>
+                <input type="password" id="passwordInput" placeholder="Enter password">
+            </div>
+
+            <button id="loginButton" class="login-button">Login</button>
+            <div id="loginError" class="login-error"></div>
+        </div>
+    </div>
+
+    <!-- Main Application Content (hidden until login) -->
+    <div id="mainAppContent" class="container hidden">
         <div class="header">
             <!-- Back button, initially hidden -->
             <button id="backButton" class="back-button hidden">
                 &#x2190; Back to Home
             </button>
-            <!-- Admin tab button -->
+            <!-- Logout button, initially hidden -->
+            <button id="logoutButton" class="logout-button hidden">
+                Logout
+            </button>
+            <!-- admin tab button -->
             <button id="adminButton" class="admin-tab">
-                Admin
+                admin
             </button>
         </div>
 
@@ -697,21 +902,21 @@
             </div>
         </div>
 
-        <!-- Admin Full Page View -->
+        <!-- admin Full Page View -->
         <div id="adminView" class="full-page-view hidden">
-            <div class="loading" id="loadingAdmin">
+            <div class="loading" id="loadingadmin">
                 <div class="spinner"></div>
-                <div class="loading-text">Loading Admin Panel...</div>
+                <div class="loading-text">Loading admin Panel...</div>
             </div>
-            <div class="error-state" id="errorAdmin">
+            <div class="error-state" id="erroradmin">
                 <div class="error-icon">⚠️</div>
-                <div class="error-title">Admin Page Not Found</div>
-                <div class="error-text">The Admin file could not be loaded. Please check its path.</div>
+                <div class="error-title">admin Page Not Found</div>
+                <div class="error-text">The admin file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
                 <iframe src="" class="hidden"></iframe>
                 <div class="demo-content">
-                    <h2>Admin Panel</h2>
+                    <h2>admin Panel</h2>
                     <p>This would be your administrative interface for user management and system settings. Currently showing demo content since the external file is not available.</p>
                 </div>
             </div>
@@ -720,17 +925,266 @@
     </div>
 
     <script>
+        // Supabase configuration
+        const SUPABASE_URL = 'https://plmevfyxpngzymvzvkzn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
+        const { createClient } = supabase;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         // Store the ID of the currently active full-page view
         let currentActiveViewId = null;
+        // Store the logged-in user's information
+        let loggedInUser = null;
+
+        /**
+         * Shows the login page and hides the main application content.
+         */
+        function showLoginPage() {
+            console.log('Showing login page');
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('mainAppContent').classList.add('hidden');
+            // Hide header buttons when on login page
+            document.getElementById('backButton').classList.add('hidden');
+            document.getElementById('logoutButton').classList.add('hidden');
+            document.getElementById('adminButton').classList.add('hidden');
+            document.getElementById('loginError').textContent = ''; // Clear any previous errors
+            
+            // Reset radio buttons and input fields
+            document.querySelector('input[name="userRole"][value="Medical Representative"]').checked = true;
+            toggleUsernameInput(); // Ensure correct input field is shown for default role
+            document.getElementById('passwordInput').value = '';
+        }
+
+        /**
+         * Shows the main application content and hides the login page.
+         * @param {string} initialPage - The page to load after successful login (e.g., 'crm', 'dashboard', 'admin').
+         */
+        function showMainAppContent(initialPage) {
+            console.log('Showing main app content');
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainAppContent').classList.remove('hidden');
+            // Show relevant header buttons
+            document.getElementById('logoutButton').classList.remove('hidden');
+            // admin button visibility depends on the user's role
+            if (loggedInUser && loggedInUser.role === 'admin') {
+                document.getElementById('adminButton').classList.remove('hidden');
+            } else {
+                document.getElementById('adminButton').classList.add('hidden');
+            }
+            loadPage(initialPage); // Load the appropriate initial page
+        }
+
+        /**
+         * Checks the login status from session storage and initializes the app accordingly.
+         */
+        function checkLoginStatus() {
+            const storedUser = sessionStorage.getItem('loggedInUser');
+            if (storedUser) {
+                try {
+                    loggedInUser = JSON.parse(storedUser);
+                    console.log('User already logged in:', loggedInUser.username, loggedInUser.role);
+                    let initialPage;
+                    switch (loggedInUser.role) {
+                        case 'Medical Representative':
+                            initialPage = 'crm';
+                            break;
+                        case 'District Manager': // Changed from 'Manager'
+                            initialPage = 'dashboard';
+                            break;
+                        case 'admin':
+                            initialPage = 'admin';
+                            break;
+                        default:
+                            initialPage = 'crm'; // Fallback
+                    }
+                    showMainAppContent(initialPage);
+                } catch (e) {
+                    console.error('Failed to parse stored user data:', e);
+                    showLoginPage();
+                }
+            } else {
+                console.log('No user logged in, showing login page.');
+                showLoginPage();
+            }
+        }
+
+        /**
+         * Toggles between username dropdown and manual input based on selected role.
+         */
+        async function toggleUsernameInput() {
+            const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
+            const usernameDropdownGroup = document.getElementById('usernameDropdownGroup');
+            const usernameInputGroup = document.getElementById('usernameInputGroup');
+            const usernameDropdown = document.getElementById('usernameDropdown');
+
+            if (selectedRole === 'admin') {
+                usernameDropdownGroup.classList.add('hidden');
+                usernameInputGroup.classList.remove('hidden');
+            } else {
+                usernameDropdownGroup.classList.remove('hidden');
+                usernameInputGroup.classList.add('hidden');
+                await populateUserDropdown(selectedRole);
+            }
+        }
+
+        /**
+         * Populates the username dropdown with users of a specific role from Supabase.
+         * @param {string} role - The role to filter users by (e.g., 'Medical Representative', 'Manager').
+         */
+        async function populateUserDropdown(role) {
+            const usernameDropdown = document.getElementById('usernameDropdown');
+            usernameDropdown.innerHTML = '<option value="">Loading users...</option>'; // Clear and add loading message
+            document.getElementById('loginError').textContent = ''; // Clear previous error
+
+            // Map the display role to the database 'title'
+            let dbRole = role;
+            if (role === 'Manager') { // User selects 'Manager' on UI, but it's 'District Manager' in DB
+                dbRole = 'District Manager';
+            }
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('username')
+                    .eq('title', dbRole); // Use dbRole here
+
+                if (error) {
+                    console.error('Error fetching users:', error.message);
+                    usernameDropdown.innerHTML = '<option value="">Error loading users</option>';
+                    document.getElementById('loginError').textContent = `Error: ${error.message}`;
+                    return;
+                }
+
+                if (data && data.length > 0) {
+                    usernameDropdown.innerHTML = ''; // Clear loading message
+                    data.forEach(user => {
+                        const option = document.createElement('option');
+                        option.value = user.username;
+                        option.textContent = user.username;
+                        usernameDropdown.appendChild(option);
+                    });
+                } else {
+                    usernameDropdown.innerHTML = '<option value="">No users found for this role</option>';
+                }
+            } catch (e) {
+                console.error('Unexpected error in populateUserDropdown:', e.message);
+                usernameDropdown.innerHTML = '<option value="">Error loading users</option>';
+                document.getElementById('loginError').textContent = `An unexpected error occurred: ${e.message}`;
+            }
+        }
+
+        /**
+         * Handles the login process.
+         */
+        async function handleLogin() {
+            const selectedRole = document.querySelector('input[name="userRole"]:checked').value;
+            let username;
+            if (selectedRole === 'admin') {
+                username = document.getElementById('usernameInput').value.trim();
+            } else {
+                username = document.getElementById('usernameDropdown').value;
+            }
+            const password = document.getElementById('passwordInput').value;
+            const loginError = document.getElementById('loginError');
+
+            loginError.textContent = ''; // Clear previous errors
+
+            if (!username || !password) {
+                loginError.textContent = 'Please enter both username/select and password.';
+                return;
+            }
+
+            let dbRoleForLogin = selectedRole;
+            if (selectedRole === 'Manager') {
+                dbRoleForLogin = 'District Manager';
+            }
+
+            try {
+                // Query Supabase for the user
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('username', username)
+                    .eq('title', dbRoleForLogin) // Use dbRoleForLogin here
+                    .single(); // Use .single() to expect one row or null/error
+
+                if (error && error.code === 'PGRST116') { // No rows found
+                    loginError.textContent = 'Invalid username or role.';
+                    return;
+                }
+                if (error) {
+                    console.error('Supabase query error:', error.message);
+                    loginError.textContent = `Login error: ${error.message}`;
+                    return;
+                }
+
+                if (data && data.password === password) {
+                    // Successful login
+                    loggedInUser = {
+                        id: data.id,
+                        username: data.username,
+                        role: data.title // This will be 'Medical Representative', 'District Manager', or 'admin'
+                    };
+                    sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                    console.log('Login successful for:', loggedInUser.username, loggedInUser.role);
+
+                    let redirectPage;
+                    switch (loggedInUser.role) { // Use the actual role from DB
+                        case 'Medical Representative':
+                            redirectPage = 'crm';
+                            break;
+                        case 'District Manager': // Changed from 'Manager'
+                            redirectPage = 'dashboard';
+                            break;
+                        case 'admin':
+                            redirectPage = 'admin';
+                            break;
+                        default:
+                            redirectPage = 'crm'; // Default fallback
+                    }
+                    showMainAppContent(redirectPage);
+                } else {
+                    loginError.textContent = 'Invalid username or password.';
+                }
+            } catch (e) {
+                console.error('Unexpected error during login:', e.message);
+                loginError.textContent = `An unexpected error occurred: ${e.message}`;
+            }
+        }
+
+        /**
+         * Handles the logout process.
+         */
+        function handleLogout() {
+            console.log('Logging out user:', loggedInUser ? loggedInUser.username : 'N/A');
+            loggedInUser = null;
+            sessionStorage.removeItem('loggedInUser');
+            showLoginPage();
+            // Ensure all full-page views are hidden when logging out
+            if (currentActiveViewId) {
+                const activeView = document.getElementById(currentActiveViewId);
+                if (activeView) {
+                    activeView.classList.remove('active');
+                    setTimeout(() => activeView.classList.add('hidden'), 300);
+                }
+                currentActiveViewId = null;
+            }
+            showHome(); // Ensure home view is reset
+        }
 
         /**
          * Shows the home view and hides any active full-page view.
          */
         function showHome() {
+            if (!loggedInUser) { // Prevent showing home if not logged in
+                showLoginPage();
+                return;
+            }
             console.log('Showing home view');
             const homeView = document.getElementById('homeView');
             const backButton = document.getElementById('backButton');
-            const adminButton = document.getElementById('adminButton'); // Get admin button reference
+            const adminButton = document.getElementById('adminButton');
+            const logoutButton = document.getElementById('logoutButton');
             
             if (homeView) {
                 homeView.classList.remove('hidden');
@@ -740,10 +1194,14 @@
                 backButton.classList.add('hidden');
             }
 
-            // Show the admin button when returning to home view
-            if (adminButton) {
+            // Show admin button only if logged in as admin
+            if (loggedInUser && loggedInUser.role === 'admin') {
                 adminButton.classList.remove('hidden');
+            } else {
+                adminButton.classList.add('hidden');
             }
+            // Always show logout button when logged in
+            logoutButton.classList.remove('hidden');
 
             // Hide the currently active full-page view, if any
             if (currentActiveViewId) {
@@ -767,20 +1225,34 @@
          * @param {string} page - The page identifier (e.g., 'crm', 'dashboard').
          */
         function loadPage(page) {
+            if (!loggedInUser) { // Redirect to login if not authenticated
+                showLoginPage();
+                return;
+            }
+
             console.log(`Attempting to load page: ${page}`);
             
             // Configuration for each page, including view ID, display name, and file name
             const pageConfig = {
-                'crm': { viewId: 'crmView', displayName: 'CRM', fileName: 'reps crm.html' },
-                'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html' },
-                'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html' },
-                'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html' },
-                'admin': { viewId: 'adminView', displayName: 'Admin', fileName: 'admin users.html' }
+                'crm': { viewId: 'crmView', displayName: 'CRM', fileName: 'reps crm.html', allowedRoles: ['Medical Representative', 'District Manager'] },
+                'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html', allowedRoles: ['District Manager'] },
+                'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html', allowedRoles: ['Medical Representative', 'District Manager'] },
+                'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html', allowedRoles: ['Medical Representative', 'District Manager'] },
+                'admin': { viewId: 'adminView', displayName: 'admin', fileName: 'admin users.html', allowedRoles: ['admin'] }
             };
 
             const config = pageConfig[page];
             if (!config) {
                 console.error(`Error: Unknown page identifier: ${page}`);
+                // Optionally, show an error message to the user
+                return;
+            }
+
+            // Role-based access control: admin has full access, otherwise check specific roles
+            if (loggedInUser.role !== 'admin' && !config.allowedRoles.includes(loggedInUser.role)) {
+                console.warn(`Access denied: User '${loggedInUser.username}' with role '${loggedInUser.role}' attempted to access '${page}'.`);
+                alert('You do not have permission to access this page.'); // Using alert for simplicity, replace with custom modal
+                showHome(); // Go back to home or a permitted page
                 return;
             }
 
@@ -789,7 +1261,8 @@
             // Get references to main UI elements
             const homeView = document.getElementById('homeView');
             const backButton = document.getElementById('backButton');
-            const adminButton = document.getElementById('adminButton'); // Get admin button reference
+            const adminButton = document.getElementById('adminButton');
+            const logoutButton = document.getElementById('logoutButton');
             const targetView = document.getElementById(viewId);
 
             // Initialize variables for elements inside targetView
@@ -801,7 +1274,6 @@
 
             // Ensure targetView exists before querying its children
             if (targetView) {
-                // Using querySelector with classes as they are unique within each full-page-view
                 loadingOverlay = targetView.querySelector('.loading'); 
                 errorState = targetView.querySelector('.error-state'); 
                 iframeContainer = targetView.querySelector('.iframe-container-fpv');
@@ -812,11 +1284,12 @@
             }
 
             // Basic validation to ensure all required elements exist
-            if (!homeView || !backButton || !adminButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
+            if (!homeView || !backButton || !adminButton || !logoutButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
                 console.error('Error: One or more required DOM elements not found for page loading. Debug details:');
                 console.error('  homeView:', homeView);
                 console.error('  backButton:', backButton);
                 console.error('  adminButton:', adminButton);
+                console.error('  logoutButton:', logoutButton);
                 console.error('  targetView:', targetView);
                 console.error('  loadingOverlay:', loadingOverlay);
                 console.error('  errorState:', errorState);
@@ -829,10 +1302,17 @@
             // --- Execution continues here if all elements are found ---
             console.log(`All required DOM elements found for page: ${page}. Proceeding to load.`);
 
-            // Hide the home view, show the back button, and hide the admin button
+            // Hide the home view, show the back button
             homeView.classList.add('hidden');
-            backButton.classList.remove('hidden'); // This line makes the back button visible
-            adminButton.classList.add('hidden'); // Hide admin button when navigating to a page
+            backButton.classList.remove('hidden'); 
+            // admin button visibility depends on the user's role and the page being loaded
+            if (loggedInUser && loggedInUser.role === 'admin' && page !== 'admin') {
+                adminButton.classList.remove('hidden'); // Show admin button if admin, but not on admin page itself
+            } else {
+                adminButton.classList.add('hidden'); // Hide admin button if not admin or if on admin page
+            }
+            logoutButton.classList.remove('hidden'); // Always show logout when logged in
+
             console.log(`Back button visibility set for page: ${page}.`);
 
 
@@ -883,6 +1363,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, initializing application');
             
+            // Add event listeners for role selection
+            document.querySelectorAll('input[name="userRole"]').forEach(radio => {
+                radio.addEventListener('change', toggleUsernameInput);
+            });
+
+            // Add click event listener for login button
+            document.getElementById('loginButton').addEventListener('click', handleLogin);
+
             // Add click event listeners to all main navigation cards
             document.querySelectorAll('.main-card').forEach(card => {
                 card.addEventListener('click', function() {
@@ -896,7 +1384,7 @@
                 });
             });
 
-            // Add click event listener to the Admin button
+            // Add click event listener to the admin button
             document.getElementById('adminButton').addEventListener('click', function() {
                 loadPage('admin');
             });
@@ -906,8 +1394,12 @@
                 showHome();
             });
 
-            // Ensure the home view is visible on initial load (redundant but safe)
-            showHome();
+            // Add click event listener to the Logout button
+            document.getElementById('logoutButton').addEventListener('click', handleLogout);
+
+            // Initial setup: check login status and display appropriate view
+            checkLoginStatus();
+            toggleUsernameInput(); // Initialize the correct input field based on default radio selection
         });
     </script>
 </body>
