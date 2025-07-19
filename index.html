@@ -1,498 +1,799 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Paxton LLC CRM</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paxton LLC CRM</title>
+    <!-- Google Fonts: Inter for a modern, clean look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for easier theme management and consistency */
+        :root {
+            --coffee-light: #8B5E3C; /* Light coffee/tan */
+            --coffee-dark: #6F4E37;  /* Rich coffee brown */
+            --coffee-gradient-start: #4A2C2A; /* Darker, almost black coffee */
+            --coffee-gradient-end: #8B5E3C;   /* Matches coffee-light */
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f0f2f5;
-      min-height: 100vh;
-    }
+            --primary-red: #ef4444;
+            --primary-red-dark: #dc2626;
+            --text-color-dark: #374151;
+            --text-color-light: #6b7280;
+            --bg-light: #f9fafb;
+            --bg-medium: #f0f2f5;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --border-radius: 12px;
+        }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 20px;
-    }
+        /* Base styles for all elements */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .header {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      background: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
+        /* Body and HTML for full height layout */
+        html, body {
+            height: 100%;
+        }
 
-    .admin-tab {
-      background: #ef4444;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 0.9rem;
-      border: none;
-      transition: all 0.2s ease;
-      text-decoration: none;
-      display: inline-block;
-    }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-medium);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: var(--text-color-dark);
+            -webkit-font-smoothing: antialiased; /* Smoother text rendering */
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-    .admin-tab:hover {
-      background: #dc2626;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
-    }
+        /* Main container for the application, taking full available width and height */
+        .container {
+            max-width: 1600px; /* Increased max-width for more spacious layout */
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex-grow: 1; /* Allows container to expand and fill space */
+            display: flex;
+            flex-direction: column;
+        }
 
-    .banner {
-      background: linear-gradient(135deg, #1e40af, #3b82f6);
-      color: white;
-      text-align: center;
-      padding: 50px 20px;
-      margin-bottom: 0;
-      border-radius: 12px 12px 0 0;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
-    }
+        /* Header styling with flexbox for alignment */
+        .header {
+            display: flex;
+            justify-content: flex-end; /* Aligns admin tab to the right by default */
+            align-items: center;
+            background: var(--white);
+            padding: 6px 25px; /* Made header slimmer */
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 100; /* Ensures header is always on top */
+            gap: 15px; /* Space between buttons */
+        }
 
-    .banner::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-      transform: translateX(-100%);
-      animation: shine 3s infinite;
-    }
+        /* Admin tab button styling */
+        .admin-tab {
+            background: var(--primary-red);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            transition: all 0.25s ease; /* Smooth transition for hover effects */
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px; /* Space between text and icon */
+        }
 
-    @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
+        .admin-tab:hover {
+            background: var(--primary-red-dark);
+            transform: translateY(-2px); /* Slight lift effect */
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25); /* Enhanced shadow on hover */
+        }
+        
+        /* Back button styling, similar to admin tab but with primary coffee color */
+        .back-button {
+            background: var(--coffee-light); /* Changed to coffee color */
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: none;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: auto; /* Pushes the button to the left */
+        }
 
-    .banner h1 {
-      font-size: 3rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
+        .back-button:hover {
+            background: var(--coffee-dark); /* Changed to darker coffee color */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(139, 94, 60, 0.25); /* Adjusted shadow color */
+        }
 
-    .banner .subtitle {
-      font-size: 1.2rem;
-      opacity: 0.95;
-      font-weight: 400;
-      position: relative;
-      z-index: 1;
-    }
+        /* Utility class to hide elements */
+        .hidden {
+            display: none !important;
+        }
 
-    .main-tabs {
-      display: flex;
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      overflow-x: auto;
-    }
+        /* Banner styling with gradient and shine animation */
+        .banner {
+            background: linear-gradient(135deg, var(--coffee-gradient-start), var(--coffee-gradient-end)); /* Changed to coffee gradient */
+            color: white;
+            padding: 25px 40px; /* Made banner slimmer */
+            margin-bottom: 30px; /* Increased margin below banner */
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0; /* Prevents banner from shrinking */
+            display: flex; /* Use flexbox for horizontal alignment of logo and text */
+            flex-direction: row; /* Always row for logo and text */
+            align-items: center; /* Vertically align items */
+            gap: 30px; /* Space between logo and text */
+        }
 
-    .main-tab {
-      flex: 1;
-      min-width: 120px;
-      background: white;
-      padding: 18px 24px;
-      cursor: pointer;
-      text-align: center;
-      font-weight: 500;
-      font-size: 1rem;
-      color: #6b7280;
-      border-bottom: 3px solid transparent;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      white-space: nowrap;
-    }
+        .banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            animation: shine 3s infinite; /* Shine animation for visual flair */
+        }
 
-    .main-tab::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: linear-gradient(to bottom, rgba(59, 130, 246, 0.05), transparent);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
 
-    .main-tab:hover::before {
-      opacity: 1;
-    }
+        /* Company Logo styling within the banner */
+        .company-logo {
+            max-width: 90px; /* Adjust size as needed */
+            height: auto;
+            border-radius: 8px; /* Slightly rounded corners for the logo */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow */
+            z-index: 1; /* Ensure logo is above shine effect */
+            flex-shrink: 0; /* Prevent logo from shrinking */
+        }
 
-    .main-tab:hover {
-      color: #3b82f6;
-      transform: translateY(-2px);
-    }
+        .banner-text-content {
+            flex-grow: 1; /* Allows text content to take remaining space */
+            text-align: left; /* Ensure text is left-aligned within its container */
+        }
 
-    .main-tab.active {
-      color: #3b82f6;
-      border-bottom-color: #3b82f6;
-      background: white;
-      font-weight: 600;
-    }
+        .banner h1 {
+            font-size: 3.5rem; /* Larger main title */
+            font-weight: 700;
+            margin-bottom: 8px; /* Reduced margin below title */
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+        }
 
-    .main-tab.active::before {
-      opacity: 1;
-    }
+        .banner .subtitle {
+            font-size: 1.3rem; /* Larger subtitle */
+            opacity: 0.98;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+        }
 
-    .main-tab.disabled {
-      color: #9ca3af;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
+        /* Home view grid for navigation cards */
+        .home-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid columns */
+            gap: 25px; /* Space between grid items */
+            padding: 20px 0;
+            flex-grow: 1; /* Allows grid to expand */
+            align-content: start; /* Aligns content to the start of the grid */
+        }
 
-    .main-tab.disabled:hover {
-      color: #9ca3af;
-      transform: none;
-    }
+        /* Styling for each navigation card */
+        .main-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for hover */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px; /* Ensures consistent card height */
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #e2e8f0; /* Subtle border */
+        }
 
-    .main-tab.disabled::before {
-      display: none;
-    }
+        /* Pseudo-element for hover effect on cards */
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom right, rgba(139, 94, 60, 0.03), transparent 50%); /* Adjusted shadow color */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-    .content-area {
-      background: white;
-      min-height: 65vh;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-      border-radius: 0 0 12px 12px;
-      overflow: hidden;
-      position: relative;
-    }
+        .main-card:hover::before {
+            opacity: 1;
+        }
 
-    .iframe-container {
-      position: relative;
-      width: 100%;
-      height: 65vh;
-    }
+        .main-card:hover {
+            transform: translateY(-5px); /* Lift effect on hover */
+            box-shadow: var(--shadow-lg); /* Larger shadow on hover */
+            border-color: var(--coffee-light); /* Highlight border on hover */
+        }
 
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      transition: opacity 0.3s ease;
-    }
+        /* Disabled card styling */
+        .main-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: var(--bg-light);
+            box-shadow: var(--shadow-sm);
+            border-color: #cbd5e1;
+        }
 
-    .error-state {
-      display: none;
-      padding: 60px 40px;
-      text-align: center;
-      color: #ef4444;
-    }
+        .main-card.disabled:hover {
+            transform: none; /* No lift for disabled cards */
+            box-shadow: var(--shadow-sm);
+            border-color: #cbd5e1;
+        }
 
-    .error-state.show {
-      display: block;
-    }
+        /* Icon styling for cards */
+        .main-card-icon {
+            font-size: 3.5rem; /* Larger icon size */
+            margin-bottom: 15px;
+            color: var(--coffee-light); /* Changed to coffee color */
+            line-height: 1; /* Ensures icon is vertically centered */
+        }
 
-    .error-icon {
-      font-size: 3rem;
-      margin-bottom: 20px;
-    }
+        .main-card.disabled .main-card-icon {
+            color: var(--text-color-light); /* Muted icon for disabled cards */
+        }
 
-    .error-title {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
+        /* Title styling for cards */
+        .main-card-title {
+            font-size: 1.5rem; /* Larger title size */
+            font-weight: 600;
+            color: var(--text-color-dark);
+            margin-bottom: 5px;
+        }
 
-    .error-text {
-      color: #6b7280;
-      font-size: 1rem;
-    }
+        .main-card.disabled .main-card-title {
+            color: var(--text-color-light);
+        }
 
-    .page-content {
-      padding: 60px 40px;
-      text-align: center;
-      min-height: 65vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+        /* Subtitle styling for cards */
+        .main-card-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-color-light);
+            line-height: 1.4;
+        }
+        
+        /* Full page view container */
+        .full-page-view {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-lg);
+            flex-grow: 1; /* Allows full page view to fill available space */
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; /* Ensures content within iframe doesn't overflow */
+            transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition for showing/hiding */
+            transform: translateY(10px); /* Initial slight offset for animation */
+            opacity: 0; /* Start hidden */
+            height: calc(100vh - 120px); /* Calculate height to fill screen minus header/padding */
+        }
 
-    .empty-state {
-      color: #6b7280;
-      max-width: 400px;
-    }
+        .full-page-view.active {
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Move to final position */
+            display: flex; /* Ensure it's a flex container when active */
+        }
 
-    .empty-state-icon {
-      font-size: 4rem;
-      margin-bottom: 24px;
-      opacity: 0.6;
-    }
+        /* Iframe container within full page view */
+        .iframe-container-fpv {
+            flex-grow: 1; /* Allows iframe to take all available space */
+            position: relative;
+            width: 100%;
+            height: 100%; /* Take full height of parent */
+        }
 
-    .empty-state-title {
-      font-size: 1.8rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-      color: #374151;
-    }
+        .full-page-view iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block; /* Removes extra space below iframe */
+            background: var(--white); /* Fallback background */
+        }
 
-    .empty-state-text {
-      font-size: 1.1rem;
-      color: #6b7280;
-      line-height: 1.6;
-    }
+        /* Error state styling */
+        .error-state {
+            display: none; /* Hidden by default */
+            padding: 60px 40px;
+            text-align: center;
+            color: var(--primary-red);
+            position: absolute; /* Overlay on top of iframe */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 5; /* Above iframe, below loading */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--border-radius);
+        }
 
-    .loading {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(255, 255, 255, 0.95);
-      z-index: 10;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-    }
+        .error-state.show {
+            display: flex;
+        }
 
-    .loading.show {
-      display: flex;
-    }
+        .error-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid #f3f4f6;
-      border-top: 4px solid #3b82f6;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin-bottom: 20px;
-    }
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
-    .loading-text {
-      color: #6b7280;
-      font-weight: 500;
-    }
+        .error-text {
+            color: var(--text-color-light);
+            font-size: 1rem;
+        }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+        /* Loading overlay styling */
+        .loading {
+            display: none; /* Hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 10; /* Highest z-index */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            border-radius: var(--border-radius);
+        }
 
-    .status-indicator {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #10b981;
-      box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-      animation: pulse 2s infinite;
-    }
+        .loading.show {
+            display: flex;
+        }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid var(--coffee-light); /* Changed to coffee color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite; /* Spinner animation */
+            margin-bottom: 20px;
+        }
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-      }
+        .loading-text {
+            color: var(--text-color-light);
+            font-weight: 500;
+        }
 
-      .banner {
-        padding: 40px 20px;
-      }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-      .banner h1 {
-        font-size: 2.2rem;
-      }
+        /* Status indicator in banner */
+        .status-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 10px; /* Slightly larger */
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981; /* Green color */
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); /* Larger pulse shadow */
+            animation: pulse 2s infinite;
+        }
 
-      .banner .subtitle {
-        font-size: 1rem;
-      }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
 
-      .main-tabs {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-      }
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 15px;
+            }
+            .banner {
+                padding: 25px 30px; /* Slightly more compact */
+                gap: 20px;
+            }
+            .banner h1 {
+                font-size: 3rem;
+            }
+            .banner .subtitle {
+                font-size: 1.1rem;
+            }
+            .company-logo {
+                max-width: 80px; /* Adjust size for medium screens */
+            }
+            .home-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+            }
+            .main-card-icon {
+                font-size: 3rem;
+            }
+            .main-card-title {
+                font-size: 1.3rem;
+            }
+        }
 
-      .main-tab {
-        flex: none;
-        min-width: 100px;
-        padding: 16px 20px;
-      }
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .header {
+                flex-direction: row; /* Keep buttons in a row */
+                justify-content: space-between; /* Space out buttons */
+                padding: 8px 15px; /* Slimmer header on mobile */
+            }
+            .admin-tab, .back-button {
+                padding: 8px 15px;
+                font-size: 0.85rem;
+            }
+            .banner {
+                /* Maintain row direction for logo and text */
+                padding: 20px 15px; /* Adjust padding for mobile row layout */
+                margin-bottom: 20px;
+                gap: 15px; /* Adjust gap for mobile row layout */
+            }
+            .company-logo {
+                max-width: 60px; /* Even smaller on mobile to allow space for text */
+            }
+            .banner h1 {
+                font-size: 2rem; /* Reduced font size for mobile row layout */
+                margin-bottom: 4px; /* Reduced margin */
+            }
+            .banner .subtitle {
+                font-size: 0.9rem; /* Reduced font size for mobile */
+            }
+            .home-grid {
+                grid-template-columns: 1fr; /* Single column on very small screens */
+                gap: 15px;
+            }
+            .main-card {
+                min-height: 150px;
+                padding: 25px;
+            }
+            .main-card-icon {
+                font-size: 2.8rem;
+            }
+            .main-card-title {
+                font-size: 1.2rem;
+            }
+            .full-page-view {
+                height: calc(100vh - 90px); /* Adjust height for mobile header */
+            }
+        }
 
-      .iframe-container {
-        height: 60vh;
-      }
-
-      .content-area {
-        min-height: 60vh;
-      }
-    }
-  </style>
+        @media (max-width: 480px) {
+            .banner {
+                padding: 15px 10px;
+                gap: 10px;
+            }
+            .company-logo {
+                max-width: 50px;
+            }
+            .banner h1 {
+                font-size: 1.6rem;
+            }
+            .banner .subtitle {
+                font-size: 0.8rem;
+            }
+            .admin-tab, .back-button {
+                font-size: 0.8rem;
+                padding: 6px 12px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <a href="admin users.html" class="admin-tab">
-        Admin
-      </a>
-    </div>
-
-    <div class="banner">
-      <div class="status-indicator"></div>
-      <h1>PAXTON LLC</h1>
-      <div class="subtitle">Customer Relationship Management System</div>
-    </div>
-
-    <div class="main-tabs" id="mainTabs">
-      <div class="main-tab active" onclick="loadPage('reps crm.html', this, 'CRM')">
-        CRM
-      </div>
-      <div class="main-tab" onclick="loadPage('final dashboard.html', this, 'Dashboard')">
-        Dashboard
-      </div>
-      <div class="main-tab" onclick="loadPage('upa-codes.html', this, 'UPA Codes')">
-        UPA Codes
-      </div>
-      <div class="main-tab" onclick="loadPage('price-list.html', this, 'Price List')">
-        Price List
-      </div>
-      <div class="main-tab disabled">
-        Coming Soon
-      </div>
-    </div>
-
-    <div class="content-area">
-      <div class="loading" id="loading">
-        <div class="spinner"></div>
-        <div class="loading-text">Loading...</div>
-      </div>
-      
-      <div class="iframe-container">
-        <iframe id="iframe" src="crm.html" onload="handleIframeLoad()" onerror="handleIframeError()"></iframe>
-      </div>
-      
-      <div class="error-state" id="errorState">
-        <div class="error-icon">⚠️</div>
-        <div class="error-title">Page Not Found</div>
-        <div class="error-text">The requested file could not be loaded. Please check if the file exists in your repository.</div>
-      </div>
-
-      <div class="page-content" id="pageContent" style="display: none;">
-        <div class="empty-state">
-          <div class="empty-state-icon">📊</div>
-          <div class="empty-state-title">CRM System</div>
-          <div class="empty-state-text">Your customer relationship management tools will appear here</div>
+    <div class="container">
+        <div class="header">
+            <!-- Back button, initially hidden -->
+            <button id="backButton" class="back-button hidden" onclick="showHome()">
+                &#x2190; Back to Home
+            </button>
+            <!-- Admin tab link -->
+            <a href="admin users.html" class="admin-tab">
+                Admin
+            </a>
         </div>
-      </div>
+
+        <!-- Home View: This section will display the main navigation cards -->
+        <div id="homeView" class="home-view">
+            <div class="banner">
+                <div class="status-indicator"></div>
+                <!-- Company Logo moved to the left and placed before text content -->
+                <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="company-logo" onerror="this.onerror=null;this.src='https://placehold.co/90x90/A0522D/FFFFFF?text=Logo';">
+                <div class="banner-text-content">
+                    <h1>PAXTON LLC</h1>
+                    <div class="subtitle">Customer Relationship Management System</div>
+                </div>
+            </div>
+
+            <div class="home-grid">
+                <!-- CRM Card -->
+                <div class="main-card" onclick="loadPage('reps crm.html', 'crmView', 'CRM')">
+                    <div class="main-card-icon">📊</div>
+                    <div class="main-card-title">CRM</div>
+                    <div class="main-card-subtitle">Manage customer relationships and sales pipelines.</div>
+                </div>
+                <!-- Dashboard Card -->
+                <div class="main-card" onclick="loadPage('final dashboard.html', 'dashboardView', 'Dashboard')">
+                    <div class="main-card-icon">📈</div>
+                    <div class="main-card-title">Dashboard</div>
+                    <div class="main-card-subtitle">View key performance indicators and analytics.</div>
+                </div>
+                <!-- UPA Codes Card -->
+                <div class="main-card" onclick="loadPage('upa-codes.html', 'upaCodesView', 'UPA Codes')">
+                    <div class="main-card-icon">🏷️</div>
+                    <div class="main-card-title">UPA Codes</div>
+                    <div class="main-card-subtitle">Access and manage Universal Product Access codes.</div>
+                </div>
+                <!-- Price List Card -->
+                <div class="main-card" onclick="loadPage('price-list.html', 'priceListView', 'Price List')">
+                    <div class="main-card-icon">💲</div>
+                    <div class="main-card-title">Price List</div>
+                    <div class="main-card-subtitle">Browse and update product pricing information.</div>
+                </div>
+                <!-- Coming Soon Card (disabled) -->
+                <div class="main-card disabled">
+                    <div class="main-card-icon">⏳</div>
+                    <div class="main-card-title">Coming Soon</div>
+                    <div class="main-card-subtitle">Exciting new features are on their way!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Page Views: Each will contain its own iframe and loading/error states -->
+        <!-- CRM Full Page View -->
+        <div id="crmView" class="full-page-view hidden">
+            <div class="loading" id="loadingCrm">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading CRM...</div>
+            </div>
+            <div class="error-state" id="errorCrm">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">CRM Page Not Found</div>
+                <div class="error-text">The CRM file could not be loaded. Please check its path.</div>
+            </div>
+            <div class="iframe-container-fpv">
+                <iframe id="iframeCrm" src="" onload="handleIframeLoad('crmView')" onerror="handleIframeError('crmView')"></iframe>
+            </div>
+        </div>
+
+        <!-- Dashboard Full Page View -->
+        <div id="dashboardView" class="full-page-view hidden">
+            <div class="loading" id="loadingDashboard">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading Dashboard...</div>
+            </div>
+            <div class="error-state" id="errorDashboard">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">Dashboard Page Not Found</div>
+                <div class="error-text">The Dashboard file could not be loaded. Please check its path.</div>
+            </div>
+            <div class="iframe-container-fpv">
+                <iframe id="iframeDashboard" src="" onload="handleIframeLoad('dashboardView')" onerror="handleIframeError('dashboardView')"></iframe>
+            </div>
+        </div>
+
+        <!-- UPA Codes Full Page View -->
+        <div id="upaCodesView" class="full-page-view hidden">
+            <div class="loading" id="loadingUpaCodes">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading UPA Codes...</div>
+            </div>
+            <div class="error-state" id="errorUpaCodes">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">UPA Codes Page Not Found</div>
+                <div class="error-text">The UPA Codes file could not be loaded. Please check its path.</div>
+            </div>
+            <div class="iframe-container-fpv">
+                <iframe id="iframeUpaCodes" src="" onload="handleIframeLoad('upaCodesView')" onerror="handleIframeError('upaCodesView')"></iframe>
+            </div>
+        </div>
+
+        <!-- Price List Full Page View -->
+        <div id="priceListView" class="full-page-view hidden">
+            <div class="loading" id="loadingPriceList">
+                <div class="spinner"></div>
+                <div class="loading-text">Loading Price List...</div>
+            </div>
+            <div class="error-state" id="errorPriceList">
+                <div class="error-icon">⚠️</div>
+                <div class="error-title">Price List Page Not Found</div>
+                <div class="error-text">The Price List file could not be loaded. Please check its path.</div>
+            </div>
+            <div class="iframe-container-fpv">
+                <iframe id="iframePriceList" src="" onload="handleIframeLoad('priceListView')" onerror="handleIframeError('priceListView')"></iframe>
+            </div>
+        </div>
+
     </div>
-  </div>
 
-  <script>
-    let currentPage = 'crm.html';
-    let loadingTimeout;
+    <script>
+        // Store the ID of the currently active full-page view
+        let currentActiveViewId = null;
+        // Store timeout IDs for loading indicators to clear them effectively
+        const loadingTimeouts = {};
 
-    function loadPage(fileName, el, displayName) {
-      // Don't load if it's disabled
-      if (el && el.classList.contains('disabled')) {
-        return;
-      }
+        /**
+         * Shows the home view and hides any active full-page view.
+         */
+        function showHome() {
+            document.getElementById('homeView').classList.remove('hidden');
+            document.getElementById('backButton').classList.add('hidden');
 
-      // Show loading
-      showLoading(displayName);
-      
-      // Update active tab
-      if (el && el.classList.contains('main-tab')) {
-        document.querySelectorAll(".main-tab").forEach(t => t.classList.remove("active"));
-        el.classList.add("active");
-      }
-      
-      // Update iframe source
-      currentPage = fileName;
-      document.getElementById("iframe").src = fileName;
-      
-      // Set timeout to show error if page doesn't load
-      loadingTimeout = setTimeout(() => {
-        handleIframeError();
-      }, 5000);
-    }
-
-    function showLoading(pageName) {
-      const loading = document.getElementById("loading");
-      const errorState = document.getElementById("errorState");
-      const pageContent = document.getElementById("pageContent");
-      
-      loading.querySelector('.loading-text').textContent = `Loading ${pageName}...`;
-      loading.classList.add("show");
-      errorState.classList.remove("show");
-      pageContent.style.display = "none";
-    }
-
-    function hideLoading() {
-      const loading = document.getElementById("loading");
-      loading.classList.remove("show");
-      
-      if (loadingTimeout) {
-        clearTimeout(loadingTimeout);
-      }
-    }
-
-    function handleIframeLoad() {
-      hideLoading();
-      document.getElementById("errorState").classList.remove("show");
-      document.getElementById("pageContent").style.display = "none";
-    }
-
-    function handleIframeError() {
-      hideLoading();
-      document.getElementById("errorState").classList.add("show");
-      document.getElementById("pageContent").style.display = "none";
-    }
-
-    // Check if iframe content failed to load
-    function checkIframeContent() {
-      const iframe = document.getElementById("iframe");
-      try {
-        // This will throw an error if the page doesn't exist
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        if (iframeDoc.readyState === 'complete') {
-          if (iframeDoc.body && iframeDoc.body.innerHTML.trim() === '') {
-            handleIframeError();
-          }
+            // Hide the currently active full-page view, if any
+            if (currentActiveViewId) {
+                const activeView = document.getElementById(currentActiveViewId);
+                if (activeView) {
+                    activeView.classList.remove('active');
+                    // Add hidden class after transition for better performance/layout
+                    setTimeout(() => activeView.classList.add('hidden'), 300);
+                }
+                currentActiveViewId = null;
+            }
         }
-      } catch (e) {
-        // Cross-origin or file not found
-        setTimeout(handleIframeError, 100);
-      }
-    }
 
-    // Initialize
-    window.addEventListener('load', function() {
-      // Try to load the initial page
-      setTimeout(checkIframeContent, 1000);
-    });
+        /**
+         * Loads a specific page into its dedicated full-page view.
+         * @param {string} fileName - The URL of the HTML file to load into the iframe.
+         * @param {string} viewId - The ID of the full-page view container (e.g., 'crmView').
+         * @param {string} displayName - The user-friendly name of the page (e.g., 'CRM').
+         */
+        function loadPage(fileName, viewId, displayName) {
+            // Check if the card is disabled
+            const cardElement = event.currentTarget; // Get the clicked card element
+            if (cardElement && cardElement.classList.contains('disabled')) {
+                return; // Do nothing if disabled
+            }
 
-    // Handle iframe load events
-    document.getElementById("iframe").addEventListener('load', function() {
-      setTimeout(checkIframeContent, 100);
-    });
-  </script>
+            // Hide the home view
+            document.getElementById('homeView').classList.add('hidden');
+            // Show the back button
+            document.getElementById('backButton').classList.remove('hidden');
+
+            // Hide any previously active full-page view
+            if (currentActiveViewId && currentActiveViewId !== viewId) {
+                const prevActiveView = document.getElementById(currentActiveViewId);
+                if (prevActiveView) {
+                    prevActiveView.classList.remove('active');
+                    setTimeout(() => prevActiveView.classList.add('hidden'), 300);
+                }
+            }
+
+            // Set the new active view
+            currentActiveViewId = viewId;
+            const targetView = document.getElementById(viewId);
+            const targetIframe = document.getElementById(`iframe${viewId.replace('View', '')}`); // Get specific iframe
+            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+
+            if (targetView && targetIframe && loadingElement && errorElement) {
+                // Show the target full-page view and loading spinner
+                targetView.classList.remove('hidden');
+                // Use a small delay to allow hidden class to apply before active for transition
+                setTimeout(() => targetView.classList.add('active'), 10);
+
+                loadingElement.querySelector('.loading-text').textContent = `Loading ${displayName}...`;
+                loadingElement.classList.add('show');
+                errorElement.classList.remove('show');
+
+                // Set iframe source
+                targetIframe.src = fileName;
+
+                // Set a timeout to show error if page doesn't load within 5 seconds
+                if (loadingTimeouts[viewId]) {
+                    clearTimeout(loadingTimeouts[viewId]);
+                }
+                loadingTimeouts[viewId] = setTimeout(() => {
+                    handleIframeError(viewId);
+                }, 5000);
+            } else {
+                console.error(`Error: Could not find elements for viewId: ${viewId}`);
+                // Fallback to home if elements are missing
+                showHome();
+            }
+        }
+
+        /**
+         * Handles the iframe load event for a specific view.
+         * Hides loading spinner and error state.
+         * @param {string} viewId - The ID of the full-page view container.
+         */
+        function handleIframeLoad(viewId) {
+            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+
+            if (loadingTimeouts[viewId]) {
+                clearTimeout(loadingTimeouts[viewId]);
+                delete loadingTimeouts[viewId];
+            }
+
+            if (loadingElement) loadingElement.classList.remove('show');
+            if (errorElement) errorElement.classList.remove('show');
+
+            // Additional check for empty iframe content after load
+            const iframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
+            try {
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (iframeDoc.readyState === 'complete' && iframeDoc.body && iframeDoc.body.innerHTML.trim() === '') {
+                    // If the iframe loaded but its body is empty, treat as an error
+                    handleIframeError(viewId);
+                }
+            } catch (e) {
+                // Cross-origin or other access errors will be caught here
+                console.warn(`Could not access iframe content for ${viewId}:`, e);
+                // If it's a security error (cross-origin), it means the file likely didn't load correctly or is inaccessible.
+                // We'll still show the error state.
+                handleIframeError(viewId);
+            }
+        }
+
+        /**
+         * Handles the iframe error event for a specific view.
+         * Hides loading spinner and shows error state.
+         * @param {string} viewId - The ID of the full-page view container.
+         */
+        function handleIframeError(viewId) {
+            const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
+            const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+
+            if (loadingTimeouts[viewId]) {
+                clearTimeout(loadingTimeouts[viewId]);
+                delete loadingTimeouts[viewId];
+            }
+
+            if (loadingElement) loadingElement.classList.remove('show');
+            if (errorElement) errorElement.classList.add('show');
+        }
+
+        // Initialize the view on window load
+        window.addEventListener('load', function() {
+            showHome(); // Start by showing the home view
+        });
+    </script>
 </body>
 </html>
