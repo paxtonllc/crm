@@ -319,10 +319,10 @@
             flex-grow: 1; /* Allows iframe to take all available space */
             position: relative;
             width: 100%;
-            height: 100%; /* Take full height of parent */
-            display: flex; /* Use flex to center demo content */
-            justify-content: center;
-            align-items: center;
+            height: 100%;
+            border: none;
+            display: block; /* Removes extra space below iframe */
+            background: var(--white); /* Fallback background */
         }
 
         .full-page-view iframe {
@@ -801,8 +801,9 @@
 
             // Ensure targetView exists before querying its children
             if (targetView) {
-                loadingOverlay = document.getElementById(`loading${page.charAt(0).toUpperCase() + page.slice(1)}`);
-                errorState = document.getElementById(`error${page.charAt(0).toUpperCase() + page.slice(1)}`);
+                // Using querySelector with classes as they are unique within each full-page-view
+                loadingOverlay = targetView.querySelector('.loading'); 
+                errorState = targetView.querySelector('.error-state'); 
                 iframeContainer = targetView.querySelector('.iframe-container-fpv');
                 if (iframeContainer) {
                     iframe = iframeContainer.querySelector('iframe');
@@ -822,13 +823,18 @@
                 console.error('  iframeContainer:', iframeContainer);
                 console.error('  iframe:', iframe);
                 console.error('  demoContent:', demoContent);
-                return;
+                return; // Exit if elements are missing
             }
+
+            // --- Execution continues here if all elements are found ---
+            console.log(`All required DOM elements found for page: ${page}. Proceeding to load.`);
 
             // Hide the home view, show the back button, and hide the admin button
             homeView.classList.add('hidden');
-            backButton.classList.remove('hidden');
+            backButton.classList.remove('hidden'); // This line makes the back button visible
             adminButton.classList.add('hidden'); // Hide admin button when navigating to a page
+            console.log(`Back button visibility set for page: ${page}.`);
+
 
             // If there's a currently active full-page view and it's different from the target, hide it
             if (currentActiveViewId && currentActiveViewId !== viewId) {
