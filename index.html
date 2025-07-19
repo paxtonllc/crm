@@ -320,6 +320,9 @@
             position: relative;
             width: 100%;
             height: 100%; /* Take full height of parent */
+            display: flex; /* Use flex to center demo content */
+            justify-content: center;
+            align-items: center;
         }
 
         .full-page-view iframe {
@@ -427,6 +430,32 @@
             50% { opacity: 0.6; transform: scale(1.1); }
         }
 
+        /* Demo styles for missing pages */
+        .demo-content {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-color-dark);
+            width: 100%; /* Ensure demo content takes full width */
+            height: 100%; /* Ensure demo content takes full height */
+            display: flex; /* Use flexbox for centering text */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .demo-content h2 {
+            color: var(--coffee-dark);
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+
+        .demo-content p {
+            color: var(--text-color-light);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px; /* Limit width for readability */
+        }
+
         /* Responsive adjustments for smaller screens */
         @media (max-width: 1024px) {
             .container {
@@ -530,11 +559,11 @@
     <div class="container">
         <div class="header">
             <!-- Back button, initially hidden -->
-            <button id="backButton" class="back-button hidden" onclick="showHome()">
+            <button id="backButton" class="back-button hidden">
                 &#x2190; Back to Home
             </button>
-            <!-- Admin tab button, now using loadPage for consistent behavior -->
-            <button class="admin-tab" onclick="loadPage(event, 'admin users.html', 'adminView', 'Admin')">
+            <!-- Admin tab button -->
+            <button id="adminButton" class="admin-tab">
                 Admin
             </button>
         </div>
@@ -553,25 +582,25 @@
 
             <div class="home-grid">
                 <!-- CRM Card -->
-                <div class="main-card" onclick="loadPage(event, 'reps crm.html', 'crmView', 'CRM')">
+                <div class="main-card" data-page="crm">
                     <div class="main-card-icon">📊</div>
                     <div class="main-card-title">CRM</div>
                     <div class="main-card-subtitle">Manage customer relationships and sales pipelines.</div>
                 </div>
                 <!-- Dashboard Card -->
-                <div class="main-card" onclick="loadPage(event, 'final dashboard.html', 'dashboardView', 'Dashboard')">
+                <div class="main-card" data-page="dashboard">
                     <div class="main-card-icon">📈</div>
                     <div class="main-card-title">Dashboard</div>
                     <div class="main-card-subtitle">View key performance indicators and analytics.</div>
                 </div>
                 <!-- UPA Codes Card -->
-                <div class="main-card" onclick="loadPage(event, 'upa-codes.html', 'upaCodesView', 'UPA Codes')">
+                <div class="main-card" data-page="upa-codes">
                     <div class="main-card-icon">🏷️</div>
                     <div class="main-card-title">UPA Codes</div>
                     <div class="main-card-subtitle">Access and manage Universal Product Access codes.</div>
                 </div>
                 <!-- Price List Card -->
-                <div class="main-card" onclick="loadPage(event, 'price-list.html', 'priceListView', 'Price List')">
+                <div class="main-card" data-page="price-list">
                     <div class="main-card-icon">💲</div>
                     <div class="main-card-title">Price List</div>
                     <div class="main-card-subtitle">Browse and update product pricing information.</div>
@@ -598,7 +627,11 @@
                 <div class="error-text">The CRM file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
-                <iframe id="iframeCrm" src=""></iframe>
+                <iframe src="" class="hidden"></iframe>
+                <div class="demo-content">
+                    <h2>CRM System</h2>
+                    <p>This would be your Customer Relationship Management interface. Currently showing demo content since the external file is not available.</p>
+                </div>
             </div>
         </div>
 
@@ -614,7 +647,11 @@
                 <div class="error-text">The Dashboard file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
-                <iframe id="iframeDashboard" src=""></iframe>
+                <iframe src="" class="hidden"></iframe>
+                <div class="demo-content">
+                    <h2>Analytics Dashboard</h2>
+                    <p>This would display your key performance indicators and business analytics. Currently showing demo content since the external file is not available.</p>
+                </div>
             </div>
         </div>
 
@@ -630,7 +667,11 @@
                 <div class="error-text">The UPA Codes file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
-                <iframe id="iframeUpaCodes" src=""></iframe>
+                <iframe src="" class="hidden"></iframe>
+                <div class="demo-content">
+                    <h2>UPA Codes Management</h2>
+                    <p>This would be your Universal Product Access codes interface. Currently showing demo content since the external file is not available.</p>
+                </div>
             </div>
         </div>
 
@@ -646,11 +687,15 @@
                 <div class="error-text">The Price List file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
-                <iframe id="iframePriceList" src=""></iframe>
+                <iframe src="" class="hidden"></iframe>
+                <div class="demo-content">
+                    <h2>Price List Management</h2>
+                    <p>This would be your product pricing interface. Currently showing demo content since the external file is not available.</p>
+                </div>
             </div>
         </div>
 
-        <!-- Admin Full Page View (newly added) -->
+        <!-- Admin Full Page View -->
         <div id="adminView" class="full-page-view hidden">
             <div class="loading" id="loadingAdmin">
                 <div class="spinner"></div>
@@ -662,195 +707,172 @@
                 <div class="error-text">The Admin file could not be loaded. Please check its path.</div>
             </div>
             <div class="iframe-container-fpv">
-                <iframe id="iframeAdmin" src=""></iframe>
+                <iframe src="" class="hidden"></iframe>
+                <div class="demo-content">
+                    <h2>Admin Panel</h2>
+                    <p>This would be your administrative interface for user management and system settings. Currently showing demo content since the external file is not available.</p>
+                </div>
             </div>
         </div>
 
     </div>
 
     <script>
-    // Store the ID of the currently active full-page view
-    let currentActiveViewId = null;
-    // Store timeout IDs for loading indicators to clear them effectively
-    const loadingTimeouts = {};
+        // Store the ID of the currently active full-page view
+        let currentActiveViewId = null;
 
-    /**
-     * Shows the home view and hides any active full-page view.
-     */
-    function showHome() {
-        document.getElementById('homeView').classList.remove('hidden');
-        document.getElementById('backButton').classList.add('hidden');
-
-        // Hide the currently active full-page view, if any
-        if (currentActiveViewId) {
-            const activeView = document.getElementById(currentActiveViewId);
-            if (activeView) {
-                activeView.classList.remove('active');
-                // Add hidden class after transition for better performance/layout
-                setTimeout(() => activeView.classList.add('hidden'), 300);
+        /**
+         * Shows the home view and hides any active full-page view.
+         */
+        function showHome() {
+            console.log('Showing home view');
+            const homeView = document.getElementById('homeView');
+            const backButton = document.getElementById('backButton');
+            
+            if (homeView) {
+                homeView.classList.remove('hidden');
             }
-            currentActiveViewId = null;
+            
+            if (backButton) {
+                backButton.classList.add('hidden');
+            }
+
+            // Hide the currently active full-page view, if any
+            if (currentActiveViewId) {
+                const activeView = document.getElementById(currentActiveViewId);
+                if (activeView) {
+                    activeView.classList.remove('active');
+                    // Add hidden class after transition for better performance/layout
+                    setTimeout(() => activeView.classList.add('hidden'), 300);
+                    // Also hide the iframe and show demo content if it was an iframe view
+                    const iframe = activeView.querySelector('iframe');
+                    const demoContent = activeView.querySelector('.demo-content');
+                    if (iframe) iframe.classList.add('hidden');
+                    if (demoContent) demoContent.classList.remove('hidden');
+                }
+                currentActiveViewId = null;
+            }
         }
-    }
 
-    /**
-     * Loads a specific page into its dedicated full-page view.
-     * @param {Event} event - The event object from the click.
-     * @param {string} fileName - The URL of the HTML file to load into the iframe.
-     * @param {string} viewId - The ID of the full-page view container (e.g., 'crmView').
-     * @param {string} displayName - The user-friendly name of the page (e.g., 'CRM').
-     */
-    function loadPage(event, fileName, viewId, displayName) {
-        // Prevent default link behavior if this were an <a> tag, though it's a div/button
-        if (event && event.preventDefault) {
-            event.preventDefault();
-        }
+        /**
+         * Loads a specific page view into an iframe.
+         * @param {string} page - The page identifier (e.g., 'crm', 'dashboard').
+         */
+        function loadPage(page) {
+            console.log(`Attempting to load page: ${page}`);
+            
+            // Configuration for each page, including view ID, display name, and file name
+            const pageConfig = {
+                'crm': { viewId: 'crmView', displayName: 'CRM', fileName: 'reps crm.html' },
+                'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html' },
+                'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html' },
+                'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html' },
+                'admin': { viewId: 'adminView', displayName: 'Admin', fileName: 'admin users.html' }
+            };
 
-        const cardElement = event.currentTarget; // Get the clicked card element
-        if (cardElement && cardElement.classList.contains('disabled')) {
-            console.log(`Card ${displayName} is disabled. Action prevented.`);
-            return; // Do nothing if disabled
-        }
+            const config = pageConfig[page];
+            if (!config) {
+                console.error(`Error: Unknown page identifier: ${page}`);
+                return;
+            }
 
-        console.log(`Attempting to load page: ${fileName} into view: ${viewId}`);
+            const { viewId, displayName, fileName } = config;
 
-        // Get references to all necessary elements
-        const homeView = document.getElementById('homeView');
-        const backButton = document.getElementById('backButton');
-        const targetView = document.getElementById(viewId);
-        const targetIframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
-        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
+            // Get references to main UI elements
+            const homeView = document.getElementById('homeView');
+            const backButton = document.getElementById('backButton');
+            const targetView = document.getElementById(viewId);
 
-        // Log the elements to see if they are found
-        console.log('Elements found:', { homeView, backButton, targetView, targetIframe, loadingElement, errorElement });
+            // Get references to specific elements within the target view
+            const loadingOverlay = document.getElementById(`loading${page.charAt(0).toUpperCase() + page.slice(1)}`);
+            const errorState = document.getElementById(`error${page.charAt(0).toUpperCase() + page.slice(1)}`);
+            const iframeContainer = targetView.querySelector('.iframe-container-fpv');
+            const iframe = iframeContainer.querySelector('iframe');
+            const demoContent = iframeContainer.querySelector('.demo-content');
 
-        // Provide more specific error messages if elements are not found
-        if (!homeView) console.error('Error: Element "homeView" not found!');
-        if (!backButton) console.error('Error: Element "backButton" not found!');
-        if (!targetView) console.error(`Error: Target view element with ID "${viewId}" not found!`);
-        if (!targetIframe) console.error(`Error: Target iframe element with ID "iframe${viewId.replace('View', '')}" not found!`);
-        if (!loadingElement) console.error(`Error: Loading element with ID "loading${viewId.replace('View', '')}" not found!`);
-        if (!errorElement) console.error(`Error: Error element with ID "error${viewId.replace('View', '')}" not found!`);
+            // Basic validation to ensure all required elements exist
+            if (!homeView || !backButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
+                console.error('Error: One or more required DOM elements not found for page loading.');
+                return;
+            }
 
-        if (targetView && targetIframe && loadingElement && errorElement) {
-            // Hide the home view
+            // Hide the home view and show the back button
             homeView.classList.add('hidden');
-            // Show the back button
             backButton.classList.remove('hidden');
 
-            // Hide any previously active full-page view
+            // If there's a currently active full-page view and it's different from the target, hide it
             if (currentActiveViewId && currentActiveViewId !== viewId) {
                 const prevActiveView = document.getElementById(currentActiveViewId);
                 if (prevActiveView) {
                     prevActiveView.classList.remove('active');
+                    // Delay adding 'hidden' to allow CSS transition to complete
                     setTimeout(() => prevActiveView.classList.add('hidden'), 300);
                 }
             }
 
-            // Set the new active view
+            // Set the new active view ID
             currentActiveViewId = viewId;
 
-            // Show the target full-page view and loading spinner
+            // Show the target full-page view with a slight delay for transition effect
             targetView.classList.remove('hidden');
-            // Use a small delay to allow hidden class to apply before active for transition
             setTimeout(() => targetView.classList.add('active'), 10);
-            loadingElement.querySelector('.loading-text').textContent = `Loading ${displayName}...`;
-            loadingElement.classList.add('show');
-            errorElement.classList.remove('show');
 
-            // Set iframe source
-            targetIframe.src = fileName;
+            // Show the loading spinner and hide any previous error state
+            loadingOverlay.classList.add('show');
+            errorState.classList.remove('show');
 
-            // Set a timeout to show error if page doesn't load within 5 seconds
-            if (loadingTimeouts[viewId]) {
-                clearTimeout(loadingTimeouts[viewId]);
-            }
-            loadingTimeouts[viewId] = setTimeout(() => {
-                handleIframeError(viewId);
-            }, 5000);
-        } else {
-            console.error(`Fatal Error: One or more critical elements for viewId: ${viewId} were not found. Falling back to home.`);
+            // Hide the demo content and show the iframe before loading new content
+            demoContent.classList.add('hidden');
+            iframe.classList.remove('hidden');
+
+            // Set the iframe's source and attach event listeners for loading status
+            iframe.src = fileName;
+
+            iframe.onload = function() {
+                console.log(`${displayName} iframe loaded successfully from ${fileName}.`);
+                loadingOverlay.classList.remove('show'); // Hide spinner
+                errorState.classList.remove('show');     // Hide error
+            };
+
+            iframe.onerror = function() {
+                console.error(`Failed to load ${displayName} iframe from ${fileName}. Displaying demo content.`);
+                loadingOverlay.classList.remove('show'); // Hide spinner
+                errorState.classList.add('show');        // Show error message
+                demoContent.classList.remove('hidden');  // Show demo content as fallback
+                iframe.classList.add('hidden');          // Hide the broken iframe
+            };
+        }
+
+        // Initialize the application when DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing application');
+            
+            // Add click event listeners to all main navigation cards
+            document.querySelectorAll('.main-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const page = this.dataset.page; // Get the 'data-page' attribute
+                    // Only load the page if it's not disabled
+                    if (page && !this.classList.contains('disabled')) {
+                        loadPage(page);
+                    } else if (this.classList.contains('disabled')) {
+                        console.log(`Card for page "${page}" is disabled.`);
+                    }
+                });
+            });
+
+            // Add click event listener to the Admin button
+            document.getElementById('adminButton').addEventListener('click', function() {
+                loadPage('admin');
+            });
+
+            // Add click event listener to the Back button
+            document.getElementById('backButton').addEventListener('click', function() {
+                showHome();
+            });
+
+            // Ensure the home view is visible on initial load (redundant but safe)
             showHome();
-        }
-    }
-
-    /**
-     * Handles the iframe load event for a specific view.
-     * Hides loading spinner and error state.
-     * @param {string} viewId - The ID of the full-page view container.
-     */
-    function handleIframeLoad(viewId) {
-        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
-        if (loadingTimeouts[viewId]) {
-            clearTimeout(loadingTimeouts[viewId]);
-            delete loadingTimeouts[viewId];
-        }
-        if (loadingElement) loadingElement.classList.remove('show');
-        if (errorElement) errorElement.classList.remove('show');
-
-        // Additional check for empty iframe content after load
-        const iframe = document.getElementById(`iframe${viewId.replace('View', '')}`);
-        try {
-            // Check if contentDocument is accessible and not null
-            if (iframe && iframe.contentDocument && iframe.contentDocument.body) {
-                const iframeDoc = iframe.contentDocument;
-                if (iframeDoc.readyState === 'complete' && iframeDoc.body.innerHTML.trim() === '') {
-                    // If the iframe loaded but its body is empty, treat as an error
-                    console.warn(`Iframe for ${viewId} loaded, but content is empty.`);
-                    handleIframeError(viewId);
-                }
-            } else {
-                // If contentDocument is null or body is not available, it might be a security error or still loading
-                console.warn(`Iframe contentDocument not ready or accessible for ${viewId}. This might be a cross-origin security restriction.`);
-            }
-        } catch (e) {
-            // Cross-origin or other access errors will be caught here
-            console.warn(`Could not access iframe content for ${viewId} due to security or other error:`, e);
-            // If it's a security error (cross-origin), it means the file likely didn't load correctly or is inaccessible.
-            handleIframeError(viewId);
-        }
-    }
-
-    /**
-     * Handles the iframe error event for a specific view.
-     * Hides loading spinner and shows error state.
-     * @param {string} viewId - The ID of the full-page view container.
-     */
-    function handleIframeError(viewId) {
-        const loadingElement = document.getElementById(`loading${viewId.replace('View', '')}`);
-        const errorElement = document.getElementById(`error${viewId.replace('View', '')}`);
-        if (loadingTimeouts[viewId]) {
-            clearTimeout(loadingTimeouts[viewId]);
-            delete loadingTimeouts[viewId];
-        }
-        if (loadingElement) loadingElement.classList.remove('show');
-        if (errorElement) {
-            errorElement.classList.add('show');
-            console.error(`Error loading content for ${viewId}. Displaying error state.`);
-        } else {
-            console.error(`Error: Could not find error element for ${viewId}.`);
-        }
-    }
-
-    // Initialize the view and attach iframe event listeners on window load
-    window.addEventListener('load', function() {
-        showHome(); // Start by showing the home view
-
-        // Attach event listeners to iframes programmatically
-        const iframeIds = ['Crm', 'Dashboard', 'UpaCodes', 'PriceList', 'Admin'];
-        iframeIds.forEach(idSuffix => {
-            const iframe = document.getElementById(`iframe${idSuffix}`);
-            const viewId = `${idSuffix.charAt(0).toLowerCase() + idSuffix.slice(1)}View`; // Convert 'Crm' to 'crmView' etc.
-            if (iframe) {
-                iframe.addEventListener('load', () => handleIframeLoad(viewId));
-                iframe.addEventListener('error', () => handleIframeError(viewId));
-            } else {
-                console.warn(`Warning: Iframe with ID 'iframe${idSuffix}' not found during event listener attachment.`);
-            }
         });
-    });
-</script>
+    </script>
 </body>
 </html>
