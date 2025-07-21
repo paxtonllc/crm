@@ -132,8 +132,8 @@
         .banner {
             background: linear-gradient(135deg, var(--coffee-gradient-start), var(--coffee-gradient-end)); /* Changed to coffee gradient */
             color: white;
-            padding: 25px 40px; /* Made banner slimmer */
-            margin-bottom: 30px; /* Increased margin below banner */
+            padding: 20px 30px; /* Decreased padding for PC view */
+            margin-bottom: 25px; /* Slightly reduced margin below banner */
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
             position: relative;
@@ -142,7 +142,7 @@
             display: flex; /* Use flexbox for horizontal alignment of logo and text */
             flex-direction: row; /* Always row for logo and text */
             align-items: center; /* Vertically align items */
-            gap: 30px; /* Space between logo and text */
+            gap: 25px; /* Slightly reduced space between logo and text */
         }
 
         .banner::before {
@@ -164,7 +164,7 @@
 
         /* Company Logo styling within the banner */
         .company-logo {
-            max-width: 90px; /* Adjust size as needed */
+            max-width: 80px; /* Slightly reduced size */
             height: auto;
             border-radius: 8px; /* Slightly rounded corners for the logo */
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow */
@@ -178,16 +178,16 @@
         }
 
         .banner h1 {
-            font-size: 3.5rem; /* Larger main title */
+            font-size: 3rem; /* Reduced main title font size */
             font-weight: 700;
-            margin-bottom: 8px; /* Reduced margin below title */
+            margin-bottom: 6px; /* Reduced margin below title */
             position: relative;
             z-index: 1;
             text-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
 
         .banner .subtitle {
-            font-size: 1.3rem; /* Larger subtitle */
+            font-size: 1.15rem; /* Reduced subtitle font size */
             opacity: 0.98;
             font-weight: 400;
             position: relative;
@@ -207,7 +207,7 @@
         /* Styling for each navigation card */
         .main-card {
             background: var(--white);
-            padding: 30px;
+            padding: 25px; /* Decreased padding */
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
             cursor: pointer;
@@ -217,7 +217,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 180px; /* Ensures consistent card height */
+            min-height: 160px; /* Decreased min-height */
             position: relative;
             overflow: hidden;
             border: 1px solid #e2e8f0; /* Subtle border */
@@ -263,8 +263,8 @@
 
         /* Icon styling for cards */
         .main-card-icon {
-            font-size: 3.5rem; /* Larger icon size */
-            margin-bottom: 15px;
+            font-size: 3rem; /* Reduced icon size */
+            margin-bottom: 12px; /* Reduced margin */
             color: var(--coffee-light); /* Changed to coffee color */
             line-height: 1; /* Ensures icon is vertically centered */
         }
@@ -275,10 +275,10 @@
 
         /* Title styling for cards */
         .main-card-title {
-            font-size: 1.5rem; /* Larger title size */
+            font-size: 1.4rem; /* Reduced title size */
             font-weight: 600;
             color: var(--text-color-dark);
-            margin-bottom: 5px;
+            margin-bottom: 4px; /* Reduced margin */
         }
 
         .main-card.disabled .main-card-title {
@@ -287,7 +287,7 @@
 
         /* Subtitle styling for cards */
         .main-card-subtitle {
-            font-size: 0.95rem;
+            font-size: 0.9rem; /* Slightly reduced subtitle font size */
             color: var(--text-color-light);
             line-height: 1.4;
         }
