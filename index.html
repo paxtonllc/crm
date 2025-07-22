@@ -6,19 +6,6 @@
     <title>Paxton LLC CRM</title>
     <!-- Google Fonts: Inter for a modern, clean look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Favicon and Apple Touch Icons -->
-    <link rel="icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg" type="image/x-icon">
-    <link rel="shortcut icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg" type="image/x-icon">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="57x57" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="72x72" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="114x114" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="144x144" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <!-- You might also add a manifest.json for more advanced PWA features if needed -->
-    <!-- <link rel="manifest" href="/manifest.json"> -->
-
     <style>
         /* CSS Variables for easier theme management and consistency */
         :root {
@@ -145,8 +132,8 @@
         .banner {
             background: linear-gradient(135deg, var(--coffee-gradient-start), var(--coffee-gradient-end)); /* Changed to coffee gradient */
             color: white;
-            padding: 20px 30px; /* Decreased padding for PC view */
-            margin-bottom: 25px; /* Slightly reduced margin below banner */
+            padding: 25px 40px; /* Made banner slimmer */
+            margin-bottom: 30px; /* Increased margin below banner */
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
             position: relative;
@@ -155,7 +142,7 @@
             display: flex; /* Use flexbox for horizontal alignment of logo and text */
             flex-direction: row; /* Always row for logo and text */
             align-items: center; /* Vertically align items */
-            gap: 25px; /* Slightly reduced space between logo and text */
+            gap: 30px; /* Space between logo and text */
         }
 
         .banner::before {
@@ -177,7 +164,7 @@
 
         /* Company Logo styling within the banner */
         .company-logo {
-            max-width: 80px; /* Slightly reduced size */
+            max-width: 90px; /* Adjust size as needed */
             height: auto;
             border-radius: 8px; /* Slightly rounded corners for the logo */
             box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow */
@@ -191,16 +178,16 @@
         }
 
         .banner h1 {
-            font-size: 3rem; /* Reduced main title font size */
+            font-size: 3.5rem; /* Larger main title */
             font-weight: 700;
-            margin-bottom: 6px; /* Reduced margin below title */
+            margin-bottom: 8px; /* Reduced margin below title */
             position: relative;
             z-index: 1;
             text-shadow: 0 3px 6px rgba(0,0,0,0.2);
         }
 
         .banner .subtitle {
-            font-size: 1.15rem; /* Reduced subtitle font size */
+            font-size: 1.3rem; /* Larger subtitle */
             opacity: 0.98;
             font-weight: 400;
             position: relative;
@@ -220,7 +207,7 @@
         /* Styling for each navigation card */
         .main-card {
             background: var(--white);
-            padding: 25px; /* Decreased padding */
+            padding: 30px;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-md);
             cursor: pointer;
@@ -230,7 +217,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 160px; /* Decreased min-height */
+            min-height: 180px; /* Ensures consistent card height */
             position: relative;
             overflow: hidden;
             border: 1px solid #e2e8f0; /* Subtle border */
@@ -276,8 +263,8 @@
 
         /* Icon styling for cards */
         .main-card-icon {
-            font-size: 3rem; /* Reduced icon size */
-            margin-bottom: 12px; /* Reduced margin */
+            font-size: 3.5rem; /* Larger icon size */
+            margin-bottom: 15px;
             color: var(--coffee-light); /* Changed to coffee color */
             line-height: 1; /* Ensures icon is vertically centered */
         }
@@ -288,10 +275,10 @@
 
         /* Title styling for cards */
         .main-card-title {
-            font-size: 1.4rem; /* Reduced title size */
+            font-size: 1.5rem; /* Larger title size */
             font-weight: 600;
             color: var(--text-color-dark);
-            margin-bottom: 4px; /* Reduced margin */
+            margin-bottom: 5px;
         }
 
         .main-card.disabled .main-card-title {
@@ -300,7 +287,7 @@
 
         /* Subtitle styling for cards */
         .main-card-subtitle {
-            font-size: 0.9rem; /* Slightly reduced subtitle font size */
+            font-size: 0.95rem;
             color: var(--text-color-light);
             line-height: 1.4;
         }
@@ -620,11 +607,11 @@
                     <div class="main-card-title">Price List</div>
                     <div class="main-card-subtitle">products pricing information.</div>
                 </div>
-                <!-- Products Knowledge Card - New card added -->
+                <!-- Products Knowledge Card (New) -->
                 <div class="main-card" data-page="products-knowledge">
                     <div class="main-card-icon">📚</div>
                     <div class="main-card-title">Products Knowledge</div>
-                    <div class="main-card-subtitle">Detailed information about our products.</div>
+                    <div class="main-card-subtitle">Access detailed product information and resources.</div>
                 </div>
                 <!-- Coming Soon Card (disabled) -->
                 <div class="main-card disabled">
@@ -716,7 +703,7 @@
             </div>
         </div>
 
-        <!-- Products Knowledge Full Page View - New view added -->
+        <!-- Products Knowledge Full Page View (New) -->
         <div id="productsKnowledgeView" class="full-page-view hidden">
             <div class="loading" id="loadingProductsKnowledge">
                 <div class="spinner"></div>
@@ -731,7 +718,7 @@
                 <iframe src="" class="hidden"></iframe>
                 <div class="demo-content">
                     <h2>Products Knowledge Base</h2>
-                    <p>This section will provide detailed information and resources about our products. Currently showing demo content since the external file is not available.</p>
+                    <p>This section would provide detailed information, documentation, and resources about your products. Currently showing demo content since the external file is not available.</p>
                 </div>
             </div>
         </div>
@@ -761,6 +748,7 @@
     <script>
         // Store the ID of the currently active full-page view
         let currentActiveViewId = null;
+        const LAST_VIEWED_PAGE_KEY = 'lastViewedPage'; // Key for localStorage
 
         /**
          * Shows the home view and hides any active full-page view.
@@ -799,6 +787,8 @@
                 }
                 currentActiveViewId = null;
             }
+            // Clear the last viewed page from localStorage when returning to home
+            localStorage.removeItem(LAST_VIEWED_PAGE_KEY);
         }
 
         /**
@@ -814,7 +804,7 @@
                 'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html' },
                 'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html' },
                 'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html' },
-                'products-knowledge': { viewId: 'productsKnowledgeView', displayName: 'Products Knowledge', fileName: 'Products knowledge.html' }, // New entry
+                'products-knowledge': { viewId: 'productsKnowledgeView', displayName: 'Products Knowledge', fileName: 'products-knowledge.html' }, // Added new page config
                 'admin': { viewId: 'adminView', displayName: 'Admin', fileName: 'admin users.html' }
             };
 
@@ -889,6 +879,9 @@
             // Set the new active view ID
             currentActiveViewId = viewId;
 
+            // Save the currently loaded page to localStorage
+            localStorage.setItem(LAST_VIEWED_PAGE_KEY, page);
+
             // Show the target full-page view with a slight delay for transition effect
             targetView.classList.remove('hidden');
             setTimeout(() => targetView.classList.add('active'), 10);
@@ -946,8 +939,15 @@
                 showHome();
             });
 
-            // Ensure the home view is visible on initial load (redundant but safe)
-            showHome();
+            // Check localStorage for a previously viewed page on initial load
+            const lastViewedPage = localStorage.getItem(LAST_VIEWED_PAGE_KEY);
+            if (lastViewedPage) {
+                console.log(`Found last viewed page in localStorage: ${lastViewedPage}. Loading it.`);
+                loadPage(lastViewedPage);
+            } else {
+                // Ensure the home view is visible on initial load if no page was saved
+                showHome();
+            }
         });
     </script>
 </body>
