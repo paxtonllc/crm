@@ -1038,6 +1038,10 @@
             align-items: center;
             flex-wrap: wrap;
         }
+         /* Add this to your existing styles */
+    .clinic-hcp {
+        background-color: #F0F2BD !important;
+    }
 
 
         /* Lists Dashboard Specific Styles */
@@ -3945,14 +3949,19 @@
                     const hcpTargetVisits = hcpGoogleData ? (parseInt(hcpGoogleData['T.V'], 10) || 0) : null;
 
                     const createCellContent = (name, dayDate, time, specialtyDisplay, brickDisplay, visitPlaceDisplay, comment = '', isEvent = false, isLeave = false, isAmSpecialty = false) => {
-                        return `<div class="hcp-cell ${isEvent ? 'event' : ''} ${isLeave ? 'leave-entry' : ''}" onclick="toggleComment(this)">
-                                    <span class="hcp-name ${isAmSpecialty ? 'am-specialty-hcp' : ''}">${name}</span>
-                                    <span class="hcp-detail">${dayDate} ${time}</span> <!-- Combined Day and Date with Time -->
-                                    <span class="hcp-detail">${specialtyDisplay}</span>
-                                    <span class="hcp-detail">${brickDisplay} - ${visitPlaceDisplay}</span>
-                                    <div class="comment-box" data-comment-text="${escapeHtml(comment)}">${comment || 'No comment available'}</div>
-                                </div>`;
-                    };
+    let visitPlaceClass = '';
+    if (visitPlaceDisplay.toLowerCase().includes('clinic')) {
+        visitPlaceClass = 'clinic-hcp';
+    }
+    return `<div class="hcp-cell ${isEvent ? 'event' : ''} ${isLeave ? 'leave-entry' : ''} ${visitPlaceClass}" onclick="toggleComment(this)">
+                <span class="hcp-name ${isAmSpecialty ? 'am-specialty-hcp' : ''}">${name}</span>
+                <span class="hcp-detail">${dayDate} ${time}</span>
+                <span class="hcp-detail">${specialtyDisplay}</span>
+                <span class="hcp-detail">${brickDisplay} - ${visitPlaceDisplay}</span>
+                <div class="comment-box" data-comment-text="${escapeHtml(comment)}">${comment || 'No comment available'}</div>
+            </div>`;
+};
+
 
                     const isAmActivitySpecialty = amActivitiesSpecialties.includes(specialty);
 const isAmActivityEvent = specialty === 'event(am activity)';
@@ -5144,16 +5153,21 @@ Thank you.`;
     const today = new Date();
     const cairoOffset = 2; // Cairo is UTC+2
     const cairoTime = new Date(today.getTime() + cairoOffset * 60 * 60 * 1000);
-
     // Calculate the day of the week in Cairo time (0 is Sunday, 6 is Saturday)
     const dayOfWeek = cairoTime.getDay();
 
-    // Calculate days until the next Saturday
-    const diffToSaturday = (6 - dayOfWeek + 7) % 7;
-
-    // Calculate the nearest Saturday in Cairo time
+    // Calculate the start date based on the current day of the week
     const startDate = new Date(cairoTime);
-    startDate.setDate(cairoTime.getDate() + diffToSaturday);
+
+    // If today is Friday (5) or Saturday (6), set start date to next Saturday
+    if (dayOfWeek >= 5) {
+        const diffToNextSaturday = (13 - dayOfWeek) % 7; // Days until next Saturday
+        startDate.setDate(cairoTime.getDate() + diffToNextSaturday);
+    } else {
+        // Otherwise, set start date to the most recent past Saturday
+        const diffToPastSaturday = -(dayOfWeek + 2) % 7; // Days since past Saturday
+        startDate.setDate(cairoTime.getDate() + diffToPastSaturday);
+    }
 
     // Ensure the date is set to Saturday
     if (startDate.getDay() !== 6) {
@@ -5168,6 +5182,7 @@ Thank you.`;
     document.getElementById('weeklyPlanStartDate').value = startDate.toISOString().split('T')[0];
     document.getElementById('weeklyPlanEndDate').value = endDate.toISOString().split('T')[0];
 }
+
 
         
 
