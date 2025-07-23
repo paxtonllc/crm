@@ -915,19 +915,18 @@
         .hcp-cell.event { background-color: #ffe5b4; }
         .hcp-cell.leave-entry { background-color: #fee2e2; font-weight: bold; } /* Changed to light red */
         .comment-box {
-            position: absolute;
+            display: none;
+            position: relative;
             background-color: #e6d5f5;
             border: 1px solid #d1b8e6;
             border-radius: 6px;
             padding: 8px;
+            margin-top: 4px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             z-index: 10;
             width: 200px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: normal;
-            text-align: left;
-            display: none; /* Hidden by default */
+            left: 0;
+            top: 100%;
         }
         .comment-box.top::before {
             content: '';
@@ -938,6 +937,7 @@
             border-width: 8px;
             border-style: solid;
             border-color: #d1b8e6 transparent transparent transparent;
+            
         }
         .comment-box.top::after {
             content: '';
@@ -2761,36 +2761,42 @@
             });
             
             $(document).off('click', '#kpi-dashboard .rep-name').on('click', '#kpi-dashboard .rep-name', function() {
-                const repName = $(this).data('rep');
-                const selectedDm = $(this).data('dm');
-                $('#selectedRepName').html(`(${repName})`);
-                sessionStorage.setItem('selectedMedicalRep', repName);
-                sessionStorage.setItem('selectedDistrictManager', selectedDm);
+    const repName = $(this).data('rep');
+    const selectedDm = $(this).data('dm');
+    $('#selectedRepName').html(`(${repName})`);
+    sessionStorage.setItem('selectedMedicalRep', repName);
+    sessionStorage.setItem('selectedDistrictManager', selectedDm);
+    currentVisitsTableView = 'normal';
+    $('#leavesFilterOptions').hide();
 
-                currentVisitsTableView = 'normal';
-                $('#leavesFilterOptions').hide();
+    if ($(this).hasClass('active') && $('#visitsTableContainer').is(':visible') && !$(this).data('force-refresh')) {
+        $('#visitsTableContainer').hide();
+        $(this).removeClass('active');
+        sessionStorage.removeItem('selectedMedicalRep');
+        return;
+    }
 
-                if ($(this).hasClass('active') && $('#visitsTableContainer').is(':visible') && !$(this).data('force-refresh')) {
-                    $('#visitsTableContainer').hide();
-                    $(this).removeClass('active');
-                    sessionStorage.removeItem('selectedMedicalRep');
-                    return;
-                }
-                $(this).data('force-refresh', false);
+    $(this).data('force-refresh', false);
+    $('#kpi-dashboard .rep-name').removeClass('active');
+    $(this).addClass('active');
+    showVisitsLoading();
 
-                $('#kpi-dashboard .rep-name').removeClass('active');
-                $(this).addClass('active');
+    const [month, year] = $('#monthSelect').val().split('-').map(Number);
+    const filteredVisits = allVisitsData.filter(visit =>
+        visit.medical_rep === repName &&
+        new Date(visit.created_at).getMonth() + 1 === month &&
+        new Date(visit.created_at).getFullYear() === year
+    );
 
-                showVisitsLoading();
-                const [month, year] = $('#monthSelect').val().split('-').map(Number);
-                const filteredVisits = allVisitsData.filter(visit =>
-                    visit.medical_rep === repName &&
-                    new Date(visit.created_at).getMonth() + 1 === month &&
-                    new Date(visit.created_at).getFullYear() === year
-                );
-                renderVisitsTable(filteredVisits, 'normal');
-                $('#visitsTableContainer').show();
-            });
+    renderVisitsTable(filteredVisits, 'normal');
+    $('#visitsTableContainer').show();
+
+    // Smooth scroll to the overview table
+    $('html, body').animate({
+        scrollTop: $("#visitsTableContainer").offset().top
+    }, 1000);
+});
+
 
             $(document).off('mouseenter', '#kpi-dashboard .duplicate-visit').on('mouseenter', '#kpi-dashboard .duplicate-visit', function() {
                 const visitsData = $(this).data('visits');
@@ -4097,68 +4103,70 @@ if (isFullDayEvent) {
         }
 
         function toggleComment(element) {
-            const commentBox = element.querySelector('.comment-box');
-            const isVisible = commentBox.style.display === 'block';
-            $('.comment-box').hide().removeClass('top bottom'); 
+    const commentBox = element.querySelector('.comment-box');
+    const isVisible = commentBox.style.display === 'block';
+    $('.comment-box').hide().removeClass('top bottom');
 
-            if (!isVisible) {
-                const rect = element.getBoundingClientRect();
-                const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
-                const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
-                const scrollLeft = document.querySelector('.daily-report-table').parentElement.scrollLeft;
+    if (!isVisible) {
+        const rect = element.getBoundingClientRect();
+        const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+        const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+        const scrollLeft = document.querySelector('.daily-report-table').parentElement.scrollLeft;
 
-                // Calculate space below and above
-                const spaceBelow = viewportHeight - rect.bottom;
-                const spaceAbove = rect.top;
+        // Calculate space below and above
+        const spaceBelow = viewportHeight - rect.bottom;
+        const spaceAbove = rect.top;
 
-                // Position the comment box
-                commentBox.style.display = 'block';
-                commentBox.style.left = '50%';
-                commentBox.style.transform = 'translateX(-50%)';
+        // Position the comment box
+        commentBox.style.display = 'block';
+        commentBox.style.left = '50%';
+        commentBox.style.transform = 'translateX(-50%)';
+        commentBox.style.zIndex = '9999'; // Add this line to ensure it's on top!
 
-                // Temporarily show to get its dimensions
-                commentBox.style.visibility = 'hidden';
-                commentBox.style.display = 'block';
-                const commentBoxHeight = commentBox.offsetHeight;
-                const commentBoxWidth = commentBox.offsetWidth;
-                commentBox.style.visibility = 'visible';
+        // Temporarily show to get its dimensions
+        commentBox.style.visibility = 'hidden';
+        commentBox.style.display = 'block';
+        const commentBoxHeight = commentBox.offsetHeight;
+        const commentBoxWidth = commentBox.offsetWidth;
+        commentBox.style.visibility = 'visible';
 
-                // Check if there's enough space below
-                if (spaceBelow >= commentBoxHeight + 10) { // +10 for a little margin
-                    commentBox.style.top = '100%';
-                    commentBox.style.bottom = 'auto';
-                    commentBox.style.marginTop = '5px';
-                    commentBox.style.marginBottom = 'auto';
-                    commentBox.classList.add('bottom');
-                } else if (spaceAbove >= commentBoxHeight + 10) { // Check if there's enough space above
-                    commentBox.style.top = 'auto';
-                    commentBox.style.bottom = '100%';
-                    commentBox.style.marginTop = 'auto';
-                    commentBox.style.marginBottom = '5px';
-                    commentBox.classList.add('top');
-                } else {
-                    // Fallback: position below but adjust if it goes off screen horizontally
-                    commentBox.style.top = '100%';
-                    commentBox.style.bottom = 'auto';
-                    commentBox.style.marginTop = '5px';
-                    commentBox.style.marginBottom = 'auto';
-                    commentBox.classList.add('bottom');
+        // Check if there's enough space below
+        if (spaceBelow >= commentBoxHeight + 10) { // +10 for a little margin
+            commentBox.style.top = '100%';
+            commentBox.style.bottom = 'auto';
+            commentBox.style.marginTop = '5px';
+            commentBox.style.marginBottom = 'auto';
+            commentBox.classList.add('bottom');
+        } else if (spaceAbove >= commentBoxHeight + 10) { // Check if there's enough space above
+            commentBox.style.top = 'auto';
+            commentBox.style.bottom = '100%';
+            commentBox.style.marginTop = 'auto';
+            commentBox.style.marginBottom = '5px';
+            commentBox.classList.add('top');
+        } else {
+            // Fallback: position below but adjust if it goes off screen horizontally
+            commentBox.style.top = '100%';
+            commentBox.style.bottom = 'auto';
+            commentBox.style.marginTop = '5px';
+            commentBox.style.marginBottom = 'auto';
+            commentBox.classList.add('bottom');
 
-                    // Adjust horizontal position if it goes off screen
-                    let newLeft = rect.left + rect.width / 2 - commentBoxWidth / 2;
-                    if (newLeft < 0) {
-                        newLeft = 5; // Small padding from left edge
-                    } else if (newLeft + commentBoxWidth > viewportWidth) {
-                        newLeft = viewportWidth - commentBoxWidth - 5; // Small padding from right edge
-                    }
-                    commentBox.style.left = `${newLeft - rect.left + (element.offsetWidth/2)}px`; // Adjust relative to parent
-                    commentBox.style.transform = 'translateX(-50%)';
-                }
-            } else {
-                commentBox.style.display = 'none';
-                commentBox.classList.remove('top', 'bottom');
+            // Adjust horizontal position if it goes off screen
+            let newLeft = rect.left + rect.width / 2 - commentBoxWidth / 2;
+            if (newLeft < 0) {
+                newLeft = 5; // Small padding from left edge
+            } else if (newLeft + commentBoxWidth > viewportWidth) {
+                newLeft = viewportWidth - commentBoxWidth - 5; // Small padding from right edge
             }
+            commentBox.style.left = `${newLeft - rect.left + (element.offsetWidth/2)}px`; // Adjust relative to parent
+            commentBox.style.transform = 'translateX(-50%)';
         }
+    } else {
+        commentBox.style.display = 'none';
+        commentBox.classList.remove('top', 'bottom');
+        commentBox.style.zIndex = ''; // Reset z-index when hidden
+    }
+}
 
 
         function downloadDailyReportExcel() {
