@@ -5161,15 +5161,16 @@ Thank you.`;
     const today = new Date();
     const cairoOffset = 2; // Cairo is UTC+2
     const cairoTime = new Date(today.getTime() + cairoOffset * 60 * 60 * 1000);
+
     // Calculate the day of the week in Cairo time (0 is Sunday, 6 is Saturday)
     const dayOfWeek = cairoTime.getDay();
 
     // Calculate the start date based on the current day of the week
     const startDate = new Date(cairoTime);
 
-    // If today is Friday (5) or Saturday (6), set start date to next Saturday
-    if (dayOfWeek >= 5) {
-        const diffToNextSaturday = (13 - dayOfWeek) % 7; // Days until next Saturday
+    // If today is Thursday (4), set start date to next Saturday
+    if (dayOfWeek === 4) {
+        const diffToNextSaturday = (12 - dayOfWeek) % 7; // Days until next Saturday
         startDate.setDate(cairoTime.getDate() + diffToNextSaturday);
     } else {
         // Otherwise, set start date to the most recent past Saturday
@@ -5190,8 +5191,6 @@ Thank you.`;
     document.getElementById('weeklyPlanStartDate').value = startDate.toISOString().split('T')[0];
     document.getElementById('weeklyPlanEndDate').value = endDate.toISOString().split('T')[0];
 }
-
-
         
 
         // Download tables as Excel
