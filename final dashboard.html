@@ -3471,31 +3471,44 @@
         }
 
         function calculateUnifiedWorkingDays(visitsData, googleSheetData, month, year) {
-            const workingDaysMap = {};
-            const leaveTypes = ['annual leave', 'official leave', 'casual leave', 'sick leave'];
-            
-            visitsData.forEach(visit => {
-                const repName = visit.medical_rep;
-                const visitDate = new Date(visit.created_at);
-                const visitDateKey = visitDate.toISOString().split('T')[0];
+    const workingDaysMap = {};
+    // Ensure all variations of leave are covered, including "Official vacation"
+    const leaveKeywords = ['annual leave', 'official vacation', 'casual leave', 'sick leave', 'leave', 'vacation'];
 
-                if (visitDate.getMonth() + 1 !== month || visitDate.getFullYear() !== year) return;
+    visitsData.forEach(visit => {
+        const repName = visit.medical_rep;
+        const visitDate = new Date(visit.created_at);
+        const visitDateKey = visitDate.toISOString().split('T')[0];
 
-                const hcpNameLower = visit.hcp_name ? visit.hcp_name.toLowerCase() : '';
-                const isLeave = leaveTypes.some(leave => hcpNameLower.includes(leave));
-
-                if (!isLeave) {
-                    if (!workingDaysMap[repName]) workingDaysMap[repName] = new Set();
-                    workingDaysMap[repName].add(visitDateKey);
-                }
-            });
-
-            const finalWorkingDays = {};
-            for (const rep in workingDaysMap) {
-                finalWorkingDays[rep] = workingDaysMap[rep].size;
-            }
-            return finalWorkingDays;
+        // Filter visits for the specified month and year
+        if (visitDate.getMonth() + 1 !== month || visitDate.getFullYear() !== year) {
+            return;
         }
+
+        const hcpNameLower = visit.hcp_name ? visit.hcp_name.toLowerCase() : '';
+
+        // Determine if the visit is a leave, using a single, comprehensive check
+        // We use .some() to check if any of the keywords are present in hcpNameLower
+        const isLeave = leaveKeywords.some(keyword => hcpNameLower.includes(keyword));
+
+        console.log(`Visit: ${visit.hcp_name} for ${repName} on ${visitDateKey}, Is Leave: ${isLeave}`); // Log each visit and whether it's considered a leave
+
+        if (!isLeave) {
+            if (!workingDaysMap[repName]) {
+                workingDaysMap[repName] = new Set();
+            }
+            workingDaysMap[repName].add(visitDateKey);
+        }
+    });
+
+    const finalWorkingDays = {};
+    for (const rep in workingDaysMap) {
+        finalWorkingDays[rep] = workingDaysMap[rep].size;
+    }
+
+    console.log("Final Working Days:", finalWorkingDays); // Log the final working days count
+    return finalWorkingDays;
+}
 
         function calculateAverageVisits(metrics, visitsData, hcpClasses) {
             const selectedMonth = parseInt($('#monthSelect').val().split('-')[0]);
