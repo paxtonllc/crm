@@ -3074,15 +3074,45 @@
                     const selectedHcp = this.elements.hcpSelect.value;
                     if (selectedHcp) {
                         const cleanSelectedHcpName = selectedHcp.replace(' ⚠️', '').trim();
+                        const hcpData = globalGoogleData.find(h => h['HCPS'] === cleanSelectedHcpName && h['medical rep'] === currentMedRep.name);
+                        
                         this.updateRemainingVisits(cleanSelectedHcpName);
                         this.updateHcpDetails(cleanSelectedHcpName);
                         this.updateSavedComment(cleanSelectedHcpName);
+
+                        // Logic for Visit Location based on HCP Class
+                        if (hcpData && (hcpData['Class'] === 'Private' || hcpData['Class'] === 'UPA')) {
+                            // Set default to 'AM Hospital' and disable other options
+                            this.elements.visitLocationHcpSelect.innerHTML = `
+                                <option value="AM Hospital">AM Hospital</option>
+                            `;
+                            this.elements.visitLocationHcpSelect.value = 'AM Hospital';
+                            this.elements.visitLocationHcpSelect.disabled = true;
+                        } else {
+                            // Re-enable and reset to default options if class is not Private or UPA
+                            this.elements.visitLocationHcpSelect.innerHTML = `
+                                <option value="">Select Visit Location</option>
+                                <option value="Clinic">Clinic</option>
+                                <option value="AM Hospital">AM Hospital</option>
+                            `;
+                            this.elements.visitLocationHcpSelect.value = ''; // Reset to default "Select Visit Location"
+                            this.elements.visitLocationHcpSelect.disabled = false;
+                        }
+
                     } else {
                         this.elements.remainingVisitsSpan.textContent = '0';
                         this.elements.lastVisitDateValueSpan.textContent = 'N/A';
                         this.elements.brickHcpInput.value = '';
                         this.elements.specialtyHcpInput.value = '';
                         this.elements.savedCommentSpan.textContent = 'No previous comments available';
+                        // Reset visit location dropdown to default state
+                        this.elements.visitLocationHcpSelect.innerHTML = `
+                            <option value="">Select Visit Location</option>
+                            <option value="Clinic">Clinic</option>
+                            <option value="AM Hospital">AM Hospital</option>
+                        `;
+                        this.elements.visitLocationHcpSelect.value = '';
+                        this.elements.visitLocationHcpSelect.disabled = false;
                     }
                 }
 
