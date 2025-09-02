@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paxton Products List</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: transparent; /* Soft light gray background */
+            background-color: transparent;
         }
         h1 {
             font-weight: bold;
-            background-image: linear-gradient(to right, #4b0082, #1e1e1e); /* Dark gradient for title */
+            background-image: linear-gradient(to right, #4b0082, #1e1e1e);
             padding: 15px;
             border-radius: 10px;
             color: white;
@@ -20,23 +21,23 @@
             margin: 30px;
         }
         .price-offer {
-            background-color: #c65d1d; /* Dark orange */
+            background-color: #c65d1d;
             color: white;
             border: none;
-            padding: 8px; /* Reduced padding */
+            padding: 8px;
             border-radius: 20px;
-            margin: 10px 0; /* Reduced margins */
+            margin: 10px 0;
             cursor: pointer;
             font-weight: bold;
             transition: background-color 0.3s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
         .price-offer:hover {
-            background-color: #b65a1a; /* Slightly lighter on hover */
+            background-color: #b65a1a;
         }
         .product {
             margin: 12px;
-            background: rgba(255, 255, 255, 0.9); /* Slightly translucent white */
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 20px;
             padding: 15px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
@@ -48,7 +49,7 @@
         }
         .button {
             color: white;
-            border: none; /* Removed border */
+            border: none;
             padding: 10px;
             cursor: pointer;
             border-radius: 20px;
@@ -59,18 +60,21 @@
             transition: background-color 0.3s;
         }
         .taurolock {
-            background-color: #004080; /* Dark blue */
+            background-color: #004080;
         }
         .wouncure {
-            background-color: #006400; /* Dark green */
+            background-color: #006400;
         }
         .shower-guard, .exit-pro, .diafex {
-            background-color: #8b0000; /* Dark red */
+            background-color: #8b0000;
+        }
+        .emodial {
+            background-color: #8b0000;
         }
         .info {
             margin-top: 10px;
             text-align: center;
-            display: none; /* Initially hidden */
+            display: none;
         }
         .price-container {
             display: flex;
@@ -89,17 +93,17 @@
             flex: 1;
         }
         .pharmacy-price {
-            background-color: #cfe2f3; /* Lighter blue */
+            background-color: #cfe2f3;
         }
         .public-price {
-            background-color: #f8d7da; /* Lighter red */
+            background-color: #f8d7da;
         }
         .discount-circle {
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            background-color: #ffd206; /* Circle color */
-            color: #02043d; /* Font color inside circles */
+            background-color: #ffd206;
+            color: #02043d;
             text-align: center;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -117,7 +121,7 @@
         .upa-price {
             color: darkred;
             font-weight: bold;
-            font-size: 11px; /* Smaller font for UPA prices */
+            font-size: 11px;
             margin-top: 5px;
         }
         @media (max-width: 600px) {
@@ -141,11 +145,9 @@
 <body>
 
 <div>
-    <button class="price-offer taurolock" onclick="window.open('https://lh3.googleusercontent.com/pw/AP1GczPw7_SLvIJ76Roe55zgh0WaUpSqLFBI3aBcWaP_ctRhPSpMQ80jRveBxq3v3ksg2clVGldBwchpcGaYeKR06a4gGF8k5Z5ki5HdHPXzAjzq9eV8qLJiVY2ynWGWn-0qL2nKwGedaNhgDTJhPxww2373cg=w940-h788-s-no-gm?authuser=0', '_blank')">Taurolock</button>
-
-    <button class="price-offer wouncure" onclick="window.open('https://lh3.googleusercontent.com/pw/AP1GczP4j3dXVrf_I4_3mEPBrx9U-_r1BWwF2VBONI22ROyTnBKkHnlPdDnN3djdxInU6McbG8iDvvI5WP33S4KFgIoP2uiLrIsfQw-D0bwUPSVce8yBsocWrn2YQ-ugP0sU1hJKx4k_Kg2oFnH3TZleQfcuaw=w940-h788-s-no-gm?authuser=0', '_blank')">Wouncure</button>
-
-    <button class="price-offer emodial" onclick="window.open('https://lh3.googleusercontent.com/pw/AP1GczNPs_34Xtdl1c161TaD4HUvhDliUR4zUnVfgQ6SUnK7MdwzYoCIIDesb4UvVU0hx6xBaoWTndLMxKlaYciflat44YfzrP3Y5tfHSeYEEaokGu4rEefbthszq5qjWRf6wPf2MY6pC0qp0cto0pMYabMtUA=w940-h788-s-no-gm?authuser=0', '_blank')">Emodial</button>
+    <button class="price-offer taurolock" onclick="generateTaurolockPDF()">Taurolock</button>
+    <button class="price-offer wouncure" onclick="generateWouncurePDF()">Wouncure</button>
+    <button class="price-offer emodial" onclick="generateEmodialPDF()">Emodial</button>
 </div>
 
 <div class="product" onclick="toggleInfo('info1')">
@@ -327,6 +329,180 @@
         const info = document.getElementById(infoId);
         info.style.display = (info.style.display === 'block') ? 'none' : 'block';
     }
+
+    function generateTaurolockPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const products = [
+            {name: "Taurolock Hep 100 / amp 3 ml", pharmacist: "288.57 EGP", public: "327.92 EGP", discount: "12%", upa: "245 EGP"},
+            {name: "Taurolock Hep 500 / amp 5 ml", pharmacist: "318.16 EGP", public: "361.54 EGP", discount: "12%", upa: "275 EGP"},
+            {name: "Taurolock Hep 500 / vial 10 ml", pharmacist: "524.26 EGP", public: "595.75 EGP", discount: "12%"},
+            {name: "Taurolock U 25.000 / vial 5 ml", pharmacist: "1802.53 EGP", public: "2,048.32 EGP", discount: "12%", upa: "1,500 EGP"}
+        ];
+        
+        generateProfessionalPDF(doc, "Taurolock Products", "Price Quotation", products, [0, 64, 128]);
+        doc.save("Taurolock_Official_Price_Quotation.pdf");
+    }
+
+    function generateWouncurePDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const products = [
+            {name: "Wouncure powder 10 gm", pharmacist: "37.75 EGP", public: "51 EGP", discount: "26%", upa: "33.15 EGP", codes: "Sofico: 11600028 | Pharma overseas: 36310"},
+            {name: "Wouncure powder 20 gm", pharmacist: "65.5 EGP", public: "88 EGP", discount: "26%", upa: "45 EGP", codes: "Sofico: 11600029 | Pharma overseas: 36311"}
+        ];
+        
+        generateProfessionalPDF(doc, "Wouncure Products", "Price Quotation", products, [0, 100, 0]);
+        doc.save("Wouncure_Official_Price_Quotation.pdf");
+    }
+
+    function generateEmodialPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        const products = [
+            {name: "Exit Pro", pharmacist: "270.00 EGP", public: "306.82 EGP", discount: "12%"},
+            {name: "Shower Guard", pharmacist: "150.00 EGP", public: "168.00 EGP", discount: "12%"},
+            {name: "Diafex", pharmacist: "100.00 EGP", public: "113.64 EGP", discount: "13%"}
+        ];
+        
+        generateProfessionalPDF(doc, "Emodial Products", "Price Quotation", products, [139, 0, 0]);
+        doc.save("Emodial_Official_Price_Quotation.pdf");
+    }
+
+    function generateProfessionalPDF(doc, productLine, documentType, products, brandColor) {
+        const currentDate = new Date();
+        const dateStr = currentDate.toLocaleDateString('en-GB');
+        const timeStr = currentDate.toLocaleTimeString('en-GB', {hour: '2-digit', minute: '2-digit'});
+        
+        // Document title bar
+        doc.setFillColor(brandColor[0], brandColor[1], brandColor[2]);
+        doc.rect(0, 0, 210, 25, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text(`${productLine} - ${documentType}`, 105, 16, { align: "center" });
+        
+        let yPosition = 35;
+        
+        // Products table header
+        doc.setFillColor(52, 73, 94); // Dark blue
+        doc.rect(15, yPosition, 180, 12, 'F');
+        
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "bold");
+        doc.text("Product Description", 20, yPosition + 8);
+        doc.text("Pharmacist Price", 110, yPosition + 8, { align: "center" });
+        doc.text("Public Price", 145, yPosition + 8, { align: "center" });
+        doc.text("Discount", 175, yPosition + 8, { align: "center" });
+        
+        yPosition += 12;
+        
+        products.forEach((product, index) => {
+            // Calculate text dimensions for auto-sizing
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            
+            // Measure text widths
+            const pharmacistWidth = doc.getTextWidth(product.pharmacist);
+            const publicWidth = doc.getTextWidth(product.public);
+            const discountWidth = doc.getTextWidth(product.discount);
+            
+            // Auto-fit box widths with minimum sizes and padding
+            const pharmacistBoxWidth = Math.max(pharmacistWidth + 8, 25);
+            const publicBoxWidth = Math.max(publicWidth + 8, 25);
+            const discountBoxWidth = Math.max(discountWidth + 6, 15);
+            
+            // Calculate column positions to align with headers
+            const col1Start = 20; // Product name
+            const col1Width = 80;
+            const col2Start = 110; // Center under "Pharmacist Price"
+            const col3Start = 145; // Center under "Public Price"  
+            const col4Start = 175; // Center under "Discount"
+            
+            // Determine row height based on product name length
+            const productName = product.name;
+            let rowHeight = 18;
+            let isMultiLine = false;
+            
+            if (productName.length > 30) {
+                rowHeight = 24;
+                isMultiLine = true;
+            }
+            
+            // Alternating row colors
+            if (index % 2 === 0) {
+                doc.setFillColor(248, 249, 250);
+                doc.rect(15, yPosition, 180, rowHeight, 'F');
+            }
+            
+            // Product details box
+            doc.setDrawColor(220, 220, 220);
+            doc.rect(15, yPosition, 180, rowHeight, 'S');
+            
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(9);
+            doc.setFont("helvetica", "bold");
+            
+            // Product name - handle long names (ENSURE THIS IS ALWAYS RENDERED)
+            doc.setTextColor(0, 0, 0);
+            doc.setFontSize(8);
+            doc.setFont("helvetica", "bold");
+            
+            if (isMultiLine) {
+                const words = productName.split(' ');
+                const midPoint = Math.ceil(words.length / 2);
+                const line1 = words.slice(0, midPoint).join(' ');
+                const line2 = words.slice(midPoint).join(' ');
+                doc.text(line1, col1Start, yPosition + 6);
+                doc.text(line2, col1Start, yPosition + 14);
+            } else {
+                doc.text(productName, col1Start, yPosition + (rowHeight/2) + 2);
+            }
+            
+            // Auto-sized Pharmacist price box
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(8);
+            doc.setFillColor(207, 226, 243);
+            const pharmacistBoxY = yPosition + (rowHeight - 12) / 2;
+            doc.rect(col2Start - (pharmacistBoxWidth/2), pharmacistBoxY, pharmacistBoxWidth, 12, 'F');
+            doc.setDrawColor(180, 180, 180);
+            doc.rect(col2Start - (pharmacistBoxWidth/2), pharmacistBoxY, pharmacistBoxWidth, 12, 'S');
+            doc.text(product.pharmacist, col2Start, pharmacistBoxY + 8, { align: "center" });
+            
+            // Auto-sized Public price box
+            doc.setFillColor(248, 215, 218);
+            const publicBoxY = yPosition + (rowHeight - 12) / 2;
+            doc.rect(col3Start - (publicBoxWidth/2), publicBoxY, publicBoxWidth, 12, 'F');
+            doc.rect(col3Start - (publicBoxWidth/2), publicBoxY, publicBoxWidth, 12, 'S');
+            doc.text(product.public, col3Start, publicBoxY + 8, { align: "center" });
+            
+            // Auto-sized Discount badge
+            doc.setFillColor(255, 193, 7);
+            const discountBoxY = yPosition + (rowHeight - 10) / 2;
+            doc.rect(col4Start - (discountBoxWidth/2), discountBoxY, discountBoxWidth, 10, 'F');
+            doc.setTextColor(0, 0, 0);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(7);
+            doc.text(product.discount, col4Start, discountBoxY + 7, { align: "center" });
+            
+            // Product codes if available
+            if (product.codes) {
+                doc.setTextColor(100, 100, 100);
+                doc.setFont("helvetica", "italic");
+                doc.setFontSize(6);
+                const codeY = isMultiLine ? yPosition + 21 : yPosition + rowHeight - 3;
+                doc.text(product.codes, col1Start, codeY);
+            }
+            
+            doc.setTextColor(0, 0, 0);
+            yPosition += rowHeight + 2;
+        });
+    }
 </script>
 
 </body>
