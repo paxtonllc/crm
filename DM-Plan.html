@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Plan Submission</title>
+    <!-- Supabase library must be loaded here, before any code that uses it -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <style>
+        /* --- Base & Layout --- */
+        :root {
+            --cell-height: 30px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.4;
+        }
+        
+        /* Desktop First Styles */
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 10px auto;
+            padding: 15px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 20px);
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            color: #495057;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .top-controls-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-shrink: 0;
+        }
+        
+        .date-nav-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-nav-group input {
+            flex-grow: 1;
+        }
+        
+        .main-content-area {
+            flex-grow: 1;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+            overflow: hidden;
+        }
+
+        .form-panel {
+            flex: 0 0 380px;
+            overflow-y: auto;
+            height: 100%;
+            padding-right: 10px;
+        }
+
+        .table-panel {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .nav-controls {
+           display: none;
+        }
+
+        /* --- Form Controls --- */
+        input, select, textarea {
+            width: 100%;
+            padding: 5px 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 13px;
+            background: #fff;
+            transition: border-color 0.15s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            font-size: 13px;
+            color: #495057;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .full-width-form-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .form-panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        /* Adjusted form panel header for desktop view */
+        @media (min-width: 769px) {
+            .form-panel-header {
+                justify-content: flex-start;
+                gap: 15px;
+            }
+        }
+        
+        .form-panel-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .entry-container {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+        .visit-container { border-left: 4px solid #28a745; }
+        .event-container { border-left: 4px solid #007bff; }
+        .leave-container { border-left: 4px solid #dc3545; }
+
+        /* --- Buttons --- */
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+        .btn-primary { background: #007bff; color: #fff; }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-danger { background: #dc3545; color: #fff; }
+        .btn-danger:hover { background: #c82333; }
+        .btn-secondary { background: #6c757d; color: #fff; }
+        .btn-secondary:hover { background: #545b62; }
+        .btn-icon {
+            padding: 6px;
+        }
+
+        /* --- Table Styles --- */
+        .scrollable-table-container {
+            position: relative;
+            overflow: auto;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            flex-grow: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th, td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #dee2e6;
+            text-align: left;
+            font-size: 12px;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            position: sticky;
+            top: 0;
+            z-index: 31;
+        }
+
+        .time-cell {
+            background: #f8f9fa;
+            font-weight: 500;
+            position: sticky;
+            left: 0;
+            z-index: 30;
+            min-width: 60px;
+            width: 60px;
+            white-space: nowrap;
+        }
+        
+        th:first-child {
+            z-index: 32; /* Ensure top-left corner is on top */
+        }
+
+        .table-cell-hour {
+            height: var(--cell-height);
+            position: relative;
+            vertical-align: top;
+        }
+        
+        /* --- Plan Entry Boxes --- */
+        .plan-box {
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            right: 1px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 3px 5px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.15s;
+            overflow: hidden;
+            z-index: 20;
+        }
+        .plan-box:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            transform: translateY(-1px);
+        }
+        .plan-box.selected {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        }
+        .visit-box { background: #d4edda; border-color: #28a745; }
+        .event-box { background: #d1ecf1; border-color: #007bff; }
+        .leave-box { background: #f8d7da; border-color: #dc3545; }
+
+        .resize-handle {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            cursor: ns-resize;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-bottom-left-radius: 4px;
+            border-bottom-right-radius: 4px;
+            z-index: 25;
+            transition: background-color 0.2s;
+        }
+        .plan-box:hover .resize-handle {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .plan-time {
+            margin-top: 2px;
+            font-size: 9px;
+        }
+
+        /* --- Modals & Popovers --- */
+        .loading {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.9); display: flex; align-items: center;
+            justify-content: center; z-index: 1000; flex-direction: column;
+        }
+        .spinner {
+            width: 30px; height: 30px; border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff; border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 10px;
+        }
+        .box-loading-spinner {
+            width: 16px; height: 16px; border: 2px solid #f3f3f3;
+            border-top: 2px solid #007bff; border-radius: 50%;
+            animation: spin 1s linear infinite; position: absolute; right: 5px; top: 5px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .popover {
+            position: fixed; background: #fff; border: 1px solid #dee2e6;
+            border-radius: 6px; padding: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100; font-size: 13px; max-width: 250px;
+        }
+        .popover p { margin-bottom: 6px; }
+        .popover p:last-child { margin-bottom: 0; }
+        
+        .modal-box {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background: #fff; padding: 20px; border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); max-width: 400px;
+            width: 90%; text-align: center;
+        }
+        .modal-content h3 {
+            font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; color: #007bff;
+        }
+        .modal-content p { font-size: 14px; margin-bottom: 20px; }
+        
+        /* --- Notification Styles --- */
+        .notification {
+            position: fixed;
+            top: 20px; /* Moved to top */
+            left: 50%;
+            transform: translateX(-50%);
+            background: #28a745;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 999;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .notification.hide {
+            opacity: 0;
+        }
+
+        /* --- Utility --- */
+        .hidden { display: none !important; }
+        .flex-col { display: flex; flex-direction: column; }
+        .justify-end { justify-content: flex-end; }
+        .justify-between { justify-content: space-between; }
+        .gap-2 { gap: 8px; }
+        .gap-3 { gap: 12px; }
+        .mt-2 { margin-top: 8px; }
+        .mt-3 { margin-top: 12px; }
+        .font-semibold { font-weight: 600; }
+
+        /* --- Mobile View (as requested) */
+        @media (max-width: 768px) {
+            html, body {
+                height: auto;
+                overflow: auto;
+            }
+            .container {
+                height: auto;
+                margin: 5px;
+                padding: 10px;
+                flex-direction: column;
+            }
+            .main-content-area, .form-panel, .table-panel {
+                display: block;
+                overflow: visible;
+                height: auto;
+                flex: none;
+                width: 100%;
+            }
+            .form-panel {
+                padding-right: 0;
+            }
+            .top-controls-row {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .top-controls-row .date-nav-group {
+                display: flex;
+            }
+            .top-controls-row .date-nav-group .btn-icon {
+                display: none;
+            }
+            .header-controls {
+                margin-bottom: 15px;
+            }
+             .nav-controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 15px 0;
+            }
+            .scrollable-table-container {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay" class="loading">
+        <div class="spinner"></div>
+        <p>Loading data...</p>
+    </div>
+    <div class="container">
+        <!-- Top-level controls for context -->
+        <div class="header-controls">
+            <h1>Weekly Plan</h1>
+            <!-- The Edit Plan button is now in the form-panel-header in desktop view -->
+            <!-- <button type="button" class="btn btn-primary" id="editPlanBtn">Edit Plan</button> -->
+        </div>
+        <div class="top-controls-row">
+            <div class="flex-col">
+                <label for="districtManager">District Manager:</label>
+                <select id="districtManager">
+                    <option value="">Select District Manager</option>
+                </select>
+            </div>
+            <div class="flex-col">
+                <label for="startDate">Week Start (Saturday):</label>
+                 <div class="date-nav-group">
+                    <button id="prevWeekBtn" class="btn btn-secondary btn-icon" aria-label="Previous Week">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/></svg>
+                    </button>
+                    <input type="date" id="startDate">
+                </div>
+            </div>
+            <div class="flex-col">
+                <label for="endDate">Week End (Friday):</label>
+                <div class="date-nav-group">
+                    <input type="date" id="endDate" readonly>
+                    <button id="nextWeekBtn" class="btn btn-secondary btn-icon" aria-label="Next Week">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main content area -->
+        <div class="main-content-area">
+            
+            <!-- Form Panel (Left on Desktop) -->
+            <div class="form-panel">
+                <div class="form-panel-header" id="form-panel-header-desktop">
+                    <h2>Add/Edit Entry</h2>
+                    <!-- Added Edit Plan button here for PC view -->
+                    <button type="button" class="btn btn-primary" id="editPlanBtn">Edit Plan</button>
+                </div>
+                <div id="form-section-container" class="form-section hidden">
+                    <!-- Form content remains the same -->
+                    <div class="form-row">
+                        <div class="flex-col">
+                            <label for="selectedDay">Select Day:</label>
+                            <select id="selectedDay">
+                                <option value="">Select a Day</option>
+                            </select>
+                        </div>
+                        <div class="flex-col">
+                            <label for="entryTypeSelect">Entry Type:</label>
+                            <select id="entryTypeSelect" onchange="handleEntryTypeChange()">
+                                <option value="">Select Type</option>
+                                <option value="Visit">Visit</option>
+                                <option value="Event">Event</option>
+                                <option value="Leave">Leave</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="visitInputsContainer" class="hidden entry-container visit-container">
+                        <div class="form-row">
+                            <div class="flex-col">
+                                <label for="visitTypeSelect">Visit Type:</label>
+                                <select id="visitTypeSelect" onchange="handleVisitTypeChange()">
+                                    <option value="">Select Visit Type</option>
+                                    <option value="Single Visit">Single Visit</option>
+                                    <option value="Double Visit">Double Visit</option>
+                                </select>
+                            </div>
+                            <div class="flex-col">
+                                <label for="visitTimeChoice">Time Option:</label>
+                                <select id="visitTimeChoice" onchange="handleVisitTimeChoiceChange()">
+                                    <option value="">Select Time Option</option>
+                                    <option value="Pick a Time">Pick a Time</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                    <option value="Full Day">Full Day</option>
+                                </select>
+                            </div>
+                            <div id="visitTimeInputContainer" class="flex-col hidden">
+                                <label for="visitTimeInput">Specific Time:</label>
+                                <input type="time" id="visitTimeInput">
+                            </div>
+                        </div>
+                        <div id="mrBrickContainer" class="form-row hidden">
+                            <div class="flex-col">
+                                <label for="medicalRepSelect">Medical Rep:</label>
+                                <select id="medicalRepSelect" onchange="handleMedicalRepChange()">
+                                    <option value="">Select MR</option>
+                                </select>
+                            </div>
+                            <div class="flex-col">
+                                <label for="brickSelect">Brick:</label>
+                                <select id="brickSelect">
+                                    <option value="">Select Brick</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="full-width-form-row">
+                            <div class="flex-col">
+                                <label for="visitDetails">Visit Details:</label>
+                                <textarea id="visitDetails" rows="2" placeholder="Add specific details..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="eventInputsContainer" class="hidden entry-container event-container">
+                        <div class="form-row">
+                            <div class="flex-col">
+                                <label for="eventSelect">Event Type:</label>
+                                <select id="eventSelect" onchange="handleEventChange()">
+                                    <option value="">Select Event</option>
+                                    <option value="Meeting">Meeting</option>
+                                    <option value="Training">Training</option>
+                                    <option value="Event">Event</option>
+                                    <option value="Admin Work">Admin Work</option>
+                                </select>
+                            </div>
+                            <div id="adminWorkTypeContainer" class="flex-col hidden">
+                                <label for="adminWorkTypeSelect">Admin Work Type:</label>
+                                <select id="adminWorkTypeSelect">
+                                    <option value="">Select Type</option>
+                                    <option value="Office">Office</option>
+                                    <option value="Online">Online</option>
+                                </select>
+                            </div>
+                            <div class="flex-col">
+                                <label for="eventTimeChoice">Time Option:</label>
+                                <select id="eventTimeChoice" onchange="handleEventTimeChoiceChange()">
+                                    <option value="">Select Time Option</option>
+                                    <option value="Pick a Time">Pick a Time</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                    <option value="Full Day">Full Day</option>
+                                </select>
+                            </div>
+                            <div id="eventTimeInputContainer" class="flex-col hidden">
+                                <label for="eventTimeInput">Specific Time:</label>
+                                <input type="time" id="eventTimeInput">
+                            </div>
+                        </div>
+                        <div class="full-width-form-row">
+                            <div class="flex-col">
+                                <label for="eventDetails">Event Details:</label>
+                                <textarea id="eventDetails" rows="2" placeholder="Add specific details..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="leavesInputsContainer" class="hidden entry-container leave-container">
+                        <div class="form-row">
+                            <div class="flex-col">
+                                <label for="leaveSelect">Leave Type:</label>
+                                <select id="leaveSelect" onchange="handleLeaveChange()">
+                                    <option value="">Select Leave Type</option>
+                                    <option value="Annual Leave">Annual Leave</option>
+                                    <option value="Official Leave">Official Leave</option>
+                                    <option value="Sick Leave">Sick Leave</option>
+                                </select>
+                            </div>
+                            <div class="flex-col">
+                                <label for="leaveTimeChoice">Time Option:</label>
+                                <select id="leaveTimeChoice" onchange="handleLeaveTimeChoiceChange()">
+                                    <option value="">Select Time Option</option>
+                                    <option value="Pick a Time">Pick a Time</option>
+                                    <option value="AM">AM</option>
+                                    <option value="PM">PM</option>
+                                    <option value="Full Day">Full Day</option>
+                                </select>
+                            </div>
+                            <div id="leaveTimeInputContainer" class="flex-col hidden">
+                                <label for="leaveTimeInput">Specific Time:</label>
+                                <input type="time" id="leaveTimeInput">
+                            </div>
+                        </div>
+                        <div class="full-width-form-row">
+                            <div class="flex-col">
+                                <label for="leaveDetails">Leave Details:</label>
+                                <textarea id="leaveDetails" rows="2" placeholder="Add specific details..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-3">
+                        <button type="button" class="btn btn-primary" onclick="addPlanEntry()">Add Entry</button>
+                        <button type="button" class="btn btn-danger" id="deleteEntryButton" style="display:none;">Delete Selected</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Panel (Right on Desktop) -->
+            <div class="table-panel">
+                <div class="nav-controls">
+                    <button id="prevWeekBtnMobile" class="btn btn-secondary">Prev</button>
+                    <button id="nextWeekBtnMobile" class="btn btn-secondary">Next</button>
+                </div>
+                <div class="scrollable-table-container">
+                    <table>
+                        <thead>
+                            <tr id="table-header-row">
+                                <th class="time-cell">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="plan-table-body">
+                        </tbody>
+                    </table>
+                    <!-- New loading indicator for infinite scroll -->
+                    <div id="scroll-loading-indicator" class="hidden" style="text-align: center; padding: 1rem;">
+                        <div class="spinner"></div>
+                        <p>Loading more data...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // --- STATE MANAGEMENT ---
+        let allData = [];
+        let districtManagers = [];
+        let loggedInUser = null;
+        let multiSelectMode = false;
+        let longPressTimer;
+        let isResizing = false;
+        let currentResizingBox = null;
+        let initialY = 0;
+        let initialHeight = 0;
+        let cellHeight = 30;
+        let isAppInitialized = false;
+        const fetchBatchSize = 1000; // Define a batch size for fetching
+        let fetchingAllData = false;
+
+        // --- CONSTANTS ---
+        const daysOfWeek = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const startHour = 9;
+        const endHour = 23;
+
+        // --- SUPABASE CLIENT ---
+        const supabaseUrl = 'https://plmevfyxpngzymvzvkzn.supabase.co';
+        const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
+        const _supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        // --- UI HELPER FUNCTIONS ---
+        function toggleLoading(show) {
+            document.getElementById('loading-overlay').classList.toggle('hidden', !show);
+        }
+
+        function toggleScrollLoading(show) {
+            document.getElementById('scroll-loading-indicator').classList.toggle('hidden', !show);
+        }
+
+        function showTemporaryMessage(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('hide');
+                notification.addEventListener('transitionend', () => notification.remove());
+            }, 3000);
+        }
+
+        function showMessageBox(message, title = 'Notification') {
+            if (document.querySelector('.modal-box')) return;
+            const modalBox = document.createElement('div');
+            modalBox.className = 'modal-box';
+            modalBox.innerHTML = `
+                <div class="modal-content">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <button type="button" class="btn btn-secondary" onclick="this.closest('.modal-box').remove()">Close</button>
+                </div>
+            `;
+            document.body.appendChild(modalBox);
+        }
+        
+        function showForm() {
+            const form = document.getElementById('form-section-container');
+            const button = document.getElementById('editPlanBtn');
+            if (form.classList.contains('hidden')) {
+                form.classList.remove('hidden');
+                button.textContent = 'Hide Form';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+            }
+        }
+
+        // --- DATA FETCHING (Multi-request) ---
+        // New function to fetch all data in batches
+        async function fetchAllMasterlistData() {
+            if (fetchingAllData) return;
+            fetchingAllData = true;
+            let offset = 0;
+            let hasMore = true;
+            toggleLoading(true);
+            allData = [];
+
+            try {
+                while(hasMore) {
+                    const { data, error } = await _supabase
+                        .from('masterlist')
+                        .select('*')
+                        .range(offset, offset + fetchBatchSize - 1);
+
+                    if (error) throw error;
+                    
+                    if (data && data.length > 0) {
+                        allData = allData.concat(data);
+                        offset += data.length;
+                    }
+
+                    if (!data || data.length < fetchBatchSize) {
+                        hasMore = false;
+                    }
+                }
+                
+                const managerSet = new Set(allData.map(row => row['District Manager']).filter(Boolean));
+                districtManagers = Array.from(managerSet).sort();
+                filterAndPopulateDMs(loggedInUser);
+
+            } catch (error) {
+                console.error('Error fetching all masterlist data:', error);
+                showMessageBox(`Failed to load essential data. Error: ${error.message}`, 'Error');
+            } finally {
+                fetchingAllData = false;
+                toggleLoading(false);
+            }
+        }
+        
+        async function initialDataLoad() {
+            await fetchAllMasterlistData();
+        }
+
+        // --- INITIALIZATION ---
+        async function initializeApp(user) {
+            loggedInUser = user;
+            await initialDataLoad();
+            filterAndPopulateDMs(user);
+            setDefaultStartDate();
+            updateDatesAndDaySelector();
+            handleEntryTypeChange();
+        }
+        
+        function handleInitialization(user) {
+            if (isAppInitialized) return;
+            isAppInitialized = true;
+            initializeApp(user);
+        }
+
+        // MODIFIED: This function now populates the dropdown with all DMs for testing purposes.
+        function filterAndPopulateDMs(user) {
+            const select = document.getElementById('districtManager');
+            select.innerHTML = '<option value="">Select District Manager</option>';
+            // Restore the disabled attribute logic
+            select.disabled = false;
+
+            if (user && user.title === 'admin') {
+                districtManagers.forEach(manager => {
+                    select.add(new Option(manager, manager));
+                });
+            } else if (user && user.title === 'District Manager') {
+                select.add(new Option(user.username, user.username));
+                select.value = user.username;
+                select.disabled = true;
+            } else {
+                select.disabled = true;
+            }
+        }
+
+        // --- DATE & TIME LOGIC ---
+        function calculateEndDate(startDateStr) {
+            if (!startDateStr) return '';
+            const startDate = new Date(startDateStr);
+            startDate.setUTCHours(0, 0, 0, 0);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + 6);
+            return endDate.toISOString().split('T')[0];
+        }
+        
+        function setDefaultStartDate() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            let startOfWeek;
+
+            if (dayOfWeek >= 4) {
+                const daysUntilNextSaturday = (6 - dayOfWeek + 7) % 7;
+                startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() + daysUntilNextSaturday);
+            } else {
+                const daysSinceSaturday = (dayOfWeek < 6) ? dayOfWeek + 1 : 0;
+                startOfWeek = new Date(today);
+                startOfWeek.setDate(today.getDate() - daysSinceSaturday);
+            }
+            startOfWeek.setUTCHours(0, 0, 0, 0);
+            document.getElementById('startDate').value = startOfWeek.toISOString().split('T')[0];
+        }
+
+        function updateDatesAndDaySelector() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+            const selectedStartDate = startDateInput.value;
+            endDateInput.value = calculateEndDate(selectedStartDate);
+            populateDaySelector(selectedStartDate);
+            updateTableHeader(selectedStartDate);
+            populateTimeSlotTable(selectedStartDate);
+            fetchExistingPlanData(selectedStartDate);
+        }
+
+        function formatHourForDisplay(hour) {
+            const h = hour % 12 === 0 ? 12 : hour % 12;
+            const ampm = hour < 12 || hour === 24 ? 'AM' : 'PM';
+            return `${h} ${ampm}`;
+        }
+        
+        function getTimeDisplay(startHour, endHour, startTimeOption) {
+            if (startTimeOption === 'Full Day') return 'Full Day';
+            if (startTimeOption === 'AM') return `AM (9 AM - 2 PM)`;
+            if (startTimeOption === 'PM') return `PM (2 PM - 11 PM)`;
+            return `${formatHourForDisplay(startHour)} - ${formatHourForDisplay(endHour + 1)}`;
+        }
+
+        // --- PLAN DATA MANAGEMENT (SUPABASE) ---
+        async function fetchExistingPlanData(startDate) {
+            const districtManager = document.getElementById('districtManager').value;
+            if (!startDate || !districtManager) {
+                clearPlanTableBody();
+                return;
+            }
+            toggleLoading(true);
+            try {
+                const { data: entries, error } = await _supabase
+                    .from('dms_weekly_plans')
+                    .select('*')
+                    .eq('district_manager_name', districtManager)
+                    .eq('start_date', startDate);
+                if (error) throw error;
+                populatePlanTable(entries || []);
+            } catch (error) {
+                console.error('Error fetching plan data:', error);
+                showMessageBox(`Failed to load plan data. Error: ${error.message}`, 'Error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+        
+        async function deleteSelectedEntries() {
+            const selectedBoxes = document.querySelectorAll('.plan-box.selected');
+            if (selectedBoxes.length === 0) {
+                showMessageBox('No entries selected for deletion.');
+                return;
+            }
+
+            const idsToDelete = Array.from(selectedBoxes)
+                .map(box => box.getAttribute('data-entry-id'))
+                .filter(id => id && !id.startsWith('entry-'));
+
+            toggleLoading(true);
+            try {
+                if (idsToDelete.length > 0) {
+                    const { error } = await _supabase.from('dms_weekly_plans').delete().in('id', idsToDelete);
+                    if (error) throw error;
+                }
+                selectedBoxes.forEach(box => box.remove());
+                showTemporaryMessage('Selected entries deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting entries:', error);
+                showMessageBox(`Failed to delete entries. Error: ${error.message}`, 'Error');
+                await fetchExistingPlanData(document.getElementById('startDate').value);
+            } finally {
+                toggleLoading(false);
+                updateDeleteButtonVisibility();
+                hideAllPopovers();
+            }
+        }
+        
+        async function deleteSingleEntry(e, entryId) {
+            e.stopPropagation();
+            hideAllPopovers();
+            const planBoxElement = document.querySelector(`[data-entry-id="${entryId}"]`);
+            if (!planBoxElement) return;
+
+            if (entryId && !entryId.startsWith('entry-')) {
+                toggleLoading(true);
+                try {
+                    const { error } = await _supabase.from('dms_weekly_plans').delete().eq('id', entryId);
+                    if (error) throw error;
+                    showTemporaryMessage('Entry deleted successfully!');
+                    planBoxElement.remove();
+                } catch (error) {
+                    console.error('Error deleting entry:', error);
+                    showMessageBox(`Failed to delete entry. Error: ${error.message}`, 'Error');
+                } finally {
+                    toggleLoading(false);
+                }
+            } else {
+                planBoxElement.remove();
+            }
+            updateDeleteButtonVisibility();
+        }
+
+        // --- TABLE & UI RENDERING ---
+        function populateDaySelector(startDateStr) {
+            const daySelect = document.getElementById('selectedDay');
+            daySelect.innerHTML = '<option value="">Select a Day</option>';
+            if (!startDateStr) return;
+            const startDate = new Date(startDateStr);
+            daysOfWeek.forEach((dayName, index) => {
+                const currentDate = new Date(startDate);
+                currentDate.setUTCDate(startDate.getUTCDate() + index);
+                const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'UTC', weekday: 'long', month: 'short', day: 'numeric' });
+                const option = new Option(`${dayName} (${dateString})`, `${dayName}|${currentDate.toISOString().split('T')[0]}|${index}`);
+                daySelect.appendChild(option);
+            });
+        }
+
+        function updateTableHeader(startDateStr) {
+            const tableHeaderRow = document.getElementById('table-header-row');
+            tableHeaderRow.innerHTML = '<th class="time-cell">Time</th>';
+            if (!startDateStr) return;
+            const startDate = new Date(startDateStr);
+            daysOfWeek.forEach((dayName, index) => {
+                const currentDate = new Date(startDate);
+                currentDate.setUTCDate(startDate.getUTCDate() + index);
+                const dateString = currentDate.toLocaleDateString('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' });
+                const th = document.createElement('th');
+                th.innerHTML = `<div><span>${dayName}</span><br><span style="font-weight:400;">${dateString}</span></div>`;
+                tableHeaderRow.appendChild(th);
+            });
+        }
+
+        function populateTimeSlotTable(startDateStr) {
+            const planTableBody = document.getElementById('plan-table-body');
+            planTableBody.innerHTML = '';
+            if (!startDateStr) {
+                planTableBody.innerHTML = `<tr><td colspan="${daysOfWeek.length + 1}" style="text-align:center; padding: 1rem;">Please select a start date.</td></tr>`;
+                return;
+            }
+            for (let hour = startHour; hour <= endHour; hour++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="time-cell">${formatHourForDisplay(hour)}</td>` + 
+                                 daysOfWeek.map((_, dayIndex) => `<td id="day-${dayIndex}-hour-${hour}" class="table-cell-hour"></td>`).join('');
+                planTableBody.appendChild(tr);
+            }
+            const firstCell = planTableBody.querySelector('.table-cell-hour');
+            if (firstCell) {
+                cellHeight = firstCell.offsetHeight;
+                document.documentElement.style.setProperty('--cell-height', `${cellHeight}px`);
+            }
+        }
+        
+        function clearPlanTableBody() {
+            populateTimeSlotTable(document.getElementById('startDate').value);
+        }
+
+        function populatePlanTable(entries) {
+            clearPlanTableBody();
+            if (!entries || entries.length === 0) return;
+            entries.forEach(entry => {
+                const dayIndex = daysOfWeek.indexOf(entry.entry_day);
+                if (dayIndex === -1) return;
+                const entryData = {
+                    id: entry.id, day: entry.entry_day, type: entry.entry_type,
+                    details: entry.details || '', startHour: entry.start_hour,
+                    endHour: entry.end_hour, startTimeOption: entry.start_time_option,
+                    visitType: entry.visit_type, medicalRep: entry.medical_rep_name,
+                    brick: entry.brick, event: entry.event_type, leaveType: entry.leave_type
+                };
+                const targetCell = document.getElementById(`day-${dayIndex}-hour-${entry.start_hour}`);
+                if (targetCell) {
+                    targetCell.appendChild(createPlanBoxElement(entryData));
+                }
+            });
+        }
+        
+        function createPlanBoxElement(entryData) {
+            const { type, startHour, endHour, startTimeOption } = entryData;
+            const durationHours = endHour - startHour + 1;
+            let boxClass = '', contentHtml = '';
+            switch (type) {
+                case 'Event':
+                    boxClass = 'event-box';
+                    contentHtml = `<p>${entryData.event}</p>`;
+                    if (entryData.event === 'Admin Work' && entryData.details) {
+                        const adminType = entryData.details.split(' - ')[0];
+                        if (['Office', 'Online'].includes(adminType)) contentHtml += `<p><span class="font-semibold">Type:</span> ${adminType}</p>`;
+                    }
+                    break;
+                case 'Visit':
+                    boxClass = 'visit-box';
+                    contentHtml = `<p>${entryData.visitType}</p>`;
+                    if (entryData.visitType === 'Double Visit') contentHtml += `<p><span class="font-semibold">MR:</span> ${entryData.medicalRep}</p><p><span class="font-semibold">Brick:</span> ${entryData.brick}</p>`;
+                    break;
+                case 'Leave':
+                    boxClass = 'leave-box';
+                    contentHtml = `<p>${entryData.leaveType}</p>`;
+                    break;
+            }
+            contentHtml += `<p class="plan-time">${getTimeDisplay(startHour, endHour, startTimeOption)}</p>`;
+            if (startTimeOption !== 'Full Day') contentHtml += `<div class="resize-handle"></div>`;
+            const planBoxElement = document.createElement('div');
+            planBoxElement.className = `plan-box ${boxClass}`;
+            planBoxElement.innerHTML = contentHtml;
+            planBoxElement.style.height = `${cellHeight * durationHours + (durationHours > 1 ? durationHours - 1 : 0)}px`;
+            planBoxElement.setAttribute('data-entry-id', entryData.id || `entry-${Date.now()}-${Math.random()}`);
+            planBoxElement.setAttribute('data-entry-details', JSON.stringify(entryData));
+            if (startTimeOption !== 'Full Day') {
+                const resizeHandle = planBoxElement.querySelector('.resize-handle');
+                if (resizeHandle) {
+                    resizeHandle.addEventListener('mousedown', startResize);
+                    resizeHandle.addEventListener('touchstart', startResize, { passive: false });
+                }
+            }
+            return planBoxElement;
+        }
+
+        // --- FORM HANDLING ---
+        function handleEntryTypeChange() {
+            const entryType = document.getElementById('entryTypeSelect').value;
+            document.getElementById('visitInputsContainer').classList.toggle('hidden', entryType !== 'Visit');
+            document.getElementById('eventInputsContainer').classList.toggle('hidden', entryType !== 'Event');
+            document.getElementById('leavesInputsContainer').classList.toggle('hidden', entryType !== 'Leave');
+        }
+
+        function handleVisitTypeChange() {
+            const visitType = document.getElementById('visitTypeSelect').value;
+            document.getElementById('mrBrickContainer').classList.toggle('hidden', visitType !== 'Double Visit');
+            if (visitType === 'Double Visit') populateMedicalReps();
+        }
+        
+        function handleEventChange() {
+            const eventType = document.getElementById('eventSelect').value;
+            document.getElementById('adminWorkTypeContainer').classList.toggle('hidden', eventType !== 'Admin Work');
+        }
+
+        function handleTimeChoiceChange(type) {
+            const timeChoice = document.getElementById(`${type}TimeChoice`).value;
+            document.getElementById(`${type}TimeInputContainer`).classList.toggle('hidden', timeChoice !== 'Pick a Time');
+        }
+        
+        function handleVisitTimeChoiceChange() { handleTimeChoiceChange('visit'); }
+        function handleEventTimeChoiceChange() { handleTimeChoiceChange('event'); }
+        function handleLeaveTimeChoiceChange() { handleTimeChoiceChange('leave'); }
+        function handleLeaveChange() {}
+
+        function populateMedicalReps() {
+            const selectedDM = document.getElementById('districtManager').value;
+            const medicalRepSelect = document.getElementById('medicalRepSelect');
+            medicalRepSelect.innerHTML = '<option value="">Select MR</option>';
+            if (!selectedDM) return;
+            const mrsForDM = [...new Set(allData.filter(row => row['District Manager'] === selectedDM && row['medical rep']).map(row => row['medical rep']))].sort();
+            mrsForDM.forEach(mr => medicalRepSelect.add(new Option(mr, mr)));
+        }
+
+        function handleMedicalRepChange() {
+            const selectedMR = document.getElementById('medicalRepSelect').value;
+            const brickSelect = document.getElementById('brickSelect');
+            brickSelect.innerHTML = '<option value="">Select Brick</option>';
+            if (!selectedMR) return;
+            const bricksForMR = [...new Set(allData.filter(row => row['medical rep'] === selectedMR && row['Brick']).map(row => row['Brick']))].sort();
+            bricksForMR.forEach(brick => brickSelect.add(new Option(brick, brick)));
+        }
+        
+        function clearForm() {
+            if (loggedInUser && loggedInUser.title !== 'admin') {
+                document.getElementById('districtManager').disabled = true;
+            } else {
+                document.getElementById('districtManager').value = '';
+            }
+            setDefaultStartDate();
+            updateDatesAndDaySelector();
+            document.getElementById('selectedDay').value = '';
+            document.getElementById('entryTypeSelect').value = '';
+            handleEntryTypeChange();
+            document.querySelectorAll('.plan-box.selected').forEach(box => box.classList.remove('selected'));
+            updateDeleteButtonVisibility();
+            hideAllPopovers();
+        }
+
+        function resetFormInputs() {
+            // Reset the form fields to their default state
+            document.getElementById('selectedDay').value = '';
+            document.getElementById('entryTypeSelect').value = '';
+            document.getElementById('visitTypeSelect').value = '';
+            document.getElementById('visitTimeChoice').value = '';
+            document.getElementById('visitTimeInput').value = '';
+            document.getElementById('medicalRepSelect').value = '';
+            document.getElementById('brickSelect').value = '';
+            document.getElementById('visitDetails').value = '';
+            document.getElementById('eventSelect').value = '';
+            document.getElementById('eventTimeChoice').value = '';
+            document.getElementById('eventTimeInput').value = '';
+            document.getElementById('eventDetails').value = '';
+            document.getElementById('leaveSelect').value = '';
+            document.getElementById('leaveTimeChoice').value = '';
+            document.getElementById('leaveTimeInput').value = '';
+            document.getElementById('leaveDetails').value = '';
+
+            // Hide the conditional sections of the form
+            handleEntryTypeChange();
+            handleVisitTypeChange();
+            handleEventChange();
+            handleLeaveChange();
+            handleVisitTimeChoiceChange();
+            handleEventTimeChoiceChange();
+            handleLeaveTimeChoiceChange();
+        }
+
+        // --- DYNAMIC ENTRY ADDITION & OVERLAP LOGIC ---
+        async function addPlanEntry() {
+            const selectedDayValue = document.getElementById('selectedDay').value;
+            const entryType = document.getElementById('entryTypeSelect').value;
+            if (!document.getElementById('districtManager').value || !document.getElementById('startDate').value || !selectedDayValue || !entryType) {
+                showMessageBox('Please ensure District Manager, Start Date, Day, and Entry Type are all selected.');
+                return;
+            }
+            const [dayName, , dayIndexStr] = selectedDayValue.split('|');
+            const dayIndex = parseInt(dayIndexStr);
+            let entryData = { day: dayName, type: entryType };
+            let timeOption, timeInput;
+            switch(entryType) {
+                case 'Visit':
+                    entryData.visitType = document.getElementById('visitTypeSelect').value;
+                    if (!entryData.visitType) { showMessageBox('Please select a Visit Type.'); return; }
+                    if (entryData.visitType === 'Double Visit') {
+                        entryData.medicalRep = document.getElementById('medicalRepSelect').value;
+                        entryData.brick = document.getElementById('brickSelect').value;
+                        if (!entryData.medicalRep || !entryData.brick) { showMessageBox('Please select a Medical Rep and Brick.'); return; }
+                    }
+                    entryData.details = document.getElementById('visitDetails').value;
+                    timeOption = document.getElementById('visitTimeChoice').value;
+                    timeInput = document.getElementById('visitTimeInput').value;
+                    break;
+                case 'Event':
+                    entryData.event = document.getElementById('eventSelect').value;
+                    if (!entryData.event) { showMessageBox('Please select an Event Type.'); return; }
+                    if (entryData.event === 'Admin Work') {
+                        const adminType = document.getElementById('adminWorkTypeSelect').value;
+                        if (!adminType) { showMessageBox('Please select an Admin Work Type.'); return; }
+                        entryData.details = `${adminType} - ${document.getElementById('eventDetails').value}`;
+                    } else {
+                        entryData.details = document.getElementById('eventDetails').value;
+                    }
+                    timeOption = document.getElementById('eventTimeChoice').value;
+                    timeInput = document.getElementById('eventTimeInput').value;
+                    break;
+                case 'Leave':
+                    entryData.leaveType = document.getElementById('leaveSelect').value;
+                    if (!entryData.leaveType) { showMessageBox('Please select a Leave Type.'); return; }
+                    entryData.details = document.getElementById('leaveDetails').value;
+                    timeOption = document.getElementById('leaveTimeChoice').value;
+                    timeInput = document.getElementById('leaveTimeInput').value;
+                    break;
+            }
+            if (!timeOption) { showMessageBox('Please select a Time Option.'); return; }
+            entryData.startTimeOption = timeOption;
+            if (timeOption === 'Pick a Time') {
+                if (!timeInput) { showMessageBox('Please pick a specific time.'); return; }
+                entryData.startHour = parseInt(timeInput.split(':')[0]);
+                entryData.endHour = entryData.startHour;
+            } else if (timeOption === 'AM') { entryData.startHour = 9; entryData.endHour = 13; }
+            else if (timeOption === 'PM') { entryData.startHour = 14; entryData.endHour = 23; }
+            else if (timeOption === 'Full Day') { entryData.startHour = startHour; entryData.endHour = endHour; }
+            
+            const existingEntriesOnDay = Array.from(document.querySelectorAll(`#plan-table-body .plan-box`))
+                .map(box => JSON.parse(box.getAttribute('data-entry-details')))
+                .filter(entry => entry.day === dayName);
+
+            if (timeOption === 'Full Day') {
+                if (existingEntriesOnDay.length > 0) {
+                    showMessageBox('Clear existing entries before adding a Full Day event.');
+                    return;
+                }
+            } else if (existingEntriesOnDay.some(e => e.startTimeOption === 'Full Day')) {
+                showMessageBox('Cannot add an entry on a day that is already marked as Full Day.');
+                return;
+            }
+
+            let proposedStart = entryData.startHour;
+            const duration = entryData.endHour - entryData.startHour + 1;
+            let isOverlapping = true;
+            while(isOverlapping) {
+                isOverlapping = false;
+                let proposedEnd = proposedStart + duration - 1;
+                for (const existing of existingEntriesOnDay) {
+                    if (proposedStart <= existing.endHour && proposedEnd >= existing.startHour) {
+                        isOverlapping = true;
+                        proposedStart = existing.endHour + 1;
+                        break;
+                    }
+                }
+            }
+            const effectiveRangeEnd = (timeOption === 'AM') ? 13 : (timeOption === 'PM') ? 23 : endHour;
+            if (proposedStart + duration - 1 > effectiveRangeEnd) {
+                showMessageBox('Could not find an available time slot.');
+                return;
+            }
+            entryData.startHour = proposedStart;
+            entryData.endHour = proposedStart + duration - 1;
+
+            toggleLoading(true);
+            try {
+                const entryToInsert = {
+                    district_manager_name: document.getElementById('districtManager').value,
+                    start_date: document.getElementById('startDate').value,
+                    end_date: document.getElementById('endDate').value,
+                    entry_day: entryData.day,
+                    entry_type: entryData.type,
+                    start_hour: entryData.startHour,
+                    end_hour: entryData.endHour,
+                    start_time_option: entryData.startTimeOption,
+                    visit_type: entryData.visitType,
+                    medical_rep_name: entryData.medicalRep,
+                    brick: entryData.brick,
+                    event_type: entryData.event,
+                    leave_type: entryData.leaveType,
+                    details: entryData.details
+                };
+                const { data, error } = await _supabase.from('dms_weekly_plans').insert([entryToInsert]).select();
+                if (error) throw error;
+                
+                await fetchExistingPlanData(document.getElementById('startDate').value);
+                showTemporaryMessage('Entry added successfully.');
+                
+                showForm();
+                resetFormInputs();
+
+            } catch (error) {
+                console.error('Error adding entry:', error);
+                showMessageBox(`Failed to add entry. Error: ${error.message}`, 'Error');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // --- RESIZING LOGIC ---
+        function startResize(event) {
+            event.stopPropagation();
+            isResizing = true;
+            currentResizingBox = event.target.closest('.plan-box');
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            initialY = clientY;
+            initialHeight = currentResizingBox.offsetHeight;
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+            document.addEventListener('touchmove', doResize, { passive: false });
+            document.addEventListener('touchend', stopResize);
+            hideAllPopovers();
+        }
+
+        function doResize(event) {
+            if (!isResizing) return;
+            event.preventDefault();
+            const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+            const deltaY = clientY - initialY;
+            let newHeight = initialHeight + deltaY;
+            let newDurationHours = Math.max(1, Math.round(newHeight / cellHeight));
+            const entryData = JSON.parse(currentResizingBox.getAttribute('data-entry-details'));
+            const newEndHour = Math.min(entryData.startHour + newDurationHours - 1, endHour);
+            const finalDuration = newEndHour - entryData.startHour + 1;
+            currentResizingBox.style.height = `${finalDuration * cellHeight + (finalDuration > 1 ? finalDuration - 1 : 0)}px`;
+            const planTimeElement = currentResizingBox.querySelector('.plan-time');
+            if(planTimeElement) {
+                planTimeElement.textContent = getTimeDisplay(entryData.startHour, newEndHour, entryData.startTimeOption);
+            }
+        }
+
+        async function stopResize() {
+            if (!isResizing) return;
+            isResizing = false;
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+            document.removeEventListener('touchmove', doResize);
+            document.removeEventListener('touchend', stopResize);
+            if (currentResizingBox) {
+                const entryData = JSON.parse(currentResizingBox.getAttribute('data-entry-details'));
+                const newDurationHours = Math.max(1, Math.round(currentResizingBox.offsetHeight / cellHeight));
+                const newEndHour = Math.min(entryData.startHour + newDurationHours - 1, endHour);
+                entryData.endHour = newEndHour;
+                currentResizingBox.setAttribute('data-entry-details', JSON.stringify(entryData));
+
+                if (entryData.id) {
+                    toggleLoading(true);
+                    try {
+                        const { error } = await _supabase.from('dms_weekly_plans').update({ end_hour: newEndHour }).eq('id', entryData.id);
+                        if (error) throw error;
+                    } catch (error) {
+                        console.error('Error updating entry:', error);
+                        showMessageBox(`Failed to update entry. Error: ${error.message}`, 'Error');
+                        await fetchExistingPlanData(document.getElementById('startDate').value);
+                    } finally {
+                        toggleLoading(false);
+                    }
+                }
+            }
+            currentResizingBox = null;
+        }
+        
+        // --- EVENT LISTENERS & POPOVERS ---
+        function displayEntryPopover(planBoxElement) {
+            hideAllPopovers();
+            const popover = document.createElement('div');
+            popover.className = 'popover';
+            const entryData = JSON.parse(planBoxElement.getAttribute('data-entry-details'));
+            let contentHtml = '';
+            switch (entryData.type) {
+                case 'Event':
+                    contentHtml = `<p><span class="font-semibold">Event:</span> ${entryData.event}</p>`;
+                    if (entryData.event === 'Admin Work') {
+                        const detailsParts = entryData.details.split(' - ');
+                        contentHtml += `<p><span class="font-semibold">Type:</span> ${detailsParts[0]}</p>`;
+                        contentHtml += `<p><span class="font-semibold">Details:</span> ${detailsParts.slice(1).join(' - ') || 'N/A'}</p>`;
+                    } else {
+                        contentHtml += `<p><span class="font-semibold">Details:</span> ${entryData.details || 'N/A'}</p>`;
+                    }
+                    break;
+                case 'Visit':
+                    contentHtml = `<p><span class="font-semibold">Visit:</span> ${entryData.visitType}</p>`;
+                    if (entryData.visitType === 'Double Visit') {
+                        contentHtml += `<p><span class="font-semibold">MR:</span> ${entryData.medicalRep}</p><p><span class="font-semibold">Brick:</span> ${entryData.brick}</p>`;
+                    }
+                    contentHtml += `<p><span class="font-semibold">Details:</span> ${entryData.details || 'N/A'}</p>`;
+                    break;
+                case 'Leave':
+                    contentHtml = `<p><span class="font-semibold">Leave Type:</span> ${entryData.leaveType}</p>`;
+                    contentHtml += `<p><span class="font-semibold">Details:</span> ${entryData.details || 'N/A'}</p>`;
+                    break;
+            }
+            contentHtml += `<p class="plan-time">${getTimeDisplay(entryData.startHour, entryData.endHour, entryData.startTimeOption)}</p>`;
+            popover.innerHTML = `${contentHtml}<button type="button" class="btn btn-danger mt-2" onclick="deleteSingleEntry(event, '${entryData.id}')">Delete</button>`;
+            const planBoxRect = planBoxElement.getBoundingClientRect();
+            document.body.appendChild(popover);
+            const popoverRect = popover.getBoundingClientRect();
+            let top = planBoxRect.top;
+            let left = planBoxRect.right + 10;
+            if (left + popoverRect.width > window.innerWidth) left = planBoxRect.left - popoverRect.width - 10;
+            if (top + popoverRect.height > window.innerHeight) top = window.innerHeight - popoverRect.height - 10;
+            popover.style.left = `${Math.max(0, left)}px`;
+            popover.style.top = `${Math.max(0, top)}px`;
+        }
+
+        function hideAllPopovers() {
+            document.querySelectorAll('.popover').forEach(p => p.remove());
+        }
+        
+        function updateDeleteButtonVisibility() {
+            const selectedBoxes = document.querySelectorAll('.plan-box.selected');
+            document.getElementById('deleteEntryButton').style.display = selectedBoxes.length > 0 ? 'inline-flex' : 'none';
+        }
+
+        // --- GLOBAL EVENT LISTENERS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("Weekly plan waiting for user data...");
+            setTimeout(() => {
+                if (!isAppInitialized) {
+                    console.log("No user data received, initializing with default/guest view.");
+                    handleInitialization(null);
+                }
+            }, 1500);
+        });
+
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type === 'dmPlanningUserPermissions') {
+                console.log('DM-Plan received user data:', event.data.user);
+                handleInitialization(event.data.user);
+            }
+        });
+        
+        // MODIFIED: This listener now calls resetFormInputs() to clear the form fields
+        document.getElementById('districtManager').addEventListener('change', () => {
+            resetFormInputs();
+            updateDatesAndDaySelector();
+        });
+
+        document.getElementById('startDate').addEventListener('change', updateDatesAndDaySelector);
+        
+        const headerEditBtn = document.getElementById('editPlanBtn');
+        const formPanelHeader = document.querySelector('.form-panel-header');
+        
+        const formEditBtn = document.createElement('button');
+        formEditBtn.type = 'button';
+        formEditBtn.className = 'btn btn-primary';
+        formEditBtn.id = 'formEditBtn';
+        formEditBtn.textContent = 'Edit Plan';
+        if (window.innerWidth > 768) {
+            headerEditBtn.classList.add('hidden');
+            formPanelHeader.appendChild(formEditBtn);
+        } else {
+            formEditBtn.classList.add('hidden');
+        }
+
+        function toggleEditPlanForm() {
+            const form = document.getElementById('form-section-container');
+            const button = window.innerWidth > 768 ? formEditBtn : headerEditBtn;
+            const isHidden = form.classList.toggle('hidden');
+            
+            if (isHidden) {
+                button.textContent = 'Edit Plan';
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-primary');
+            } else {
+                button.textContent = 'Hide Form';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+            }
+        }
+
+        headerEditBtn.addEventListener('click', toggleEditPlanForm);
+        formEditBtn.addEventListener('click', toggleEditPlanForm);
+
+        function navigateWeek(direction) {
+            const startDateInput = document.getElementById('startDate');
+            if (!startDateInput.value) return;
+            const currentDate = new Date(startDateInput.value);
+            currentDate.setUTCDate(currentDate.getUTCDate() + direction * 7);
+            startDateInput.value = currentDate.toISOString().split('T')[0];
+            updateDatesAndDaySelector();
+        }
+
+        document.getElementById('prevWeekBtn').addEventListener('click', () => navigateWeek(-1));
+        document.getElementById('nextWeekBtn').addEventListener('click', () => navigateWeek(1));
+        document.getElementById('prevWeekBtnMobile').addEventListener('click', () => navigateWeek(-1));
+        document.getElementById('nextWeekBtnMobile').addEventListener('click', () => navigateWeek(1));
+
+        document.getElementById('plan-table-body').addEventListener('click', (event) => {
+            const targetBox = event.target.closest('.plan-box');
+            if (event.target.closest('.resize-handle')) return;
+            if (event.ctrlKey || event.metaKey || multiSelectMode) {
+                if (targetBox) {
+                    targetBox.classList.toggle('selected');
+                    hideAllPopovers();
+                    const selectedCount = document.querySelectorAll('.plan-box.selected').length;
+                    if (selectedCount > 0) {
+                        showForm();
+                    } else {
+                        const form = document.getElementById('form-section-container');
+                        form.classList.add('hidden');
+                        const editBtn = window.innerWidth > 768 ? formEditBtn : headerEditBtn;
+                        editBtn.textContent = 'Edit Plan';
+                        editBtn.classList.remove('btn-danger');
+                        editBtn.classList.add('btn-primary');
+                    }
+                }
+            } else {
+                const wasSelected = targetBox ? targetBox.classList.contains('selected') : false;
+                document.querySelectorAll('.plan-box.selected').forEach(b => b.classList.remove('selected'));
+                if (targetBox && !wasSelected) {
+                    displayEntryPopover(targetBox);
+                } else {
+                    hideAllPopovers();
+                }
+            }
+            updateDeleteButtonVisibility();
+        });
+        
+        document.getElementById('deleteEntryButton').addEventListener('click', deleteSelectedEntries);
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.container') && !event.target.closest('.popover')) {
+                hideAllPopovers();
+                document.querySelectorAll('.plan-box.selected').forEach(box => box.classList.remove('selected'));
+                updateDeleteButtonVisibility();
+                multiSelectMode = false;
+            }
+        });
+
+        const planTableBody = document.getElementById('plan-table-body');
+        planTableBody.addEventListener('touchstart', (event) => {
+            if (event.target.tagName === 'TD') {
+                document.querySelectorAll('.plan-box.selected').forEach(box => box.classList.remove('selected'));
+                updateDeleteButtonVisibility();
+                multiSelectMode = false;
+                const form = document.getElementById('form-section-container');
+                if (!form.classList.contains('hidden')) {
+                    form.classList.add('hidden');
+                    const editBtn = window.innerWidth > 768 ? formEditBtn : headerEditBtn;
+                    editBtn.textContent = 'Edit Plan';
+                    editBtn.classList.remove('btn-danger');
+                    editBtn.classList.add('btn-primary');
+                }
+                return;
+            }
+
+            const targetBox = event.target.closest('.plan-box');
+            if (!targetBox) return;
+            longPressTimer = setTimeout(() => {
+                multiSelectMode = true;
+                targetBox.classList.add('selected');
+                updateDeleteButtonVisibility();
+                showForm();
+                if ('vibrate' in navigator) navigator.vibrate(50);
+            }, 500);
+        }, { passive: true });
+
+        planTableBody.addEventListener('touchend', () => clearTimeout(longPressTimer));
+        planTableBody.addEventListener('touchmove', () => clearTimeout(longPressTimer));
+
+        // The infinite scroll listener is no longer needed since we are fetching all data at once for the dropdowns.
+        document.querySelector('.scrollable-table-container').removeEventListener('scroll', () => {});
+    </script>
+</body>
+</html>
