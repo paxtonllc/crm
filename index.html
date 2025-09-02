@@ -4,40 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Paxton LLC CRM</title>
+    <!-- Favicon: Added the Paxton LLC logo as the favicon -->
+    <link rel="icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg" type="image/jpeg">
     <!-- Google Fonts: Inter for a modern, clean look -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Favicon and Apple Touch Icons -->
-    <link rel="icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg" type="image/x-icon">
-    <link rel="shortcut icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg" type="image/x-icon">
-    <link rel="apple-touch-icon" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="57x57" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="72x72" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="114x114" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="144x144" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://i.ibb.co/ZRmVjNch/logo.jpg">
-    <!-- You might also add a manifest.json for more advanced PWA features if needed -->
-    <!-- <link rel="manifest" href="/manifest.json"> -->
-
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Supabase CDN for database interaction -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* CSS Variables for easier theme management and consistency */
+        /* CSS Variables for easier theme management and consistency - Adapted from dashboard */
         :root {
-            --coffee-light: #8B5E3C; /* Light coffee/tan */
-            --coffee-dark: #6F4E37;  /* Rich coffee brown */
-            --coffee-gradient-start: #4A2C2A; /* Darker, almost black coffee */
-            --coffee-gradient-end: #8B5E3C;    /* Matches coffee-light */
-
-            --primary-red: #ef4444;
-            --primary-red-dark: #dc2626;
-            --text-color-dark: #374151;
-            --text-color-light: #6b7280;
-            --bg-light: #f9fafb;
-            --bg-medium: #f0f2f5;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --background-gradient-start: #1a365d;
+            --background-gradient-end: #3182ce;
+            --text-color-dark: #1e293b;
+            --text-color-light: #64748b;
+            --card-bg: #ffffff;
             --white: #ffffff;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
             --border-radius: 12px;
+            --transition-duration-fast: 0.2s;
+            --transition-duration-normal: 0.3s;
+            --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         /* Base styles for all elements */
@@ -50,375 +43,365 @@
         /* Body and HTML for full height layout */
         html, body {
             height: 100%;
+            overflow: hidden; /* Prevent body scrolling */
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-medium);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
             color: var(--text-color-dark);
-            -webkit-font-smoothing: antialiased; /* Smoother text rendering */
+            -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            display: flex; /* Use flexbox for the body */
+            flex-direction: column; /* Stack children vertically */
         }
 
         /* Main container for the application, taking full available width and height */
+        /* FIX: Changed to a flex container to manage layout and footer positioning */
         .container {
-            max-width: 1600px; /* Increased max-width for more spacious layout */
-            margin: 0 auto;
-            padding: 20px;
             width: 100%;
-            flex-grow: 1; /* Allows container to expand and fill space */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
+            height: 100vh; /* Full viewport height */
+            overflow: hidden; /* Prevent container from scrolling */
         }
 
         /* Header styling with flexbox for alignment */
+        /* FIX: Header is now a non-growing flex item. No more jumping on scroll. */
+        /* ENHANCEMENT: Added backdrop-filter for a modern, glassy effect */
         .header {
-            display: flex;
-            justify-content: flex-end; /* Aligns admin tab to the right by default */
-            align-items: center;
-            background: var(--white);
-            padding: 6px 25px; /* Made header slimmer */
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            backdrop-filter: blur(10px); /* Glassy blur effect */
+            -webkit-backdrop-filter: blur(10px);
+            padding: 6px 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.07);
             position: relative;
-            z-index: 100; /* Ensures header is always on top */
-            gap: 15px; /* Space between buttons */
-        }
-
-        /* Admin tab button styling */
-        .admin-tab {
-            background: var(--primary-red);
-            color: var(--white);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.95rem;
-            border: none;
-            transition: all 0.25s ease; /* Smooth transition for hover effects */
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px; /* Space between text and icon */
-        }
-
-        .admin-tab:hover {
-            background: var(--primary-red-dark);
-            transform: translateY(-2px); /* Slight lift effect */
-            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.25); /* Enhanced shadow on hover */
+            z-index: 100;
+            flex-shrink: 0; /* Prevent header from shrinking */
         }
         
-        /* Back button styling, similar to admin tab but with primary coffee color */
-        .back-button {
-            background: var(--coffee-light); /* Changed to coffee color */
-            color: var(--white);
-            padding: 10px 20px;
+        /* Inner wrapper for header content to constrain its width */
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: nowrap;
+            width: 100%;
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* User Card Styling */
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            order: 2;
+            width: fit-content;
+            max-width: 180px;
+        }
+
+        .user-card-icon { font-size: 1.4rem; }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-color-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-title {
+            font-size: 0.8rem;
+            color: var(--text-color-light);
+            font-weight: 400;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Button group in header */
+        .header-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            order: 1;
+        }
+
+        /* Button base styling */
+        .header-button {
+            padding: 7px 14px;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
             border: none;
-            transition: all 0.25s ease;
+            /* FIX: Using a more modern easing function for smoother animations */
+            transition: all var(--transition-duration-fast) var(--transition-easing);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            margin-right: auto; /* Pushes the button to the left */
+            gap: 6px;
+            white-space: nowrap;
         }
 
-        .back-button:hover {
-            background: var(--coffee-dark); /* Changed to darker coffee color */
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(139, 94, 60, 0.25); /* Adjusted shadow color */
+        .header-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
+
+        /* Specific button colors */
+        .back-button {
+            background: var(--primary-light);
+            color: var(--background-gradient-start);
+        }
+        .back-button:hover { background: #a0cffc; }
+        
+        .refresh-button {
+            background: #60a5fa;
+            color: var(--white);
+            padding: 7px 10px;
+        }
+        .refresh-button:hover { background: var(--primary-dark); }
+
+        .logout-button {
+            background: #ef4444;
+            color: var(--white);
+            width: 90px;
+            justify-content: center;
+        }
+        .logout-button:hover { background: #dc2626; }
 
         /* Utility class to hide elements */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
-        /* Banner styling with gradient and shine animation */
+        /* Banner styling */
         .banner {
-            background: linear-gradient(135deg, var(--coffee-gradient-start), var(--coffee-gradient-end)); /* Changed to coffee gradient */
+            background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
             color: white;
-            padding: 20px 30px; /* Decreased padding for PC view */
-            margin-bottom: 25px; /* Slightly reduced margin below banner */
-            border-radius: var(--border-radius);
+            padding: 8px 20px;
+            margin: 10px auto;
+            border-radius: 16px;
             box-shadow: var(--shadow-lg);
             position: relative;
             overflow: hidden;
-            flex-shrink: 0; /* Prevents banner from shrinking */
-            display: flex; /* Use flexbox for horizontal alignment of logo and text */
-            flex-direction: row; /* Always row for logo and text */
-            align-items: center; /* Vertically align items */
-            gap: 25px; /* Slightly reduced space between logo and text */
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 18px;
+            max-width: 1500px;
+            width: 98%;
         }
 
         .banner::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
-            transform: translateX(-100%);
-            animation: shine 3s infinite; /* Shine animation for visual flair */
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/><circle cx="10" cy="90" r="1" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            z-index: 0;
+            opacity: 0.2;
+            pointer-events: none;
         }
 
-        @keyframes shine {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Company Logo styling within the banner */
         .company-logo {
-            max-width: 80px; /* Slightly reduced size */
+            max-width: 65px;
             height: auto;
-            border-radius: 8px; /* Slightly rounded corners for the logo */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Subtle shadow */
-            z-index: 1; /* Ensure logo is above shine effect */
-            flex-shrink: 0; /* Prevent logo from shrinking */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            z-index: 1;
+            flex-shrink: 0;
         }
 
         .banner-text-content {
-            flex-grow: 1; /* Allows text content to take remaining space */
-            text-align: left; /* Ensure text is left-aligned within its container */
+            flex-grow: 1;
+            text-align: left;
+            z-index: 1;
         }
 
         .banner h1 {
-            font-size: 3rem; /* Reduced main title font size */
+            font-size: 1.6rem;
             font-weight: 700;
-            margin-bottom: 6px; /* Reduced margin below title */
-            position: relative;
-            z-index: 1;
-            text-shadow: 0 3px 6px rgba(0,0,0,0.2);
+            margin-bottom: 2px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
 
         .banner .subtitle {
-            font-size: 1.15rem; /* Reduced subtitle font size */
+            font-size: 0.8rem;
             opacity: 0.98;
             font-weight: 400;
-            position: relative;
-            z-index: 1;
+        }
+        
+        /* Home view container */
+        /* FIX: Changed flex properties to ensure content scrolls while footer stays visible */
+        .home-view {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Allows this view to fill available space */
+            overflow: hidden; /* Contains scrolling within this element */
         }
 
         /* Home view grid for navigation cards */
+        /* FIX: This grid is now the primary scrolling area on the home page */
         .home-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid columns */
-            gap: 25px; /* Space between grid items */
-            padding: 20px 0;
-            flex-grow: 1; /* Allows grid to expand */
-            align-content: start; /* Aligns content to the start of the grid */
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 18px;
+            padding: 12px;
+            flex-grow: 1;
+            align-content: start;
+            overflow-y: auto; /* Enable scrolling for the grid only */
+            max-width: 1500px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Styling for each navigation card */
         .main-card {
-            background: var(--white);
-            padding: 25px; /* Decreased padding */
-            border-radius: var(--border-radius);
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 16px;
             box-shadow: var(--shadow-md);
             cursor: pointer;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for hover */
+            /* FIX: Using a smoother, more modern easing function */
+            transition: all var(--transition-duration-normal) var(--transition-easing);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            min-height: 160px; /* Decreased min-height */
+            min-height: 120px;
             position: relative;
             overflow: hidden;
-            border: 1px solid #e2e8f0; /* Subtle border */
+            border: 1px solid var(--border-color);
         }
-
-        /* Pseudo-element for hover effect on cards */
-        .main-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(to bottom right, rgba(139, 94, 60, 0.03), transparent 50%); /* Adjusted shadow color */
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .main-card:hover::before {
-            opacity: 1;
-        }
-
+        
         .main-card:hover {
-            transform: translateY(-5px); /* Lift effect on hover */
-            box-shadow: var(--shadow-lg); /* Larger shadow on hover */
-            border-color: var(--coffee-light); /* Highlight border on hover */
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-light);
         }
 
         /* Disabled card styling */
         .main-card.disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            background: var(--bg-light);
+            background: #f1f5f9;
             box-shadow: var(--shadow-sm);
             border-color: #cbd5e1;
         }
-
         .main-card.disabled:hover {
-            transform: none; /* No lift for disabled cards */
+            transform: none;
             box-shadow: var(--shadow-sm);
             border-color: #cbd5e1;
         }
 
-        /* Icon styling for cards */
         .main-card-icon {
-            font-size: 3rem; /* Reduced icon size */
-            margin-bottom: 12px; /* Reduced margin */
-            color: var(--coffee-light); /* Changed to coffee color */
-            line-height: 1; /* Ensures icon is vertically centered */
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--background-gradient-end);
+            line-height: 1;
         }
+        .main-card.disabled .main-card-icon { color: var(--text-color-light); }
 
-        .main-card.disabled .main-card-icon {
-            color: var(--text-color-light); /* Muted icon for disabled cards */
-        }
-
-        /* Title styling for cards */
         .main-card-title {
-            font-size: 1.4rem; /* Reduced title size */
+            font-size: 1.1rem;
             font-weight: 600;
             color: var(--text-color-dark);
-            margin-bottom: 4px; /* Reduced margin */
+            margin-bottom: 3px;
         }
+        .main-card.disabled .main-card-title { color: var(--text-color-light); }
 
-        .main-card.disabled .main-card-title {
-            color: var(--text-color-light);
-        }
-
-        /* Subtitle styling for cards */
         .main-card-subtitle {
-            font-size: 0.9rem; /* Slightly reduced subtitle font size */
+            font-size: 0.75rem;
             color: var(--text-color-light);
             line-height: 1.4;
         }
         
         /* Full page view container */
+        /* ENHANCEMENT: Made transitions smoother and faster for a better feel */
         .full-page-view {
-            background: var(--white);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
-            flex-grow: 1; /* Allows full page view to fill available space */
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden; /* Ensures content within iframe doesn't overflow */
-            transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition for showing/hiding */
-            transform: translateY(10px); /* Initial slight offset for animation */
-            opacity: 0; /* Start hidden */
-            height: calc(100vh - 120px); /* Calculate height to fill screen minus header/padding */
+            overflow: hidden;
+            /* FIX: Updated transition for a smoother, faster feel */
+            transition: opacity var(--transition-duration-fast) var(--transition-easing), transform var(--transition-duration-fast) var(--transition-easing);
+            transform: translateY(10px);
+            opacity: 0;
         }
 
         .full-page-view.active {
-            opacity: 1; /* Fully visible */
-            transform: translateY(0); /* Move to final position */
-            display: flex; /* Ensure it's a flex container when active */
+            opacity: 1;
+            transform: translateY(0);
+            display: flex;
         }
-
+        
         /* Iframe container within full page view */
         .iframe-container-fpv {
-            flex-grow: 1; /* Allows iframe to take all available space */
+            flex-grow: 1;
             position: relative;
             width: 100%;
             height: 100%;
             border: none;
-            display: block; /* Removes extra space below iframe */
-            background: var(--white); /* Fallback background */
+            display: block;
+            background: var(--card-bg);
         }
 
         .full-page-view iframe {
             width: 100%;
             height: 100%;
             border: none;
-            display: block; /* Removes extra space below iframe */
-            background: var(--white); /* Fallback background */
+            display: block;
+            background: var(--card-bg);
         }
 
         /* Error state styling */
-        .error-state {
-            display: none; /* Hidden by default */
-            padding: 60px 40px;
-            text-align: center;
-            color: var(--primary-red);
-            position: absolute; /* Overlay on top of iframe */
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.95);
-            z-index: 5; /* Above iframe, below loading */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: var(--border-radius);
-        }
-
-        .error-state.show {
-            display: flex;
-        }
-
-        .error-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .error-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .error-text {
-            color: var(--text-color-light);
-            font-size: 1rem;
-        }
-
-        /* Loading overlay styling */
-        .loading {
-            display: none; /* Hidden by default */
+        .error-state, .loading {
+            display: none;
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(255, 255, 255, 0.95);
-            z-index: 10; /* Highest z-index */
+            z-index: 10;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             border-radius: var(--border-radius);
         }
 
-        .loading.show {
-            display: flex;
-        }
+        .error-state.show, .loading.show { display: flex; }
+
+        .error-icon { font-size: 2.5rem; margin-bottom: 15px; color: #ef4444; }
+        .error-title { font-size: 1.4rem; font-weight: 600; margin-bottom: 8px; }
+        .error-text { color: var(--text-color-light); font-size: 0.95rem; }
 
         .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid var(--coffee-light); /* Changed to coffee color */
+            width: 35px;
+            height: 35px;
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid var(--background-gradient-end);
             border-radius: 50%;
-            animation: spin 1s linear infinite; /* Spinner animation */
-            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
         }
 
-        .loading-text {
-            color: var(--text-color-light);
-            font-weight: 500;
-        }
+        .loading-text { color: var(--text-color-light); font-weight: 500; font-size: 0.95rem; }
 
         @keyframes spin {
             0% { transform: rotate(0deg); }
@@ -428,13 +411,13 @@
         /* Status indicator in banner */
         .status-indicator {
             position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 10px; /* Slightly larger */
-            height: 10px;
+            top: 15px;
+            right: 15px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
-            background: #10b981; /* Green color */
-            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2); /* Larger pulse shadow */
+            background: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
             animation: pulse 2s infinite;
         }
 
@@ -443,523 +426,1299 @@
             50% { opacity: 0.6; transform: scale(1.1); }
         }
 
-        /* Demo styles for missing pages */
-        .demo-content {
-            padding: 40px;
-            text-align: center;
-            color: var(--text-color-dark);
-            width: 100%; /* Ensure demo content takes full width */
-            height: 100%; /* Ensure demo content takes full height */
-            display: flex; /* Use flexbox for centering text */
-            flex-direction: column;
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
         }
 
-        .demo-content h2 {
-            color: var(--coffee-dark);
-            margin-bottom: 20px;
-            font-size: 2rem;
+        .login-box {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            width: 100%;
+            max-width: 360px;
+            /* Updated animation to use zoomInFade */
+            animation: zoomInFade 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        
+        /* New Zooming Animation for Intro and Login */
+        @keyframes zoomInFade {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        .demo-content p {
+
+        .login-box .login-logo {
+            max-width: 60px;
+            margin-bottom: 15px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+
+        .login-box h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-color-dark);
+            margin-bottom: 1.5rem;
+        }
+
+        .login-box .input-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .login-box label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
             color: var(--text-color-light);
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 600px; /* Limit width for readability */
+            font-size: 0.825rem;
         }
 
-        /* Responsive adjustments for smaller screens */
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 18px;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .login-box input[type="text"]:focus,
+        .login-box input[type="password"]:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 0.7rem;
+            border: none;
+            border-radius: 18px;
+            background-color: #3b82f6;
+            color: white;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-box button:hover { background-color: var(--primary-dark); }
+
+        .login-box .error-message {
+            color: #ef4444;
+            margin-top: 1rem;
+            height: 1rem;
+            font-size: 0.825rem;
+            display: none;
+        }
+
+        /* Full-page Blurred Message Overlay */
+        .full-page-message-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(29, 54, 93, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-duration-normal) ease, visibility var(--transition-duration-normal) ease;
+            z-index: 2000;
+        }
+
+        .full-page-message-overlay.show { opacity: 1; visibility: visible; }
+
+        .full-page-message-overlay p {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--white);
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Footer Styling */
+        /* FIX: Footer is now a non-growing flex item, always visible at the bottom. */
+        .footer {
+            display: none; /* Hidden by default, shown via JS */
+            padding: 8px 15px;
+            text-align: center;
+            font-size: 0.75rem;
+            background: #f1f5f9;
+            border-top: 1px solid var(--border-color);
+            font-weight: bold;
+            color: var(--background-gradient-end);
+            flex-shrink: 0; /* Prevent footer from shrinking */
+        }
+        /* FIX: Ensure the footer is displayed correctly when it should be visible on mobile */
+        .footer.show { display: block; }
+        
+        /* New Professional Intro Animation Styles */
+        .intro-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--background-gradient-start) 0%, var(--background-gradient-end) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+            opacity: 1;
+            /* Updated transition delay to match the new animation duration */
+            transition: opacity 0.5s ease-out 1.5s; 
+        }
+
+        .intro-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .intro-content {
+            text-align: center;
+            position: relative;
+            /* Apply the new zooming animation */
+            animation: zoomInFade 1.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+
+        .logo-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px;
+        }
+
+        .intro-logo {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .loading-circle {
+            position: absolute;
+            top: -10px; left: -10px;
+            width: 170px; height: 170px;
+            border: 5px solid transparent;
+            border-top-color: var(--primary-light);
+            border-right-color: var(--primary-light);
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+        }
+        
+        .intro-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        
+        /* Mobile Menu (Side Menu) Styles */
+        .mobile-menu-button { display: none; background: var(--background-gradient-end); color: var(--white); padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 1.2rem; transition: background 0.3s ease; order: 0; }
+        .mobile-menu-button:hover { background: var(--primary-dark); }
+        .side-menu-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 1000; opacity: 0; transition: opacity 0.3s ease; }
+        .side-menu-overlay.show { display: block; opacity: 1; }
+        .side-menu { position: fixed; top: 0; left: -280px; width: 250px; height: 100%; background: var(--card-bg); box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 1001; transition: left 0.3s ease; padding: 20px; display: flex; flex-direction: column; }
+        .side-menu.show { left: 0; }
+        .side-menu-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+        .side-menu-header h3 { font-size: 1.1rem; color: var(--background-gradient-end); }
+        .close-menu-button { background: none; border: none; font-size: 1.5rem; color: var(--text-color-dark); cursor: pointer; }
+        .side-menu-nav { flex-grow: 1; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; padding-right: 5px; }
+        .side-menu-card { display: flex; align-items: center; gap: 10px; padding: 10px 15px; background: #f1f5f9; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); cursor: pointer; transition: background 0.2s ease, transform 0.2s ease; text-decoration: none; color: var(--text-color-dark); }
+        .side-menu-card:hover { background: #e2e8f0; transform: translateX(3px); }
+        .side-menu-card-icon { font-size: 1.2rem; color: var(--background-gradient-end); opacity: 0.8; }
+        .side-menu-card-title { font-size: 0.9rem; font-weight: 500; }
+        .side-menu-logout { margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; }
+        .side-menu-logout-button { width: 100%; padding: 10px 15px; background: #ef4444; color: var(--white); border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: background 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .side-menu-logout-button:hover { background: #dc2626; }
+        .side-menu-group { display: flex; flex-direction: column; }
+        .side-menu-group-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 10px 15px; background: #f1f5f9; border-radius: var(--border-radius); box-shadow: var(--shadow-sm); transition: background 0.2s ease, transform 0.2s ease; margin-bottom: 10px; }
+        .side-menu-group-toggle:hover { background: #e2e8f0; transform: translateX(3px); }
+        .side-menu-group-toggle .arrow { transition: transform 0.2s ease; }
+        .side-menu-group-toggle.open .arrow { transform: rotate(90deg); }
+        .side-menu-sub-items { display: none; flex-direction: column; gap: 5px; padding-left: 20px; margin-bottom: 10px; }
+        .side-menu-sub-items.show { display: flex; }
+        .side-menu-sub-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: var(--white); border-radius: var(--border-radius); cursor: pointer; transition: background 0.2s ease; box-shadow: var(--shadow-sm); }
+        .side-menu-sub-item:hover { background: #f1f5f9; }
+        
+        /* Notification Bell */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+        .notification-bell .fa-bell {
+            font-size: 1.4rem;
+            color: var(--text-color-dark);
+        }
+        .notification-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .notification-count.updated {
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.4); }
+            60% { transform: scale(0.9); }
+        }
+
+        .notification-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 101;
+        }
+        .notification-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .notification-item:hover { background-color: #f1f5f9; }
+        .notification-item:last-child { border-bottom: none; }
+        .notification-title {
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .notification-rep {
+            font-size: 0.8rem;
+            color: var(--text-color-light);
+        }
+        .notification-date {
+            font-size: 0.7rem;
+            color: var(--text-color-light);
+            margin-top: 4px;
+        }
+
+        /* Request Modal Styles */
+        .custom-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-duration-normal) ease, visibility var(--transition-duration-normal) ease;
+        }
+        .custom-modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.9);
+            opacity: 0;
+            transition: transform var(--transition-duration-normal) ease, opacity var(--transition-duration-normal) ease;
+        }
+        .custom-modal-overlay.show .custom-modal-content {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .modal-header h2 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .close-modal-button {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-color-light);
+            cursor: pointer;
+            line-height: 1;
+        }
+        .modal-body {
+            font-size: 0.9rem;
+            color: var(--text-color-dark);
+            line-height: 1.6;
+        }
+        .modal-body .detail-pair { margin-bottom: 12px; }
+        .modal-body .detail-pair strong {
+            color: var(--text-color-dark);
+            display: block;
+            font-weight: 600;
+            margin-bottom: 3px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        .modal-body .detail-pair span { color: var(--text-color-light); }
+        .modal-footer {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-footer label {
+            font-weight: 600;
+            color: var(--text-color-dark);
+        }
+        .modal-footer select {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            flex-grow: 1;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        /* Responsive adjustments */
         @media (max-width: 1024px) {
-            .container {
-                padding: 15px;
-            }
-            .banner {
-                padding: 25px 30px; /* Slightly more compact */
-                gap: 20px;
-            }
-            .banner h1 {
-                font-size: 3rem;
-            }
-            .banner .subtitle {
-                font-size: 1.1rem;
-            }
-            .company-logo {
-                max-width: 80px; /* Adjust size for medium screens */
-            }
-            .home-grid {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 20px;
-            }
-            .main-card-icon {
-                font-size: 3rem;
-            }
-            .main-card-title {
-                font-size: 1.3rem;
-            }
+            .container { padding: 10px; }
+            .header { padding: 6px 15px; }
+            .user-card { padding: 6px 12px; gap: 10px; max-width: 180px; }
+            .user-card-icon { font-size: 1.3rem; }
+            .user-name { font-size: 0.9rem; }
+            .user-title { font-size: 0.75rem; }
+            .header-button { padding: 7px 12px; font-size: 0.85rem; }
+            .logout-button { width: 90px; }
+            .banner { padding: 10px 20px; gap: 15px; }
+            .banner h1 { font-size: 1.8rem; }
+            .banner .subtitle { font-size: 0.85rem; }
+            .company-logo { max-width: 60px; }
+            .home-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; }
+            .main-card { min-height: 120px; padding: 15px; }
+            .main-card-icon { font-size: 2rem; }
+            .main-card-title { font-size: 1.1rem; }
+            .full-page-view { height: calc(100vh - 90px); }
+            .full-page-message-overlay p { font-size: 1.5rem; padding: 15px; }
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .header {
-                flex-direction: row; /* Keep buttons in a row */
-                justify-content: space-between; /* Space out buttons */
-                padding: 8px 15px; /* Slimmer header on mobile */
-            }
-            .admin-tab, .back-button {
-                padding: 8px 15px;
-                font-size: 0.85rem;
-            }
-            .banner {
-                /* Maintain row direction for logo and text */
-                padding: 20px 15px; /* Adjust padding for mobile row layout */
-                margin-bottom: 20px;
-                gap: 15px; /* Adjust gap for mobile row layout */
-            }
-            .company-logo {
-                max-width: 60px; /* Even smaller on mobile to allow space for text */
-            }
-            .banner h1 {
-                font-size: 2rem; /* Reduced font size for mobile row layout */
-                margin-bottom: 4px; /* Reduced margin */
-            }
-            .banner .subtitle {
-                font-size: 0.9rem; /* Reduced font size for mobile */
-            }
-            .home-grid {
-                grid-template-columns: 1fr; /* Single column on very small screens */
-                gap: 15px;
-            }
-            .main-card {
-                min-height: 150px;
-                padding: 25px;
-            }
-            .main-card-icon {
-                font-size: 2.8rem;
-            }
-            .main-card-title {
-                font-size: 1.2rem;
-            }
-            .full-page-view {
-                height: calc(100vh - 90px); /* Adjust height for mobile header */
-            }
-        }
-
-        @media (max-width: 480px) {
-            .banner {
-                padding: 15px 10px;
-                gap: 10px;
-            }
-            .company-logo {
-                max-width: 50px;
-            }
-            .banner h1 {
-                font-size: 1.6rem;
-            }
-            .banner .subtitle {
-                font-size: 0.8rem;
-            }
-            .admin-tab, .back-button {
-                font-size: 0.8rem;
-                padding: 6px 12px;
-            }
+            .container { padding: 8px; height: 100vh; }
+            .header { flex-wrap: nowrap; justify-content: space-between; padding: 6px 8px; z-index: 100; }
+            .user-card { width: 100%; margin-bottom: 0; justify-content: flex-start; order: 2; flex-grow: 1; max-width: 150px; }
+            .user-name { font-size: 0.7rem; }
+            .user-title { font-size: 0.6rem; }
+            .header-buttons { width: auto; justify-content: flex-start; order: 1; flex-grow: 1; }
+            .header-button { flex-grow: 0; padding: 5px 7px; font-size: 0.7rem; }
+            .logout-button { width: 70px; display: none; }
+            .banner { padding: 6px 12px; gap: 8px; }
+            .company-logo { max-width: 40px; }
+            .banner h1 { font-size: 1.2rem; }
+            .banner .subtitle { font-size: 0.65rem; }
+            .home-grid { grid-template-columns: 1fr; gap: 12px; }
+            .main-card { min-height: 80px; padding: 12px; flex-direction: row; justify-content: flex-start; text-align: left; gap: 15px; }
+            .main-card-icon { font-size: 1.8rem; margin-bottom: 0; flex-shrink: 0; }
+            .main-card-title { font-size: 1rem; margin-bottom: 0; }
+            .main-card-subtitle { font-size: 0.7rem; display: none; }
+            .full-page-view { height: 100%; }
+            .login-box { padding: 20px; margin: 0 10px; max-width: 280px; }
+            .login-box .login-logo { max-width: 50px; }
+            .login-box h2 { font-size: 1.2rem; margin-bottom: 15px; }
+            .login-box input[type="text"], .login-box input[type="password"] { padding: 8px 10px; font-size: 0.85rem; }
+            .login-box button { padding: 9px 15px; font-size: 0.9rem; }
+            .full-page-message-overlay p { font-size: 1.2rem; padding: 10px; }
+            .main-card-text-content { display: flex; flex-direction: column; flex-grow: 1; }
+            .mobile-menu-button { display: block; }
+            .footer.show { display: block; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- New Professional Intro Animation Overlay -->
+    <div id="introOverlay" class="intro-overlay">
+        <div class="intro-content">
+            <div class="logo-container">
+                <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="intro-logo" onerror="this.onerror=null;this.src='https://placehold.co/150x150/FFFFFF/1a365d?text=Paxton';">
+                <div class="loading-circle"></div>
+            </div>
+            <p class="intro-text">Paxton CRM</p>
+        </div>
+    </div>
+
+    <!-- Full-page Blurred Message Overlay (for login/logout messages) -->
+    <div id="fullPageMessageOverlay" class="full-page-message-overlay">
+        <p id="fullPageOverlayMessage"></p>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container hidden">
+        <div class="login-box">
+            <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="login-logo" onerror="this.onerror=null;this.src='https://placehold.co/60x60/3498db/FFFFFF?text=Logo';">
+            <h2>PAXTON LLC CRM</h2>
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username">
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="Enter your password">
+            </div>
+            <button id="loginButton">Login</button>
+            <div id="loginError" class="error-message">Invalid username or password.</div>
+        </div>
+    </div>
+
+    <!-- Main Application Content (hidden until login) -->
+    <div id="appContent" class="container hidden">
         <div class="header">
-            <!-- Back button, initially hidden -->
-            <button id="backButton" class="back-button hidden">
-                &#x2190; Back to Home
-            </button>
-            <!-- Admin tab button -->
-            <button id="adminButton" class="admin-tab">
-                Admin
-            </button>
+            <div class="header-inner">
+                <button id="mobileMenuButton" class="mobile-menu-button"><i class="fas fa-bars"></i></button>
+                <div class="header-buttons">
+                    <button id="logoutButton" class="header-button logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                    <button id="backButton" class="header-button back-button hidden"><i class="fas fa-arrow-left"></i> Back</button>
+                    <button id="refreshButton" class="header-button refresh-button hidden"><i class="fas fa-sync-alt"></i></button>
+                    <div class="notification-bell hidden" id="notificationBell">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-count" id="notificationCount">0</span>
+                        <div class="notification-dropdown hidden" id="notificationDropdown">
+                            <!-- Notification items will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+                <div id="userCard" class="user-card hidden">
+                    <i class="fas fa-user-circle user-card-icon"></i>
+                    <div class="user-info">
+                        <span id="userCardName" class="user-name"></span>
+                        <span id="userCardTitle" class="user-title"></span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Home View: This section will display the main navigation cards -->
         <div id="homeView" class="home-view">
             <div class="banner">
                 <div class="status-indicator"></div>
-                <!-- Company Logo moved to the left and placed before text content -->
-                <!-- The logo image source has been corrected to a standard URL format. -->
-                <!-- The onerror attribute provides a fallback placeholder image if the main image fails to load. -->
-                <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="company-logo" onerror="this.onerror=null;this.src='https://placehold.co/90x90/A0522D/FFFFFF?text=Logo';">
+                <img src="https://i.ibb.co/ZRmVjNch/logo.jpg" alt="Paxton LLC Logo" class="company-logo" onerror="this.onerror=null;this.src='https://placehold.co/70x70/3498db/FFFFFF?text=Logo';">
                 <div class="banner-text-content">
                     <h1>PAXTON LLC CRM</h1>
                     <div class="subtitle">Medical Team Affairs</div>
                 </div>
             </div>
-
             <div class="home-grid">
-                <!-- CRM Card -->
-                <div class="main-card" data-page="crm">
-                    <div class="main-card-icon">📊</div>
-                    <div class="main-card-title">CRM</div>
-                    <div class="main-card-subtitle">Hcps related affairs.</div>
-                </div>
-                <!-- Dashboard Card -->
-                <div class="main-card" data-page="dashboard">
-                    <div class="main-card-icon">📈</div>
-                    <div class="main-card-title">Dashboard</div>
-                    <div class="main-card-subtitle">View key performance indicators and analytics.</div>
-                </div>
-                <!-- UPA Codes Card - This card is fully clickable and functions like the CRM card. -->
-                <div class="main-card" data-page="upa-codes">
-                    <div class="main-card-icon">🏥</div>
-                    <div class="main-card-title">UPA Codes</div>
-                    <div class="main-card-subtitle">Access UPA Codes and affairs.</div>
-                </div>
-                <!-- Price List Card - This card is fully clickable and functions like the CRM card. -->
-                <div class="main-card" data-page="price-list">
-                    <div class="main-card-icon">💲</div>
-                    <div class="main-card-title">Price List</div>
-                    <div class="main-card-subtitle">products pricing information.</div>
-                </div>
-                <!-- Products Knowledge Card - New card added -->
-                <div class="main-card" data-page="products-knowledge">
-                    <div class="main-card-icon">📚</div>
-                    <div class="main-card-title">Products Knowledge</div>
-                    <div class="main-card-subtitle">Detailed information about our products.</div>
-                </div>
-                <!-- Coming Soon Card (disabled) -->
-                <div class="main-card disabled">
-                    <div class="main-card-icon">⏳</div>
-                    <div class="main-card-title">Coming Soon</div>
-                    <div class="main-card-subtitle">Exciting new features are on their way!</div>
-                </div>
+                <!-- Cards will be dynamically inserted here by JavaScript -->
             </div>
         </div>
 
-        <!-- Full Page Views: Each will contain its own iframe and loading/error states -->
-        <!-- CRM Full Page View -->
+        <!-- Full Page Views -->
         <div id="crmView" class="full-page-view hidden">
-            <div class="loading" id="loadingCrm">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading CRM...</div>
-            </div>
-            <div class="error-state" id="errorCrm">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">CRM Page Not Found</div>
-                <div class="error-text">The CRM file could not be loaded. Please check its path.</div>
-            </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>CRM System</h2>
-                    <p>This would be your Customer Relationship Management interface. Currently showing demo content since the external file is not available.</p>
-                </div>
-            </div>
+            <div class="loading" id="loadingCrm"><div class="spinner"></div><div class="loading-text">Loading CRM...</div></div>
+            <div class="error-state" id="errorCrm"><div class="error-icon">⚠️</div><div class="error-title">CRM Page Not Found</div><div class="error-text">The CRM file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-
-        <!-- Dashboard Full Page View -->
         <div id="dashboardView" class="full-page-view hidden">
-            <div class="loading" id="loadingDashboard">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading Dashboard...</div>
-            </div>
-            <div class="error-state" id="errorDashboard">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">Dashboard Page Not Found</div>
-                <div class="error-text">The Dashboard file could not be loaded. Please check its path.</div>
-            </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>Analytics Dashboard</h2>
-                    <p>This would display your key performance indicators and business analytics. Currently showing demo content since the external file is not available.</p>
-                </div>
-            </div>
+            <div class="loading" id="loadingDashboard"><div class="spinner"></div><div class="loading-text">Loading Dashboard...</div></div>
+            <div class="error-state" id="errorDashboard"><div class="error-icon">⚠️</div><div class="error-title">Dashboard Page Not Found</div><div class="error-text">The Dashboard file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-
-        <!-- UPA Codes Full Page View -->
+        <div id="dmCrmView" class="full-page-view hidden">
+            <div class="loading" id="loadingDmCrm"><div class="spinner"></div><div class="loading-text">Loading DM CRM...</div></div>
+            <div class="error-state" id="errorDmCrm"><div class="error-icon">⚠️</div><div class="error-title">DM CRM Page Not Found</div><div class="error-text">The DM CRM page could not be loaded.</div></div>
+            <div class="home-grid" id="dmCrmSubGrid"></div>
+        </div>
         <div id="upaCodesView" class="full-page-view hidden">
-            <div class="loading" id="loadingUpaCodes">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading UPA Codes...</div>
-            </div>
-            <div class="error-state" id="errorUpaCodes">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">UPA Codes Page Not Found</div>
-                <div class="error-text">The UPA Codes file could not be loaded. Please check its path.</div>
-            </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>UPA Codes Management</h2>
-                    <p>This would be your Universal Product Access codes interface. Currently showing demo content since the external file is not available.</p>
-                </div>
-            </div>
+            <div class="loading" id="loadingUpaCodes"><div class="spinner"></div><div class="loading-text">Loading UPA Codes...</div></div>
+            <div class="error-state" id="errorUpaCodes"><div class="error-icon">⚠️</div><div class="error-title">UPA Codes Page Not Found</div><div class="error-text">The UPA Codes file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-
-        <!-- Price List Full Page View -->
         <div id="priceListView" class="full-page-view hidden">
-            <div class="loading" id="loadingPriceList">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading Price List...</div>
-            </div>
-            <div class="error-state" id="errorPriceList">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">Price List Page Not Found</div>
-                <div class="error-text">The Price List file could not be loaded. Please check its path.</div>
-            </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>Price List Management</h2>
-                    <p>This would be your product pricing interface. Currently showing demo content since the external file is not available.</p>
-                </div>
-            </div>
+            <div class="loading" id="loadingPriceList"><div class="spinner"></div><div class="loading-text">Loading Price List...</div></div>
+            <div class="error-state" id="errorPriceList"><div class="error-icon">⚠️</div><div class="error-title">Price List Page Not Found</div><div class="error-text">The Price List file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-
-        <!-- Products Knowledge Full Page View - New view added -->
         <div id="productsKnowledgeView" class="full-page-view hidden">
-            <div class="loading" id="loadingProductsKnowledge">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading Products Knowledge...</div>
-            </div>
-            <div class="error-state" id="errorProductsKnowledge">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">Products Knowledge Page Not Found</div>
-                <div class="error-text">The Products Knowledge file could not be loaded. Please check its path.</div>
-            </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>Products Knowledge Base</h2>
-                    <p>This section will provide detailed information and resources about our products. Currently showing demo content since the external file is not available.</p>
-                </div>
-            </div>
+            <div class="loading" id="loadingProductsKnowledge"><div class="spinner"></div><div class="loading-text">Loading Products Knowledge...</div></div>
+            <div class="error-state" id="errorProductsKnowledge"><div class="error-icon">⚠️</div><div class="error-title">Products Knowledge Page Not Found</div><div class="error-text">The Products Knowledge file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-
-        <!-- Admin Full Page View -->
         <div id="adminView" class="full-page-view hidden">
-            <div class="loading" id="loadingAdmin">
-                <div class="spinner"></div>
-                <div class="loading-text">Loading Admin Panel...</div>
+            <div class="loading" id="loadingAdmin"><div class="spinner"></div><div class="loading-text">Loading Admin...</div></div>
+            <div class="error-state" id="errorAdmin"><div class="error-icon">⚠️</div><div class="error-title">Admin Page Not Found</div><div class="error-text">The Admin file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
+        </div>
+        <div id="masterListView" class="full-page-view hidden">
+            <div class="loading" id="loadingMasterList"><div class="spinner"></div><div class="loading-text">Loading Master List...</div></div>
+            <div class="error-state" id="errorMasterList"><div class="error-icon">⚠️</div><div class="error-title">Master List Page Not Found</div><div class="error-text">The Master List file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
+        </div>
+        <!-- START: Added 'expensesView' container for the new page -->
+        <div id="expensesView" class="full-page-view hidden">
+            <div class="loading" id="loadingExpenses"><div class="spinner"></div><div class="loading-text">Loading Expenses...</div></div>
+            <div class="error-state" id="errorExpenses"><div class="error-icon">⚠️</div><div class="error-title">Expenses Page Not Found</div><div class="error-text">The Expenses file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
+        </div>
+        <!-- END: Added 'expensesView' container for the new page -->
+        <div id="nestedIframeView" class="full-page-view hidden">
+            <div class="loading" id="loadingNestedIframe"><div class="spinner"></div><div class="loading-text">Loading...</div></div>
+            <div class="error-state" id="errorNestedIframe"><div class="error-icon">⚠️</div><div class="error-title">Page Not Found</div><div class="error-text">The requested file could not be loaded.</div></div>
+            <div class="iframe-container-fpv"><iframe src=""></iframe></div>
+        </div>
+    </div>
+    <footer class="footer">Developed by DrTahaDesigns</footer>
+
+    <!-- Side Menu -->
+    <div id="sideMenuOverlay" class="side-menu-overlay"></div>
+    <div id="sideMenu" class="side-menu">
+        <div class="side-menu-header">
+            <h3>Navigation</h3>
+            <button id="closeMenuButton" class="close-menu-button"><i class="fas fa-times"></i></button>
+        </div>
+        <nav class="side-menu-nav"><!-- Cards will be dynamically inserted here --></nav>
+        <div class="side-menu-logout">
+            <button id="sideMenuLogoutButton" class="side-menu-logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+    
+    <!-- Request Details Modal -->
+    <div id="requestModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="modal-header">
+                <h2 id="modalRequestTitle">Request Details</h2>
+                <button id="modalCloseButton" class="close-modal-button">&times;</button>
             </div>
-            <div class="error-state" id="errorAdmin">
-                <div class="error-icon">⚠️</div>
-                <div class="error-title">Admin Page Not Found</div>
-                <div class="error-text">The Admin file could not be loaded. Please check its path.</div>
+            <div id="modalRequestDetails" class="modal-body">
+                <!-- Request details will be populated here -->
             </div>
-            <div class="iframe-container-fpv">
-                <iframe src="" class="hidden"></iframe>
-                <div class="demo-content">
-                    <h2>Admin Panel</h2>
-                    <p>This would be your administrative interface for user management and system settings. Currently showing demo content since the external file is not available.</p>
-                </div>
+            <div class="modal-footer">
+                <label for="modalStatusSelect">Status:</label>
+                <select id="modalStatusSelect">
+                    <!-- Status options will be populated here -->
+                </select>
             </div>
         </div>
-
     </div>
 
+
     <script>
-        // Store the ID of the currently active full-page view
+        const SUPABASE_URL = 'https://plmevfyxpngzymvzvkzn.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
         let currentActiveViewId = null;
-        const LAST_VISITED_PAGE_KEY = 'lastVisitedPage'; // Key for localStorage
+        let loggedInUser = null;
+        let googleSheetData = [];
+        let lastPageHistory = [];
+        let notificationChannel = null;
 
-        /**
-         * Shows the home view and hides any active full-page view.
-         */
-        function showHome() {
-            console.log('Showing home view');
-            const homeView = document.getElementById('homeView');
-            const backButton = document.getElementById('backButton');
-            const adminButton = document.getElementById('adminButton'); // Get admin button reference
-            
-            if (homeView) {
-                homeView.classList.remove('hidden');
-            }
-            
-            if (backButton) {
-                backButton.classList.add('hidden');
-            }
+        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGZVMTCJ53ACJBwYVpyBpCFyDn4lYfMlbbldKbRXfnmsN14APuBIJm2jlDMGhPpYi5xXUp4z1YFkte/pub?gid=0&single=true&output=csv';
 
-            // Show the admin button when returning to home view
-            if (adminButton) {
-                adminButton.classList.remove('hidden');
+        const navConfig = {
+            'home': {
+                pages: [
+                    { id: 'crm', title: 'CRM', subtitle: 'Hcps related affairs.', icon: '📊', viewId: 'crmView', fileName: 'reps crm.html', roles: ['admin', 'District Manager', 'Medical Representative'] },
+                    { id: 'dashboard', title: 'Dashboard', subtitle: 'View key performance indicators and analytics.', icon: '📈', viewId: 'dashboardView', fileName: 'final dashboard.html', roles: ['admin', 'District Manager'] },
+                    { id: 'expenses', title: 'Expenses', subtitle: 'Manage and track team expenses.', icon: '💰', viewId: 'expensesView', fileName: 'expenses.html', roles: ['admin', 'District Manager', 'Medical Representative'] },
+                    { 
+                        id: 'dm-crm', 
+                        title: 'DM CRM', 
+                        subtitle: 'District Manager related affairs.', 
+                        icon: '👔', 
+                        viewId: 'dmCrmView', 
+                        fileName: null, 
+                        isGroup: true,
+                        roles: ['admin', 'District Manager'],
+                        subPages: [
+                            { id: 'dm-planning', title: 'DM Planning', subtitle: 'Plan and schedule district manager activities.', icon: '📅', viewId: 'nestedIframeView', fileName: 'DM-Plan.html', isNested: true, roles: ['admin', 'District Manager'] },
+                            { id: 'dm-report', title: 'DM Report', subtitle: 'View and generate reports for the district.', icon: '📄', viewId: 'nestedIframeView', fileName: 'DM-Report.html', isNested: true, roles: ['admin', 'District Manager'] },
+                        ]
+                    },
+                    { id: 'master-list', title: 'Master List', subtitle: 'View and manage the master data list.', icon: '📋', viewId: 'masterListView', fileName: 'master list.html', roles: ['admin', 'District Manager'] },
+                    { id: 'upa-codes', title: 'UPA Codes', subtitle: 'Access UPA Codes and affairs.', icon: '🏥', viewId: 'upaCodesView', fileName: 'upa-codes.html', roles: ['admin', 'District Manager', 'Medical Representative'] },
+                    { id: 'price-list', title: 'Price List', subtitle: 'products pricing information.', icon: '💲', viewId: 'priceListView', fileName: 'price-list.html', roles: ['admin', 'District Manager', 'Medical Representative'] },
+                    { id: 'products-knowledge', title: 'Products Knowledge', subtitle: 'Detailed information about our products.', icon: '📚', viewId: 'productsKnowledgeView', fileName: 'Products knowledge.html', roles: ['admin', 'District Manager', 'Medical Representative'] },
+                    { id: 'admin', title: 'Admin Panel', subtitle: 'Manage users and system settings.', icon: '⚙️', viewId: 'adminView', fileName: 'admin users.html', roles: ['admin'] },
+                ]
             }
+        };
 
-            // Hide the currently active full-page view, if any
-            if (currentActiveViewId) {
-                const activeView = document.getElementById(currentActiveViewId);
-                if (activeView) {
-                    activeView.classList.remove('active');
-                    // Add hidden class after transition for better performance/layout
-                    setTimeout(() => activeView.classList.add('hidden'), 300);
-                    // Also hide the iframe and show demo content if it was an iframe view
-                    const iframe = activeView.querySelector('iframe');
-                    const demoContent = activeView.querySelector('.demo-content');
-                    if (iframe) iframe.classList.add('hidden');
-                    if (demoContent) demoContent.classList.remove('hidden');
-                }
+        async function fetchGoogleSheetData() {
+            try {
+                // FIX: Add a cache-busting query parameter to ensure fresh data is fetched
+                const response = await fetch(`${GOOGLE_SHEET_URL}&_=${new Date().getTime()}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const csvText = await response.text();
+                googleSheetData = parseCSV(csvText);
+            } catch (error) {
+                console.error('Error fetching or parsing Google Sheet data:', error);
             }
-            currentActiveViewId = null; // Clear the current active view ID
-            localStorage.removeItem(LAST_VISITED_PAGE_KEY); // Clear from localStorage
+        }
+        
+        function parseCSV(csvText) {
+            const rows = csvText.split('\n').filter(row => row.trim() !== '');
+            if (rows.length === 0) return [];
+            const headers = rows[0].split(',').map(header => header.trim());
+            const data = [];
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i].split(',');
+                const rowObject = {};
+                headers.forEach((header, index) => {
+                    rowObject[header] = row[index] ? row[index].trim() : '';
+                });
+                data.push(rowObject);
+            }
+            return data;
         }
 
-        /**
-         * Loads a specific page view into an iframe.
-         * @param {string} page - The page identifier (e.g., 'crm', 'dashboard').
-         */
-        function loadPage(page) {
-            console.log(`Attempting to load page: ${page}`);
-            
-            // Configuration for each page, including view ID, display name, and file name
-            const pageConfig = {
-                'crm': { viewId: 'crmView', displayName: 'CRM', fileName: 'reps crm.html' },
-                'dashboard': { viewId: 'dashboardView', displayName: 'Dashboard', fileName: 'final dashboard.html' },
-                'upa-codes': { viewId: 'upaCodesView', displayName: 'UPA Codes', fileName: 'upa-codes.html' },
-                'price-list': { viewId: 'priceListView', displayName: 'Price List', fileName: 'price-list.html' },
-                'products-knowledge': { viewId: 'productsKnowledgeView', displayName: 'Products Knowledge', fileName: 'Products knowledge.html' }, // New entry
-                'admin': { viewId: 'adminView', displayName: 'Admin', fileName: 'admin users.html' }
-            };
+        function updateAndShowUserCard() {
+            const userCard = document.getElementById('userCard');
+            if (loggedInUser) {
+                document.getElementById('userCardName').textContent = loggedInUser.username;
+                document.getElementById('userCardTitle').textContent = loggedInUser.title;
+                userCard.classList.remove('hidden');
+                fetchNotifications(); // Initial fetch
+            } else {
+                userCard.classList.add('hidden');
+                document.getElementById('notificationBell').classList.add('hidden');
+            }
+        }
+        
+        async function fetchNotifications() {
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationCount = document.getElementById('notificationCount');
+            const notificationDropdown = document.getElementById('notificationDropdown');
 
-            const config = pageConfig[page];
-            if (!config) {
-                console.error(`Error: Unknown page identifier: ${page}`);
-                showHome(); // Fallback to home if page is invalid
+            if (!loggedInUser) return;
+
+            if (loggedInUser.title === 'Medical Representative') {
+                notificationBell.classList.add('hidden');
                 return;
             }
 
-            const { viewId, displayName, fileName } = config;
-
-            // Get references to main UI elements
-            const homeView = document.getElementById('homeView');
-            const backButton = document.getElementById('backButton');
-            const adminButton = document.getElementById('adminButton'); // Get admin button reference
-            const targetView = document.getElementById(viewId);
-
-            // Initialize variables for elements inside targetView
-            let loadingOverlay = null;
-            let errorState = null;
-            let iframeContainer = null;
-            let iframe = null;
-            let demoContent = null;
-
-            // Ensure targetView exists before querying its children
-            if (targetView) {
-                // Using querySelector with classes as they are unique within each full-page-view
-                loadingOverlay = targetView.querySelector('.loading'); 
-                errorState = targetView.querySelector('.error-state'); 
-                iframeContainer = targetView.querySelector('.iframe-container-fpv');
-                if (iframeContainer) {
-                    iframe = iframeContainer.querySelector('iframe');
-                    demoContent = iframeContainer.querySelector('.demo-content');
+            let query = supabase.from('requests').select('*').eq('status', 'Requested');
+            
+            if (loggedInUser.title === 'District Manager') {
+                const dmReps = googleSheetData
+                    .filter(row => row['District Manager'] === loggedInUser.username)
+                    .map(row => row['medical rep']);
+                
+                if (dmReps.length > 0) {
+                    query = query.in('medRep', dmReps);
+                } else {
+                    notificationBell.classList.add('hidden');
+                    return;
                 }
             }
+            
+            // FIX: Order by date descending to get the newest notifications first
+            const { data, error } = await query.order('date', { ascending: false });
 
-            // Basic validation to ensure all required elements exist
-            if (!homeView || !backButton || !adminButton || !targetView || !loadingOverlay || !errorState || !iframeContainer || !iframe || !demoContent) {
-                console.error('Error: One or more required DOM elements not found for page loading. Debug details:');
-                console.error('  homeView:', homeView);
-                console.error('  backButton:', backButton);
-                console.error('  adminButton:', adminButton);
-                console.error('  targetView:', targetView);
-                console.error('  loadingOverlay:', loadingOverlay);
-                console.error('  errorState:', errorState);
-                console.error('  iframeContainer:', iframeContainer);
-                console.error('  iframe:', iframe);
-                console.error('  demoContent:', demoContent);
-                showHome(); // Fallback to home if elements are missing
-                return; // Exit if elements are missing
+            if (error) {
+                console.error('Error fetching notifications:', error);
+                return;
             }
 
-            // --- Execution continues here if all elements are found ---
-            console.log(`All required DOM elements found for page: ${page}. Proceeding to load.`);
+            if (data.length > 0) {
+                const currentCount = parseInt(notificationCount.textContent, 10);
+                notificationCount.textContent = data.length;
+                notificationBell.classList.remove('hidden');
 
-            // Hide the home view, show the back button, and hide the admin button
-            homeView.classList.add('hidden');
-            backButton.classList.remove('hidden'); // This line makes the back button visible
-            adminButton.classList.add('hidden'); // Hide admin button when navigating to a page
-            console.log(`Back button visibility set for page: ${page}.`);
-
-
-            // If there's a currently active full-page view and it's different from the target, hide it
-            if (currentActiveViewId && currentActiveViewId !== viewId) {
-                const prevActiveView = document.getElementById(currentActiveViewId);
-                if (prevActiveView) {
-                    prevActiveView.classList.remove('active');
-                    // Delay adding 'hidden' to allow CSS transition to complete
-                    setTimeout(() => prevActiveView.classList.add('hidden'), 300);
+                if (data.length > currentCount) {
+                    notificationCount.classList.add('updated');
+                    setTimeout(() => {
+                        notificationCount.classList.remove('updated');
+                    }, 600);
                 }
+
+                notificationDropdown.innerHTML = '';
+                data.forEach(req => {
+                    const item = document.createElement('div');
+                    item.className = 'notification-item';
+                    item.dataset.requestId = req.id;
+                    const requestDate = new Date(req.date).toLocaleDateString('en-GB', {
+                        day: '2-digit', month: 'short', year: 'numeric'
+                    });
+
+                    item.innerHTML = `
+                        <div class="notification-title">${req.requestTitle}</div>
+                        <div class="notification-rep">By: ${req.medRep}</div>
+                        <div class="notification-date">${requestDate}</div>
+                    `;
+                    item.addEventListener('click', () => showRequestModal(req.id));
+                    // FIX: Use appendChild, as the data is already sorted correctly from the query.
+                    // This ensures the list renders in the correct chronological order (newest on top).
+                    notificationDropdown.appendChild(item);
+                });
+
+            } else {
+                notificationBell.classList.add('hidden');
             }
-
-            // Set the new active view ID and save it to localStorage
-            currentActiveViewId = viewId;
-            localStorage.setItem(LAST_VISITED_PAGE_KEY, page); // Store the page identifier
-
-            // Show the target full-page view with a slight delay for transition effect
-            targetView.classList.remove('hidden');
-            setTimeout(() => targetView.classList.add('active'), 10);
-
-            // Show the loading spinner and hide any previous error state
-            loadingOverlay.classList.add('show');
-            errorState.classList.remove('show');
-
-            // Hide the demo content and show the iframe before loading new content
-            demoContent.classList.add('hidden');
-            iframe.classList.remove('hidden');
-
-            // Set the iframe's source and attach event listeners for loading status
-            iframe.src = fileName;
-
-            iframe.onload = function() {
-                console.log(`${displayName} iframe loaded successfully from ${fileName}.`);
-                loadingOverlay.classList.remove('show'); // Hide spinner
-                errorState.classList.remove('show');     // Hide error
-            };
-
-            iframe.onerror = function() {
-                console.error(`Failed to load ${displayName} iframe from ${fileName}. Displaying demo content.`);
-                loadingOverlay.classList.remove('show'); // Hide spinner
-                errorState.classList.add('show');        // Show error message
-                demoContent.classList.remove('hidden');  // Show demo content as fallback
-                iframe.classList.add('hidden');          // Hide the broken iframe
-            };
         }
 
-        // Initialize the application when DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, initializing application');
-            
-            // Check if there's a last visited page in localStorage
-            const lastVisitedPage = localStorage.getItem(LAST_VISITED_PAGE_KEY);
-
-            if (lastVisitedPage) {
-                console.log(`Found last visited page in localStorage: ${lastVisitedPage}. Loading it.`);
-                loadPage(lastVisitedPage);
-            } else {
-                console.log('No last visited page found in localStorage. Showing home view.');
-                showHome();
+        function subscribeToNotifications() {
+            // FIX: This function sets up the real-time listener. When any change
+            // (insert, update, delete) happens in the 'requests' table, Supabase
+            // sends a message. The code then waits 500ms and re-fetches all
+            // notifications to ensure the UI is perfectly in sync. This is how
+            // new notifications appear without needing a page refresh.
+            if (notificationChannel) {
+                supabase.removeChannel(notificationChannel);
+                notificationChannel = null;
             }
 
-            // Add click event listeners to all main navigation cards
-            document.querySelectorAll('.main-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const page = this.dataset.page; // Get the 'data-page' attribute
-                    // Only load the page if it's not disabled
-                    if (page && !this.classList.contains('disabled')) {
-                        loadPage(page);
-                    } else if (this.classList.contains('disabled')) {
-                        console.log(`Card for page "${page}" is disabled.`);
+            notificationChannel = supabase.channel('public:requests')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, payload => {
+                    console.log('Real-time change received!', payload);
+                    setTimeout(fetchNotifications, 500); // Re-fetch data on any change
+                })
+                .subscribe((status, err) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Successfully subscribed to real-time notifications!');
+                    }
+                    if (status === 'CHANNEL_ERROR') {
+                        console.error('Subscription error:', err);
                     }
                 });
+        }
+        
+        async function showRequestModal(requestId) {
+            const { data, error } = await supabase.from('requests').select('*').eq('id', requestId).single();
+
+            if (error) {
+                console.error('Error fetching request details:', error);
+                showBlurredMessage('Could not load request details.', 1500);
+                return;
+            }
+
+            const modal = document.getElementById('requestModal');
+            const modalTitle = document.getElementById('modalRequestTitle');
+            const modalDetails = document.getElementById('modalRequestDetails');
+            const modalStatusSelect = document.getElementById('modalStatusSelect');
+
+            modalTitle.textContent = data.requestTitle;
+
+            let detailsHtml = `
+                <div class="detail-pair"><strong>Medical Rep:</strong> <span>${data.medRep || 'N/A'}</span></div>
+                <div class="detail-pair"><strong>Area:</strong> <span>${data.area || 'N/A'}</span></div>
+                <div class="detail-pair"><strong>Date:</strong> <span>${new Date(data.date).toLocaleDateString()}</span></div>
+            `;
+
+            if (data.customerType && data.customerType.toLowerCase() !== 'personal') {
+                    detailsHtml += `
+                        <div class="detail-pair"><strong>Customer Type:</strong> <span>${data.customerType}</span></div>
+                        <div class="detail-pair"><strong>Customer Name:</strong> <span>${data.customerName || 'N/A'}</span></div>
+                    `;
+            }
+
+            detailsHtml += `<div class="detail-pair"><strong>Details:</strong> <span>${data.requestDetails || 'No details provided'}</span></div>`;
+            modalDetails.innerHTML = detailsHtml;
+
+            let statusOptions = '';
+            if (data.customerType && data.customerType.toLowerCase() === 'personal') {
+                statusOptions = `
+                    <option value="Requested">Requested</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                `;
+            } else {
+                statusOptions = `
+                    <option value="Requested">Requested</option>
+                    <option value="Scheduled">Scheduled</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Postponed">Postponed</option>
+                    <option value="Done">Done</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Approved">Approved</option>
+                `;
+            }
+            modalStatusSelect.innerHTML = statusOptions;
+            modalStatusSelect.value = data.status;
+
+            modalStatusSelect.onchange = null;
+            modalStatusSelect.onchange = () => updateRequestStatus(requestId, modalStatusSelect.value);
+
+            modal.classList.add('show');
+        }
+
+        async function updateRequestStatus(requestId, newStatus) {
+            const { error } = await supabase.from('requests').update({ status: newStatus }).eq('id', requestId);
+
+            if (error) {
+                console.error('Error updating status:', error);
+                showBlurredMessage('Failed to update status.', 1500);
+            } else {
+                showBlurredMessage('Status updated successfully!', 1500);
+                closeRequestModal();
+                // No need to call fetchNotifications() here, the real-time subscription will trigger it automatically.
+            }
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.remove('show');
+        }
+
+
+        function showBlurredMessage(message, duration, callback = null) {
+            const overlay = document.getElementById('fullPageMessageOverlay');
+            document.getElementById('fullPageOverlayMessage').textContent = message;
+            overlay.classList.add('show');
+            setTimeout(() => {
+                overlay.classList.remove('show');
+                if (callback) setTimeout(callback, 300);
+            }, duration);
+        }
+
+        function showLoginPage() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('appContent').classList.add('hidden');
+            document.querySelector('.footer').classList.remove('show');
+            document.getElementById('loginError').style.display = 'none';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            
+            if (notificationChannel) {
+                supabase.removeChannel(notificationChannel);
+                notificationChannel = null;
+                console.log('Unsubscribed from notifications.');
+            }
+
+            loggedInUser = null;
+            currentActiveViewId = null;
+            updateAndShowUserCard();
+            closeSideMenu();
+            lastPageHistory = [];
+        }
+
+        function showAppContent() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('appContent').classList.remove('hidden');
+            applyUserPermissions();
+            updateAndShowUserCard();
+            populateSideMenu();
+            subscribeToNotifications();
+        }
+
+        function applyUserPermissions() {
+            renderMainGrid();
+            populateSideMenu();
+        }
+
+        function renderMainGrid() {
+            const homeGrid = document.querySelector('#homeView .home-grid');
+            const pages = navConfig.home.pages;
+            homeGrid.innerHTML = '';
+            const userRole = loggedInUser ? loggedInUser.title : null;
+            pages.forEach(page => {
+                if (page.roles.includes(userRole)) {
+                    const card = document.createElement('div');
+                    card.className = `main-card ${page.isPlaceholder ? 'disabled' : ''}`;
+                    card.dataset.page = page.id;
+                    card.innerHTML = `
+                        <div class="main-card-icon">${page.icon}</div>
+                        <div class="main-card-text-content">
+                            <div class="main-card-title">${page.title}</div>
+                            <div class="main-card-subtitle">${page.subtitle}</div>
+                        </div>`;
+                    homeGrid.appendChild(card);
+                }
+            });
+            document.querySelectorAll('.main-card:not(.disabled)').forEach(card => {
+                card.addEventListener('click', () => loadPage(card.dataset.page));
+            });
+        }
+        
+        async function handleLogin() {
+            const usernameInput = document.getElementById('username').value.trim();
+            const passwordInput = document.getElementById('password').value.trim();
+            const loginError = document.getElementById('loginError');
+            loginError.style.display = 'none';
+            if (!usernameInput || !passwordInput) {
+                loginError.textContent = 'Please enter both username and password.';
+                loginError.style.display = 'block';
+                return;
+            }
+            try {
+                const { data, error } = await supabase.from('users').select('username, title, password').eq('username', usernameInput).limit(1);
+                const supabaseUser = (data && data.length > 0) ? data[0] : null;
+                if (error || !supabaseUser || supabaseUser.password.trim() !== passwordInput) {
+                    loginError.textContent = 'Invalid username or password.';
+                    loginError.style.display = 'block';
+                    return;
+                }
+                loggedInUser = { username: supabaseUser.username, title: supabaseUser.title };
+                localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+                sessionStorage.setItem('dashboardUsername', usernameInput);
+                sessionStorage.setItem('dashboardPassword', passwordInput);
+                showBlurredMessage(`Welcome ${loggedInUser.username}!`, 1500, showAppContent);
+            } catch (err) {
+                loginError.textContent = 'An unexpected error occurred. Please try again.';
+                loginError.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            localStorage.clear();
+            sessionStorage.clear();
+            showBlurredMessage('See you soon!', 1500, showLoginPage);
+        }
+
+        function showHome() {
+            // FIX: This function now manages the transition smoothly.
+            const homeView = document.getElementById('homeView');
+            const prevActiveView = document.getElementById(currentActiveViewId);
+
+            document.querySelector('.footer').classList.add('show');
+            document.getElementById('backButton').classList.add('hidden');
+            document.getElementById('refreshButton').classList.remove('hidden');
+            document.getElementById('logoutButton').classList.remove('hidden');
+
+            if (prevActiveView && prevActiveView !== homeView) {
+                prevActiveView.classList.remove('active');
+                // Use a short delay to allow the CSS transition to play before hiding
+                setTimeout(() => {
+                    prevActiveView.classList.add('hidden');
+                    const iframe = prevActiveView.querySelector('iframe');
+                    if (iframe) iframe.src = 'about:blank';
+                    homeView.classList.remove('hidden');
+                    // Use a very short delay to re-apply the "active" class and start the entrance animation
+                    setTimeout(() => {
+                        homeView.classList.add('active');
+                        // Ensure the transition is reset before re-applying the class
+                        homeView.classList.remove('active');
+                        homeView.classList.add('active');
+                    }, 10);
+                }, 200); // This delay should match or be slightly less than the CSS transition
+            } else {
+                homeView.classList.remove('hidden');
+                homeView.classList.add('active');
+            }
+
+            currentActiveViewId = 'homeView';
+            localStorage.setItem('currentPage', 'home');
+            lastPageHistory = [];
+            closeSideMenu();
+        }
+
+        function loadPage(page) {
+            if (!page || page === 'null') { showHome(); return; }
+            const allPages = [...navConfig.home.pages, ...(navConfig.home.pages.find(p => p.id === 'dm-crm')?.subPages || [])];
+            const config = allPages.find(p => p.id === page);
+            if (!config || (config.roles && !config.roles.includes(loggedInUser.title))) {
+                showBlurredMessage('You do not have permission to view this page.', 2000);
+                return;
+            }
+            const { viewId, fileName, isNested } = config;
+
+            const targetView = document.getElementById(viewId);
+            const prevActiveView = document.getElementById(currentActiveViewId);
+
+            if (currentActiveViewId !== viewId) {
+                    if (currentActiveViewId && currentActiveViewId !== 'homeView') {
+                        lastPageHistory.push(currentActiveViewId);
+                    }
+            }
+            
+            // Immediately hide the home view
+            document.getElementById('homeView').classList.add('hidden');
+            document.querySelector('.footer').classList.remove('show');
+            document.getElementById('backButton').classList.remove('hidden');
+            document.getElementById('refreshButton').classList.remove('hidden');
+            document.getElementById('logoutButton').classList.add('hidden');
+
+            // Hide the previously active view with a transition
+            if (prevActiveView && prevActiveView !== targetView) {
+                prevActiveView.classList.remove('active');
+                setTimeout(() => {
+                    prevActiveView.classList.add('hidden');
+                    const prevIframe = prevActiveView.querySelector('iframe');
+                    if (prevIframe) prevIframe.src = 'about:blank';
+                }, 200);
+            }
+
+            // Show the target view after a slight delay for a smooth transition effect
+            setTimeout(() => {
+                targetView.classList.remove('hidden');
+                setTimeout(() => targetView.classList.add('active'), 10);
+            }, 50);
+
+            currentActiveViewId = viewId;
+            localStorage.setItem('currentPage', page);
+
+            if (page === 'dm-crm') {
+                renderSubCards(document.getElementById('dmCrmSubGrid'), config.subPages);
+                targetView.querySelector('.loading').classList.remove('show');
+            } else {
+                const loadingOverlay = targetView.querySelector('.loading');
+                const errorState = targetView.querySelector('.error-state');
+                const iframe = targetView.querySelector('iframe');
+                
+                loadingOverlay.classList.add('show');
+                errorState.classList.remove('show');
+                
+                // FIX: Add a timestamp to the URL to bypass browser cache on every load.
+                iframe.src = `${fileName}?t=${new Date().getTime()}`;
+                
+                const sendDataToIframe = () => {
+                    if (loggedInUser && iframe.contentWindow) {
+                        const message = { user: loggedInUser };
+                        if (page === 'dashboard') {
+                            message.type = 'dashboardLogin';
+                            message.username = sessionStorage.getItem('dashboardUsername');
+                            message.password = sessionStorage.getItem('dashboardPassword');
+                        } else if (page === 'dm-planning') {
+                            message.type = 'dmPlanningUserPermissions';
+                        } else if (page === 'dm-report') {
+                            message.type = 'dmReportUserPermissions';
+                        } else { 
+                            message.type = 'loggedInUser';
+                        }
+                        iframe.contentWindow.postMessage(message, '*');
+                    }
+                };
+                
+                iframe.onload = () => {
+                    loadingOverlay.classList.remove('show');
+                    sendDataToIframe();
+                };
+                iframe.onerror = () => {
+                    loadingOverlay.classList.remove('show');
+                    errorState.classList.add('show');
+                };
+            }
+            closeSideMenu();
+        }
+
+        function renderSubCards(container, pages) {
+            container.innerHTML = '';
+            const userRole = loggedInUser ? loggedInUser.title : null;
+            pages.forEach(page => {
+                if (page.roles.includes(userRole)) {
+                    const card = document.createElement('div');
+                    card.className = `main-card ${page.isPlaceholder ? 'disabled' : ''}`;
+                    card.dataset.page = page.id;
+                    card.innerHTML = `
+                        <div class="main-card-icon">${page.icon}</div>
+                        <div class="main-card-text-content">
+                            <div class="main-card-title">${page.title}</div>
+                            <div class="main-card-subtitle">${page.subtitle}</div>
+                        </div>`;
+                    container.appendChild(card);
+                }
+            });
+            container.querySelectorAll('.main-card:not(.disabled)').forEach(card => {
+                card.addEventListener('click', () => loadPage(card.dataset.page));
+            });
+        }
+
+        function openSideMenu() {
+            document.getElementById('sideMenuOverlay').classList.add('show');
+            document.getElementById('sideMenu').classList.add('show');
+        }
+
+        function closeSideMenu() {
+            document.getElementById('sideMenuOverlay').classList.remove('show');
+            document.getElementById('sideMenu').classList.remove('show');
+        }
+
+        function populateSideMenu() {
+            const sideMenuNav = document.querySelector('.side-menu-nav');
+            sideMenuNav.innerHTML = '';
+            const userRole = loggedInUser ? loggedInUser.title : null;
+            navConfig.home.pages.forEach(page => {
+                if (page.roles.includes(userRole) && !page.isPlaceholder) {
+                    if (page.isGroup) {
+                        const groupContainer = document.createElement('div');
+                        groupContainer.className = 'side-menu-group';
+                        const groupToggle = document.createElement('div');
+                        groupToggle.className = 'side-menu-group-toggle';
+                        groupToggle.innerHTML = `<div style="display: flex; align-items: center; gap: 10px;"><div class="side-menu-card-icon">${page.icon}</div><div class="side-menu-card-title">${page.title}</div></div><i class="fas fa-chevron-right arrow"></i>`;
+                        groupContainer.appendChild(groupToggle);
+                        const subItemsContainer = document.createElement('div');
+                        subItemsContainer.className = 'side-menu-sub-items';
+                        page.subPages.forEach(subPage => {
+                            if (subPage.roles.includes(userRole)) {
+                                const subItem = document.createElement('div');
+                                subItem.className = 'side-menu-sub-item';
+                                subItem.dataset.page = subPage.id;
+                                subItem.innerHTML = `<div class="side-menu-card-icon">${subPage.icon}</div><div class="side-menu-card-title">${subPage.title}</div>`;
+                                subItemsContainer.appendChild(subItem);
+                            }
+                        });
+                        groupContainer.appendChild(subItemsContainer);
+                        sideMenuNav.appendChild(groupContainer);
+                        groupToggle.addEventListener('click', () => {
+                            groupToggle.classList.toggle('open');
+                            subItemsContainer.classList.toggle('show');
+                        });
+                        subItemsContainer.querySelectorAll('.side-menu-sub-item').forEach(subItem => {
+                            subItem.addEventListener('click', () => loadPage(subItem.dataset.page));
+                        });
+                    } else {
+                        const sideMenuCard = document.createElement('div');
+                        sideMenuCard.className = `side-menu-card ${page.isPlaceholder ? 'disabled' : ''}`;
+                        sideMenuCard.dataset.page = page.id;
+                        sideMenuCard.innerHTML = `<div class="side-menu-card-icon">${page.icon}</div><div class="side-menu-card-title">${page.title}</div>`;
+                        sideMenuNav.appendChild(sideMenuCard);
+                        if (!page.isPlaceholder) {
+                            sideMenuCard.addEventListener('click', () => loadPage(sideMenuCard.dataset.page));
+                        }
+                    }
+                }
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            const introOverlay = document.getElementById('introOverlay');
+            // FIX: Updated the intro fade-out delay to match the new animation duration
+            setTimeout(() => {
+                introOverlay.classList.add('fade-out');
+                setTimeout(() => introOverlay.remove(), 500);
+            }, 1500);
+
+            await fetchGoogleSheetData();
+            const storedUser = localStorage.getItem('loggedInUser');
+            const lastPage = localStorage.getItem('currentPage');
+
+            // FIX: Delay the display of the main content to allow the intro animation to finish
+            setTimeout(() => {
+                if (storedUser) {
+                    loggedInUser = JSON.parse(storedUser);
+                    showAppContent();
+                    if (lastPage && lastPage !== 'home' && lastPage !== 'null') {
+                        const allPages = [...navConfig.home.pages, ...(navConfig.home.pages.find(p => p.id === 'dm-crm')?.subPages || [])];
+                        const targetPage = allPages.find(p => p.id === lastPage);
+                        if (targetPage && (targetPage.roles.includes(loggedInUser.title) || loggedInUser.title === 'admin')) {
+                            if (targetPage.isNested) {
+                                loadPage('dm-crm');
+                                setTimeout(() => loadPage(lastPage), 500);
+                            } else {
+                                loadPage(lastPage);
+                            }
+                        } else {
+                            showHome();
+                        }
+                    } else {
+                        showHome();
+                    }
+                } else {
+                    showLoginPage();
+                }
+            }, 2000);
+
+            document.getElementById('loginButton').addEventListener('click', handleLogin);
+            document.getElementById('logoutButton').addEventListener('click', handleLogout);
+            document.getElementById('sideMenuLogoutButton').addEventListener('click', handleLogout);
+            document.getElementById('backButton').addEventListener('click', () => {
+                if (currentActiveViewId === 'dmCrmView') {
+                    showHome();
+                } else if (currentActiveViewId === 'nestedIframeView') {
+                    loadPage('dm-crm');
+                } else if (lastPageHistory.length > 0) {
+                    const lastPage = lastPageHistory.pop();
+                    loadPage(lastPage);
+                } else {
+                    showHome();
+                }
+            });
+            document.getElementById('mobileMenuButton').addEventListener('click', openSideMenu);
+            document.getElementById('closeMenuButton').addEventListener('click', closeSideMenu);
+            document.getElementById('sideMenuOverlay').addEventListener('click', closeSideMenu);
+            
+            document.getElementById('refreshButton').addEventListener('click', async () => {
+                // FIX: Refresh logic now re-fetches all necessary data and forces a cache-less reload.
+                showBlurredMessage('Refreshing...', 1000);
+                await fetchGoogleSheetData(); // Re-fetch sheet data for user mapping
+                fetchNotifications(); // Re-fetch notifications
+
+                if (!currentActiveViewId) return;
+
+                const activeView = document.getElementById(currentActiveViewId);
+                if (!activeView) return;
+
+                if (currentActiveViewId === 'homeView') {
+                    renderMainGrid();
+                } 
+                else if (currentActiveViewId === 'dmCrmView') {
+                    const config = navConfig.home.pages.find(p => p.id === 'dm-crm');
+                    if (config) {
+                        renderSubCards(document.getElementById('dmCrmSubGrid'), config.subPages);
+                    }
+                }
+                else {
+                    const iframe = activeView.querySelector('iframe');
+                    if (iframe && iframe.contentWindow) {
+                        const loadingOverlay = activeView.querySelector('.loading');
+                        if (loadingOverlay) loadingOverlay.classList.add('show');
+                        // Force a reload by changing the src to a new unique URL
+                        const currentSrc = iframe.src.split('?')[0];
+                        iframe.src = `${currentSrc}?t=${new Date().getTime()}`;
+                    }
+                }
             });
 
-            // Add click event listener to the Admin button
-            document.getElementById('adminButton').addEventListener('click', function() {
-                loadPage('admin');
+            const notificationBell = document.getElementById('notificationBell');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            notificationBell.addEventListener('click', (event) => {
+                event.stopPropagation();
+                notificationDropdown.classList.toggle('hidden');
             });
 
-            // Add click event listener to the Back button
-            document.getElementById('backButton').addEventListener('click', function() {
-                showHome();
+            document.addEventListener('click', (event) => {
+                if (!notificationBell.contains(event.target)) {
+                    notificationDropdown.classList.add('hidden');
+                }
+            });
+            
+            document.getElementById('modalCloseButton').addEventListener('click', closeRequestModal);
+            document.getElementById('requestModal').addEventListener('click', (event) => {
+                if (event.target.id === 'requestModal') {
+                    closeRequestModal();
+                }
             });
         });
     </script>
