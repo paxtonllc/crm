@@ -3,603 +3,500 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>User Management</title>
+  <title>User Management Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
     * {
-      margin: 0;
-      padding: 0;
       box-sizing: border-box;
     }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #91C8E4;
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
       color: #334155;
-      line-height: 1.6;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
       min-height: 100vh;
     }
-    /* Slim Banner Header */
+
+    /* Header Banner */
     .header-banner {
       background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
       color: white;
-      padding: 12px 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 0.75rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       position: sticky;
       top: 0;
-      z-index: 100;
-      display: none;
+      z-index: 1000;
     }
     .header-content {
-      max-width: 1200px;
-      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .header-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+      width: 100%;
     }
     .header-title {
-      font-size: clamp(1.5rem, 4vw, 2rem);
-      font-weight: 700;
+      font-size: 1.25rem;
+      font-weight: 600;
       margin: 0;
-    }
-    .header-subtitle {
-      font-size: clamp(0.875rem, 2vw, 1rem);
-      opacity: 0.8;
-      margin: 0;
-    }
-    .header-stats {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-      opacity: 0.9;
     }
     .stat-badge {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 4px 12px;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.375rem 0.75rem;
+      border-radius: 1rem;
       backdrop-filter: blur(10px);
+      font-size: 0.8rem;
+      font-weight: 500;
     }
-    /* Main Container */
-    .container {
-      max-width: 1200px;
+
+    /* Main Content Layout - Mobile First */
+    .main-container {
+      padding: 1rem;
+      width: 100%;
       margin: 0 auto;
-      padding: 10px;
     }
-    .main-content {
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 14px;
-      margin-top: 20px;
+
+    /* Tab Navigation - Horizontal on mobile */
+    .tab-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
     }
+    .tab-button {
+      flex: 1;
+      padding: 0.625rem 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      font-size: 0.875rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-color: #ffffff;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    .tab-button:hover {
+      background-color: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .tab-button.active {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25);
+    }
+
+    /* Tab Content */
+    .tab-content {
+      width: 100%;
+    }
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .tab-pane.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     /* Card Styles */
     .card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
+      background: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
       overflow: hidden;
+      margin-bottom: 1rem;
     }
     .card-header {
-      padding: 10px 14px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.3);
+      padding: 1rem 1.25rem;
+      background-color: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
     }
     .card-header h2 {
-      font-size: clamp(1.125rem, 3vw, 1.375rem);
+      font-size: 1.125rem;
       font-weight: 600;
       color: #1e293b;
       margin: 0;
     }
     .card-body {
-      padding: 24px;
+      padding: 1.25rem;
     }
+
     /* Form Styles */
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 500;
-      color: #374151;
-      font-size: clamp(0.875rem, 2vw, 1rem);
-      text-align: left;
-    }
     .form-input {
       width: 100%;
-      padding: 10px 13px;
-      border: 1px solid #e2e8f0;
-      border-radius: 10px;
-      font-size: clamp(0.875rem, 2vw, 1rem);
-      transition: all 0.3s ease;
-      background: rgba(255, 255, 255, 0.8);
+      padding: 0.625rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      background-color: white;
     }
     .form-input:focus {
       outline: none;
       border-color: #3b82f6;
-      box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-      background: white;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    .form-group { 
+      margin-bottom: 1rem; 
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 0.375rem;
+      font-weight: 500;
+      color: #374151;
+      font-size: 0.8125rem;
     }
     .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
     }
+
     /* Button Styles */
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: clamp(0.875rem, 2vw, 1rem);
+      padding: 0.625rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
       font-weight: 500;
       border: none;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: all 0.2s ease;
       text-decoration: none;
-      position: relative;
-      overflow: hidden;
-    }
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
-    }
-    .btn:hover::before {
-      left: 100%;
+      line-height: 1;
     }
     .btn-primary {
       background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
       color: white;
     }
     .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-    }
-    .btn-secondary {
-      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
-      color: white;
-    }
-    .btn-secondary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(107, 114, 128, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
     }
     .btn-danger {
       background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
       color: white;
     }
     .btn-danger:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
     }
-    .btn-sm {
-      padding: 8px 16px;
-      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    .btn-secondary {
+      background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+      color: white;
     }
-    /* Cascading Users Menu */
-    .users-cascade {
-      max-height: 600px;
-      overflow-y: auto;
-      overflow-x: hidden;
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.25);
     }
-    .users-cascade::-webkit-scrollbar {
-      width: 6px;
+    .btn-sm { 
+      padding: 0.425rem 0.75rem; 
+      font-size: 0.8125rem; 
     }
-    .users-cascade::-webkit-scrollbar-track {
-      background: #f1f5f9;
-      border-radius: 10px;
-    }
-    .users-cascade::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 10px;
-    }
-    .users-cascade::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+
+    /* User List Styles */
     .user-item {
+      margin-bottom: 0.75rem;
+    }
+    .user-card {
       background: white;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
       border: 1px solid #e2e8f0;
-    }
-    .user-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-    .user-header {
-      padding: 16px 20px;
-      cursor: pointer;
+      padding: 0.875rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 0.3s ease;
+      width: 100%;
+    }
+    .user-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    .user-info { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.75rem; 
+      flex: 1;
+      min-width: 0;
       text-align: left;
-    }
-    .user-header:hover {
-      background: #f8fafc;
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
     .user-avatar {
-      width: 40px;
-      height: 40px;
+      width: 36px; 
+      height: 36px; 
       border-radius: 50%;
       background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      display: flex;
-      align-items: center;
+      display: flex; 
+      align-items: center; 
       justify-content: center;
-      color: white;
+      color: white; 
+      font-weight: 600; 
+      font-size: 0.875rem;
+      flex-shrink: 0;
+    }
+    .user-details {
+      flex: 1;
+      min-width: 0;
+      text-align: left;
+    }
+    .user-details h4 { 
+      margin: 0; 
+      font-size: 0.9375rem; 
+      color: #1e293b; 
       font-weight: 600;
-      font-size: clamp(0.875rem, 2vw, 1rem);
-    }
-    .user-details h4 {
-      margin: 0;
-      font-size: clamp(1rem, 2.5vw, 1.125rem);
-      color: #1e293b;
       text-align: left;
+      white-space: normal;
+      word-break: break-word;
     }
-    .user-details p {
-      margin: 0;
-      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    .user-details p { 
+      margin: 0; 
+      font-size: 0.8125rem;
       text-align: left;
+      white-space: normal;
+      word-break: break-word;
     }
-    /* Title Colors */
     .title-medical { color: #059669; }
     .title-district { color: #dc2626; }
-    .title-moderator { color: #7c3aed; }
     .title-admin { color: #ea580c; }
     .title-default { color: #64748b; }
     .user-id {
-      background: #e2e8f0;
+      background: #e2e8f0; 
       color: #475569;
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: clamp(0.625rem, 1.2vw, 0.75rem);
+      padding: 0.25rem 0.5rem; 
+      border-radius: 0.375rem;
+      font-size: 0.75rem; 
       font-weight: 500;
+      flex-shrink: 0;
+      margin-left: 0.5rem;
     }
-    .user-actions {
-      padding: 16px 20px;
+    .user-actions { 
+      display: flex; 
+      gap: 0.375rem; 
+      flex-shrink: 0;
+      margin-left: 0.5rem;
+    }
+
+    /* Edit form styles */
+    .edit-form {
       background: #f8fafc;
-      border-top: 1px solid #e2e8f0;
-      display: none;
-    }
-    .user-actions.active {
-      display: block;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      margin-top: 0.75rem;
+      border: 1px solid #e2e8f0;
       animation: slideDown 0.3s ease;
     }
     @keyframes slideDown {
-      from {
-        opacity: 0;
-        transform: translateY(-10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .edit-form {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      margin-top: 12px;
-      border: 2px solid #e2e8f0;
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .edit-form h4 {
-      margin-bottom: 16px;
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
       color: #1e293b;
     }
-    /* Alert Styles */
-    .alert {
-      padding: 16px 20px;
-      border-radius: 12px;
-      margin-bottom: 20px;
-      font-size: clamp(0.875rem, 2vw, 1rem);
-      position: relative;
-      overflow: hidden;
+    .password-display-group {
+      display: flex; 
+      align-items: center; 
+      gap: 0.5rem; 
+      margin-bottom: 0.875rem;
     }
-    .alert::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 4px;
-      height: 100%;
-      background: currentColor;
+    .password-display-group .form-input { 
+      flex: 1; 
+      background-color: #f1f5f9; 
     }
-    .alert-success {
-      background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
-      color: #166534;
-      border: 1px solid #a7f3d0;
-    }
-    .alert-error {
-      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-      color: #991b1b;
-      border: 1px solid #fca5a5;
-    }
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-      font-size: clamp(1rem, 2.5vw, 1.125rem);
-    }
-    .no-users {
-      text-align: center;
-      padding: 40px;
-      color: #6b7280;
-      font-size: clamp(1rem, 2.5vw, 1.125rem);
-      background: white;
-      border-radius: 12px;
-      border: 2px dashed #e2e8f0;
-    }
-    /* Login Box Styles */
-    .login-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: calc(100vh - 80px);
-      padding: 20px;
-    }
-    .login-card {
-      width: 100%;
-      max-width: 350px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 16px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      text-align: center;
-    }
-    .login-card h2 {
-      margin-bottom: 20px;
-      color: #1e293b;
-      font-size: clamp(1.3rem, 4vw, 1.8rem);
-    }
-    .login-message {
-      margin-bottom: 15px;
-    }
-    /* Logout Button */
-    .logout-btn {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-size: clamp(0.875rem, 2vw, 1rem);
-      font-weight: 500;
-      border: none;
+    .password-display-group .btn-copy {
+      padding: 0.625rem 0.75rem; 
+      font-size: 0.75rem; 
+      background: #4b5563;
+      color: white; 
+      border-radius: 0.375rem; 
       cursor: pointer;
-      transition: all 0.3s ease;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
+      border: none;
+      flex-shrink: 0;
     }
-    .logout-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+
+    /* Alert & Modal Styles */
+    .alert {
+      padding: 0.875rem; border-radius: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem; 
     }
-    /* Modal Styles */
+    .alert-success { 
+      background-color: #dcfce7; color: #166534; border: 1px solid #a7f3d0; 
+    }
+    .alert-error { 
+      background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; 
+    }
+    .loading, .no-users { 
+      text-align: center; padding: 2rem 1rem; color: #6b7280; font-size: 0.875rem; 
+    }
+    .no-users { 
+      background: white; border-radius: 0.75rem; border: 2px dashed #e2e8f0; 
+    }
+
     .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0,0,0,0.4);
-      justify-content: center;
-      align-items: center;
+      display: none; position: fixed; z-index: 2000; left: 0; top: 0;
+      width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center; padding: 1rem;
     }
     .modal-content {
-      background-color: #fefefe;
-      margin: auto;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #888;
-      width: 80%;
-      max-width: 400px;
-      box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-      animation-name: animatetop;
-      animation-duration: 0.4s
+      background-color: white; padding: 0; border-radius: 0.75rem; border: 1px solid #e2e8f0; 
+      width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      animation: animatetop 0.3s ease;
     }
-    @keyframes animatetop {
-      from {top: -300px; opacity: 0}
-      to {top: 0; opacity: 1}
+    @keyframes animatetop { 
+      from { transform: translateY(-20px); opacity: 0 } 
+      to { transform: translateY(0); opacity: 1 } 
     }
     .modal-header {
-      padding: 10px 16px;
-      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-      color: white;
-      border-top-left-radius: 12px;
-      border-top-right-radius: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 1rem; background: #3b82f6; color: white;
+      border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem;
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-header h3 {
-      margin: 0;
+    .modal-header h3 { 
+      margin: 0; font-size: 1.125rem; font-weight: 600;
     }
-    .close-button {
-      color: white;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
+    .close-button { 
+      color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; line-height: 1; padding: 0.25rem;
     }
-    .close-button:hover,
-    .close-button:focus {
-      color: #000;
-      text-decoration: none;
-    }
-    .modal-body {
-      padding: 20px 16px;
-      text-align: center;
+    .modal-body { 
+      padding: 1.25rem; text-align: center; font-size: 0.9375rem;
     }
     .modal-footer {
-      padding: 10px 16px;
-      background-color: #f1f1f1;
-      border-bottom-left-radius: 12px;
-      border-bottom-right-radius: 12px;
-      text-align: right;
+      padding: 1rem; background-color: #f8fafc;
+      border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem;
+      display: flex; gap: 0.75rem; justify-content: flex-end;
     }
-    /* Mobile Responsive */
-    @media (max-width: 768px) {
-      .header-content {
-        flex-direction: column;
-        gap: 8px;
-        text-align: center;
-      }
-      .header-info {
-        align-items: center;
-      }
-      .header-stats {
+    
+    /* Mobile-specific layout for user card */
+    @media (max-width: 480px) {
+      .user-card {
         flex-wrap: wrap;
-        justify-content: center;
-      }
-      .main-content {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      .actions {
-        flex-direction: column;
-      }
-      .btn {
-        width: 100%;
-      }
-      .user-header {
-        flex-direction: row;
-        gap: 12px;
-        text-align: left;
+        row-gap: 0.75rem;
       }
       .user-info {
-        flex-direction: row;
-        text-align: left;
+        flex-basis: 100%;
       }
-      .card-body {
-        padding: 16px;
-      }
-    }
-    @media (max-width: 480px) {
-      .container {
-        padding: 12px;
+      .user-id {
+        margin-left: 0;
       }
       .user-actions {
-        padding: 12px 16px;
+        margin-left: auto;
       }
-      .edit-form {
-        padding: 16px;
+    }
+
+    /* PC / Desktop improvements */
+    @media (min-width: 768px) {
+      .main-container {
+        padding: 1.5rem;
+      }
+      .dashboard-layout {
+        display: grid;
+        grid-template-columns: 240px 1fr;
+        gap: 1.5rem;
+      }
+      .tab-nav {
+        flex-direction: column;
+        margin-bottom: 0;
+        /* --- New styles for sticky navigation --- */
+        position: sticky;
+        top: 80px; /* Adjust this value to sit just below your header */
+        align-self: start; /* Ensures sticky positioning works correctly in a grid */
+      }
+      .tab-button {
+        flex: unset;
+        text-align: left;
+        padding-left: 1rem;
+      }
+      .form-row {
+        flex-direction: row;
+        align-items: flex-end;
+      }
+      .form-row .form-group {
+        flex: 1;
+      }
+      .header-title {
+        font-size: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Slim Banner Header -->
   <div class="header-banner">
     <div class="header-content">
-      <div class="header-info">
-        <h1 class="header-title">User Management</h1>
-        <p class="header-subtitle">Manage your system users efficiently</p>
-      </div>
-      <div class="header-stats">
-        <div class="stat-badge">
-          <span id="totalUsers">0</span> Users
-        </div>
-        <button id="logoutButton" class="logout-btn">Logout</button>
+      <h1 class="header-title">User Dashboard</h1>
+      <div class="stat-badge">
+        <span id="totalUsers">0</span> Users
       </div>
     </div>
   </div>
-  <div id="appContent" style="display: none;">
-    <div class="container">
-      <div id="message"></div>
-      <div class="main-content">
-        <!-- Add User Form -->
-        <div class="card">
-          <div class="card-header">
-            <h2>Add New User</h2>
-          </div>
-          <div class="card-body">
-            <form id="addUserForm">
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="newUsername">Username *</label>
-                  <input type="text" id="newUsername" class="form-input" required />
+
+  <div id="appContent" class="main-container">
+    <div class="dashboard-layout">
+      <nav class="tab-nav">
+        <button class="tab-button active" data-tab="addUser">Add User</button>
+        <button class="tab-button" data-tab="currentUsers">Manage Users</button>
+      </nav>
+
+      <div class="tab-content">
+        <div id="message"></div>
+        
+        <div id="addUser" class="tab-pane active">
+          <div class="card">
+            <div class="card-header">
+              <h2>Add New User</h2>
+            </div>
+            <div class="card-body">
+              <form id="addUserForm">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="newUsername">Username *</label>
+                    <input type="text" id="newUsername" class="form-input" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="newTitle">Title *</label>
+                    <select id="newTitle" class="form-input" required>
+                      <option value="">Select Title</option>
+                      <option value="Medical Representative">Medical Representative</option>
+                      <option value="District Manager">District Manager</option>
+                      <option value="admin">admin</option>
+                    </select>
+                  </div>
                 </div>
                 <div class="form-group">
-                  <label for="newTitle">Title *</label>
-                  <select id="newTitle" class="form-input" required>
-                    <option value="">Select Title</option>
-                    <option value="Medical Representative">Medical Representative</option>
-                    <option value="District Manager">District Manager</option>
-                    <option value="Moderator">Moderator</option>
-                    <option value="admin">admin</option>
-                  </select>
+                  <label for="newPassword">Password *</label>
+                  <input type="password" id="newPassword" class="form-input" required />
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="newPassword">Password *</label>
-                <input type="password" id="newPassword" class="form-input" required />
-              </div>
-              <button type="submit" class="btn btn-primary">Add User</button>
-            </form>
+                <button type="submit" class="btn btn-primary">Create User</button>
+              </form>
+            </div>
           </div>
         </div>
-        <!-- Users Cascade Menu -->
-        <div class="card">
-          <div class="card-header">
-            <h2>Current Users</h2>
-          </div>
-          <div class="card-body">
-            <div id="usersList" class="loading">Loading users...</div>
+
+        <div id="currentUsers" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <h2>Current Users</h2>
+            </div>
+            <div class="card-body">
+              <div id="usersList" class="loading">Loading users...</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-  <!-- Login Box -->
-  <div id="loginContainer" class="login-container">
-    <div class="login-card">
-      <h2>Admin Login</h2>
-      <div id="loginMessage" class="login-message"></div>
-      <form id="loginForm">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" class="form-input" required />
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" class="form-input" required />
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-      </form>
-    </div>
-  </div>
-  <!-- Custom Confirmation Modal -->
+
   <div id="confirmationModal" class="modal">
     <div class="modal-content">
       <div class="modal-header">
@@ -610,79 +507,101 @@
         <p id="modalMessage"></p>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-danger" id="modalConfirmBtn">Confirm</button>
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger" id="modalConfirmBtn">Confirm</button>
       </div>
     </div>
   </div>
+
   <script>
-    // Supabase client
+    // Supabase client initialization
     const { createClient } = supabase;
     const supabaseUrl = 'https://plmevfyxpngzymvzvkzn.supabase.co';
     const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
     const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
     let users = [];
     let activeEditId = null;
     let confirmCallback = null;
-    // DOM Elements
+
     const messageDiv = document.getElementById('message');
-    const loginMessageDiv = document.getElementById('loginMessage');
-    const appContent = document.getElementById('appContent');
-    const loginContainer = document.getElementById('loginContainer');
-    const loginForm = document.getElementById('loginForm');
-    const usernameInput = document.getElementById('username');
-    const passwordInput = document.getElementById('password');
-    const logoutButton = document.getElementById('logoutButton');
     const confirmationModal = document.getElementById('confirmationModal');
     const modalMessage = document.getElementById('modalMessage');
     const modalConfirmBtn = document.getElementById('modalConfirmBtn');
-    const headerBanner = document.querySelector('.header-banner');
-    // Function to show custom message
-    function showMessage(text, type = 'success', isLogin = false) {
-      const messageContainer = isLogin ? loginMessageDiv : messageDiv;
-      messageContainer.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
-      setTimeout(() => {
-        messageContainer.innerHTML = '';
-      }, 5000);
+
+    function setupTabs() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
     }
-    // Function to show custom confirmation modal
+
+    function showMessage(text, type = 'success') {
+      messageDiv.innerHTML = `<div class="alert alert-${type}">${text}</div>`;
+      setTimeout(() => { messageDiv.innerHTML = ''; }, 5000);
+    }
+
     function showConfirmationModal(message, callback) {
       modalMessage.textContent = message;
       confirmCallback = callback;
       confirmationModal.style.display = 'flex';
     }
-    // Function to close custom confirmation modal
+
     function closeModal() {
       confirmationModal.style.display = 'none';
       confirmCallback = null;
     }
-    // Event listener for modal confirm button
+
     modalConfirmBtn.onclick = () => {
       if (confirmCallback) {
         confirmCallback(true);
       }
       closeModal();
     };
-    // Helper to get title class for styling
+
     function getTitleClass(title) {
       if (!title) return 'title-default';
       const titleLower = title.toLowerCase();
       if (titleLower.includes('medical')) return 'title-medical';
       if (titleLower.includes('district')) return 'title-district';
-      if (titleLower.includes('moderator')) return 'title-moderator';
       if (titleLower.includes('admin')) return 'title-admin';
       return 'title-default';
     }
-    // Update total user count display
+
     function updateUserCount() {
       document.getElementById('totalUsers').textContent = users.length;
     }
-    // Load users from Supabase
+
+    function copyToClipboard(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand('copy');
+            showMessage('Password copied to clipboard!', 'success');
+        } catch (err) {
+            showMessage('Failed to copy password.', 'error');
+        }
+        document.body.removeChild(textarea);
+    }
+
     async function loadUsers() {
       try {
-        const { data, error } = await supabaseClient.from('users').select('*').order('id');
+        const { data, error } = await supabaseClient.from('users').select('*');
         if (error) throw error;
+        
+        data.sort((a, b) => b.id - a.id);
         users = data;
+
         updateUserCount();
         displayUsers();
       } catch (err) {
@@ -690,118 +609,126 @@
         document.getElementById('usersList').innerHTML = '<div class="alert alert-error">Failed to load users.</div>';
       }
     }
-    // Display users in the list
+
     function displayUsers() {
       const usersList = document.getElementById('usersList');
       if (!users.length) {
-        usersList.innerHTML = '<div class="no-users">No users found.<br>Add your first user above.</div>';
+        usersList.innerHTML = '<div class="no-users">No users found.<br>Add your first user to get started.</div>';
         return;
       }
+
       usersList.innerHTML = `
-        <div class="users-cascade">
+        <div class="users-list">
           ${users.map(user => `
             <div class="user-item">
-              <div class="user-header" onclick="toggleUserActions(${user.id})">
+              <div class="user-card">
                 <div class="user-info">
-                  <div class="user-avatar">
-                    ${user.username.charAt(0).toUpperCase()}
-                  </div>
+                  <div class="user-avatar">${user.username.charAt(0).toUpperCase()}</div>
                   <div class="user-details">
                     <h4>${user.username}</h4>
                     <p class="${getTitleClass(user.title)}">${user.title || 'No title'}</p>
                   </div>
                 </div>
                 <div class="user-id">ID: ${user.id}</div>
-              </div>
-              <div class="user-actions" id="userActions${user.id}">
-                <div class="actions">
-                  <button class="btn btn-sm btn-secondary" onclick="editUser(${user.id})">Edit User</button>
-                  <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">Delete User</button>
+                <div class="user-actions">
+                  <button class="btn btn-sm btn-secondary" onclick="editUser(${user.id})">Edit</button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">Delete</button>
                 </div>
-                <div id="editForm${user.id}" class="edit-form" style="display: none;">
-                  <h4>Edit User Information</h4>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Username</label>
-                      <input type="text" id="editUsername${user.id}" class="form-input" value="${user.username}" required />
-                    </div>
-                    <div class="form-group">
-                      <label>Title *</label>
-                      <select id="editTitle${user.id}" class="form-input" required>
-                        <option value="">Select Title</option>
-                        <option value="Medical Representative" ${user.title === 'Medical Representative' ? 'selected' : ''}>Medical Representative</option>
-                        <option value="District Manager" ${user.title === 'District Manager' ? 'selected' : ''}>District Manager</option>
-                        <option value="Moderator" ${user.title === 'Moderator' ? 'selected' : ''}>Moderator</option>
-                        <option value="admin" ${user.title === 'admin' ? 'selected' : ''}>admin</option>
-                      </select>
-                    </div>
+              </div>
+              <div id="editForm${user.id}" class="edit-form" style="display: none;">
+                <h4>Edit User</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="editUsername${user.id}" class="form-input" value="${user.username}" required />
                   </div>
                   <div class="form-group">
-                    <label>New Password (optional)</label>
-                    <input type="password" id="editPassword${user.id}" class="form-input" />
+                    <label>Title</label>
+                    <select id="editTitle${user.id}" class="form-input" required>
+                      <option value="Medical Representative" ${user.title === 'Medical Representative' ? 'selected' : ''}>Medical Representative</option>
+                      <option value="District Manager" ${user.title === 'District Manager' ? 'selected' : ''}>District Manager</option>
+                      <option value="admin" ${user.title === 'admin' ? 'selected' : ''}>admin</option>
+                    </select>
                   </div>
-                  <div class="actions">
-                    <button class="btn btn-primary" onclick="saveUser(${user.id})">Save Changes</button>
-                    <button class="btn btn-secondary" onclick="cancelEdit(${user.id})">Cancel</button>
+                </div>
+                <div class="form-group">
+                  <label>Current Password</label>
+                  <div class="password-display-group">
+                    <input type="text" id="displayPassword${user.id}" class="form-input" value="${user.password || 'N/A'}" readonly />
+                    <button type="button" class="btn-copy" onclick="copyToClipboard(document.getElementById('displayPassword${user.id}').value)">Copy</button>
                   </div>
+                </div>
+                <div class="form-group">
+                  <label>New Password (optional)</label>
+                  <input type="password" id="editPassword${user.id}" class="form-input" placeholder="Leave blank to keep current" />
+                </div>
+                <div class="user-actions">
+                  <button class="btn btn-primary" onclick="saveUser(${user.id})">Save Changes</button>
+                  <button class="btn btn-secondary" onclick="cancelEdit(${user.id})">Cancel</button>
                 </div>
               </div>
             </div>
           `).join('')}
         </div>`;
     }
-    // Toggle user action panel visibility
-    function toggleUserActions(userId) {
-      const actionsDiv = document.getElementById(`userActions${userId}`);
-      const isActive = actionsDiv.classList.contains('active');
-      document.querySelectorAll('.user-actions.active').forEach(el => {
-        el.classList.remove('active');
-      });
-      if (!isActive) {
-        actionsDiv.classList.add('active');
-      }
+
+    function editUser(userId) {
+        const editForm = document.getElementById(`editForm${userId}`);
+        const isVisible = editForm.style.display === 'block';
+
+        document.querySelectorAll('.edit-form').forEach(form => {
+            form.style.display = 'none';
+        });
+
+        if (!isVisible) {
+            editForm.style.display = 'block';
+            activeEditId = userId;
+        } else {
+            activeEditId = null;
+        }
     }
-    // Add new user form submission
+
     document.getElementById('addUserForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const username = document.getElementById('newUsername').value.trim();
       const password = document.getElementById('newPassword').value.trim();
       const title = document.getElementById('newTitle').value.trim();
-      if (!username || !password || !title) return showMessage('Username, password, and title are required', 'error');
+
+      if (!username || !password || !title) {
+        return showMessage('Username, password, and title are required', 'error');
+      }
+
       try {
-        const { error } = await supabaseClient
-          .from('users')
-          .insert([{ username, password, title }]);
+        const { error } = await supabaseClient.from('users').insert([{ username, password, title }]);
         if (error) throw error;
         showMessage('User added successfully!');
         e.target.reset();
-        loadUsers();
+        await loadUsers();
+        document.querySelector('.tab-button[data-tab="currentUsers"]').click();
       } catch (err) {
         showMessage('Error adding user: ' + err.message, 'error');
       }
     });
-    // Edit user functionality
-    function editUser(userId) {
-      document.querySelectorAll('.edit-form').forEach(form => {
-        form.style.display = 'none';
-      });
-      document.getElementById(`editForm${userId}`).style.display = 'block';
-      activeEditId = userId;
-    }
-    // Cancel edit operation
+
     function cancelEdit(userId) {
       document.getElementById(`editForm${userId}`).style.display = 'none';
       activeEditId = null;
     }
-    // Save user changes
+
     async function saveUser(userId) {
       const username = document.getElementById(`editUsername${userId}`).value.trim();
       const title = document.getElementById(`editTitle${userId}`).value.trim();
       const password = document.getElementById(`editPassword${userId}`).value.trim();
-      if (!username || !title) return showMessage('Username and title are required', 'error');
+
+      if (!username || !title) {
+        return showMessage('Username and title are required', 'error');
+      }
+
       try {
         const updateData = { username, title };
-        if (password) updateData.password = password;
+        if (password) {
+          updateData.password = password;
+        }
         const { error } = await supabaseClient.from('users').update(updateData).eq('id', userId);
         if (error) throw error;
         showMessage('User updated successfully!');
@@ -811,13 +738,13 @@
         showMessage('Update failed: ' + err.message, 'error');
       }
     }
-    // Delete user functionality
+
     async function deleteUser(userId) {
-      const user = users.find(user => user.id === userId);
-      if (user && user.title === 'admin') {
-        showMessage('Admin users cannot be deleted from the front end.', 'error');
-        return;
+      const user = users.find(u => u.id === userId);
+      if (user && user.title.toLowerCase() === 'admin') {
+        return showMessage('Admin users cannot be deleted.', 'error');
       }
+
       showConfirmationModal('Are you sure you want to delete this user? This action cannot be undone.', async (confirmed) => {
         if (!confirmed) return;
         try {
@@ -830,66 +757,19 @@
         }
       });
     }
-    // Close user actions when clicking outside
+    
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.user-item') && !e.target.closest('.modal-content')) {
-        document.querySelectorAll('.user-actions.active').forEach(el => {
-          el.classList.remove('active');
+        document.querySelectorAll('.edit-form').forEach(form => {
+          form.style.display = 'none';
         });
+        activeEditId = null;
       }
     });
-    // Admin Login Functionality
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = usernameInput.value.trim();
-      const password = passwordInput.value.trim();
-      try {
-        const { data, error } = await supabaseClient
-          .from('users')
-          .select('*')
-          .eq('username', username)
-          .eq('password', password)
-          .single();
-        if (error || !data) {
-          showMessage('Invalid username or password.', 'error', true);
-          return;
-        }
-        if (data.title === 'admin') {
-          sessionStorage.setItem('isAdminLoggedIn', 'true');
-          showMessage('Login successful! Welcome, Admin.', 'success', true);
-          renderApp();
-        } else {
-          showMessage('Only admin users can log in.', 'error', true);
-        }
-      } catch (err) {
-        showMessage('Login failed: ' + err.message, 'error', true);
-      }
-    });
-    // Logout Functionality
-    logoutButton.addEventListener('click', () => {
-      sessionStorage.removeItem('isAdminLoggedIn');
-      showMessage('Logged out successfully.', 'success');
-      renderApp();
-    });
-    // Render the appropriate view based on login status
-    function renderApp() {
-      const isAdminLoggedIn = sessionStorage.getItem('isAdminLoggedIn') === 'true';
-      if (isAdminLoggedIn) {
-        loginContainer.style.display = 'none';
-        appContent.style.display = 'block';
-        headerBanner.style.display = 'flex';
-        logoutButton.style.display = 'inline-flex';
-        loadUsers();
-      } else {
-        loginContainer.style.display = 'flex';
-        appContent.style.display = 'none';
-        headerBanner.style.display = 'none';
-        logoutButton.style.display = 'none';
-      }
-    }
-    // Initialize on DOMContentLoaded
+    
     document.addEventListener('DOMContentLoaded', () => {
-      renderApp();
+        setupTabs();
+        loadUsers();
     });
   </script>
 </body>
