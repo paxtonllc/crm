@@ -55,7 +55,6 @@
         }
 
         /* Main container for the application, taking full available width and height */
-        /* FIX: Changed to a flex container to manage layout and footer positioning */
         .container {
             width: 100%;
             flex-grow: 1;
@@ -66,8 +65,6 @@
         }
 
         /* Header styling with flexbox for alignment */
-        /* FIX: Header is now a non-growing flex item. No more jumping on scroll. */
-        /* ENHANCEMENT: Added backdrop-filter for a modern, glassy effect */
         .header {
             background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
             backdrop-filter: blur(10px); /* Glassy blur effect */
@@ -78,7 +75,7 @@
             z-index: 100;
             flex-shrink: 0; /* Prevent header from shrinking */
         }
-       
+        
         /* Inner wrapper for header content to constrain its width */
         .header-inner {
             display: flex;
@@ -148,7 +145,6 @@
             font-weight: 500;
             font-size: 0.85rem;
             border: none;
-            /* FIX: Using a more modern easing function for smoother animations */
             transition: all var(--transition-duration-fast) var(--transition-easing);
             text-decoration: none;
             display: inline-flex;
@@ -168,7 +164,7 @@
             color: var(--background-gradient-start);
         }
         .back-button:hover { background: #a0cffc; }
-       
+        
         .refresh-button {
             background: #60a5fa;
             color: var(--white);
@@ -243,9 +239,8 @@
             opacity: 0.98;
             font-weight: 400;
         }
-       
+        
         /* Home view container */
-        /* FIX: Changed flex properties to ensure content scrolls while footer stays visible */
         .home-view {
             display: flex;
             flex-direction: column;
@@ -254,7 +249,6 @@
         }
 
         /* Home view grid for navigation cards */
-        /* FIX: This grid is now the primary scrolling area on the home page */
         .home-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
@@ -277,7 +271,6 @@
             box-shadow: var(--shadow-md);
             cursor: pointer;
             text-align: center;
-            /* FIX: Using a smoother, more modern easing function */
             transition: all var(--transition-duration-normal) var(--transition-easing);
             display: flex;
             flex-direction: column;
@@ -288,7 +281,7 @@
             overflow: hidden;
             border: 1px solid var(--border-color);
         }
-       
+        
         .main-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.08);
@@ -330,16 +323,14 @@
             color: var(--text-color-light);
             line-height: 1.4;
         }
-       
+        
         /* Full page view container */
-        /* ENHANCEMENT: Made transitions smoother and faster for a better feel */
         .full-page-view {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            /* FIX: Updated transition for a smoother, faster feel */
             transition: opacity var(--transition-duration-fast) var(--transition-easing), transform var(--transition-duration-fast) var(--transition-easing);
             transform: translateY(10px);
             opacity: 0;
@@ -350,7 +341,7 @@
             transform: translateY(0);
             display: flex;
         }
-       
+        
         /* Iframe container within full page view */
         .iframe-container-fpv {
             flex-grow: 1;
@@ -551,7 +542,6 @@
         }
 
         /* Footer Styling */
-        /* FIX: Footer is now a non-growing flex item, always visible at the bottom. */
         .footer {
             display: none; /* Hidden by default, shown via JS */
             padding: 8px 15px;
@@ -563,9 +553,8 @@
             color: var(--background-gradient-end);
             flex-shrink: 0; /* Prevent footer from shrinking */
         }
-        /* FIX: Ensure the footer is displayed correctly when it should be visible on mobile */
         .footer.show { display: block; }
-       
+        
         /* New Professional Intro Animation Styles */
         .intro-overlay {
             position: fixed;
@@ -619,7 +608,7 @@
             border-radius: 50%;
             animation: spin 1.5s linear infinite;
         }
-       
+        
         .intro-text {
             color: white;
             font-size: 1.5rem;
@@ -627,7 +616,7 @@
             letter-spacing: 1px;
             text-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-       
+        
         /* Mobile Menu (Side Menu) Styles */
         .mobile-menu-button { display: none; background: var(--background-gradient-end); color: var(--white); padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer; font-size: 1.2rem; transition: background 0.3s ease; order: 0; }
         .mobile-menu-button:hover { background: var(--primary-dark); }
@@ -655,7 +644,7 @@
         .side-menu-sub-items.show { display: flex; }
         .side-menu-sub-item { display: flex; align-items: center; gap: 10px; padding: 8px 15px; background: var(--white); border-radius: var(--border-radius); cursor: pointer; transition: background 0.2s ease; box-shadow: var(--shadow-sm); }
         .side-menu-sub-item:hover { background: #f1f5f9; }
-       
+        
         /* Notification Bell */
         .notification-bell {
             position: relative;
@@ -665,6 +654,17 @@
             font-size: 1.4rem;
             color: var(--text-color-dark);
         }
+        .notification-bell .fa-bell.updated {
+            animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-3px, 0, 0); }
+            40%, 60% { transform: translate3d(3px, 0, 0); }
+        }
+
         .notification-count {
             position: absolute;
             top: -5px;
@@ -691,12 +691,12 @@
 
         .notification-dropdown {
             position: absolute;
-            top: 100%;
-            left: 0;
+            top: calc(100% + 10px); /* Adjust vertical position */
+            left: 0; /* Align to the left of the bell icon */
             background-color: white;
             border-radius: 8px;
             box-shadow: var(--shadow-lg);
-            width: 300px;
+            width: 320px;
             max-height: 400px;
             overflow-y: auto;
             z-index: 101;
@@ -706,9 +706,14 @@
             border-bottom: 1px solid var(--border-color);
             cursor: pointer;
             transition: background-color 0.2s ease;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
         .notification-item:hover { background-color: #f1f5f9; }
         .notification-item:last-child { border-bottom: none; }
+        .notification-icon { font-size: 1.2rem; color: var(--text-color-light); }
+        .notification-content { flex-grow: 1; }
         .notification-title {
             font-weight: 600;
             color: var(--text-color-dark);
@@ -722,8 +727,13 @@
             color: var(--text-color-light);
             margin-top: 4px;
         }
+        .no-notifications {
+             padding: 20px;
+             text-align: center;
+             color: var(--text-color-light);
+        }
 
-        /* Request Modal Styles */
+        /* Request & Expense Modal Styles */
         .custom-modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -747,10 +757,13 @@
             border-radius: 12px;
             box-shadow: 0 6px 16px rgba(0,0,0,0.2);
             width: 90%;
-            max-width: 500px;
+            max-width: 550px;
             transform: scale(0.9);
             opacity: 0;
             transition: transform var(--transition-duration-normal) ease, opacity var(--transition-duration-normal) ease;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
         }
         .custom-modal-overlay.show .custom-modal-content {
             transform: scale(1);
@@ -763,6 +776,7 @@
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 10px;
             margin-bottom: 15px;
+            flex-shrink: 0;
         }
         .modal-header h2 {
             font-size: 1.2rem;
@@ -781,6 +795,8 @@
             font-size: 0.9rem;
             color: var(--text-color-dark);
             line-height: 1.6;
+            overflow-y: auto;
+            flex-grow: 1;
         }
         .modal-body .detail-pair { margin-bottom: 12px; }
         .modal-body .detail-pair strong {
@@ -799,6 +815,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            flex-shrink: 0;
         }
         .modal-footer label {
             font-weight: 600;
@@ -812,10 +829,48 @@
             font-size: 0.9rem;
             cursor: pointer;
         }
+        .modal-footer .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+        .modal-footer .action-buttons button {
+             padding: 8px 16px;
+             border-radius: 8px;
+             font-weight: 600;
+             cursor: pointer;
+             border: none;
+             transition: background-color 0.2s ease;
+        }
+        .approve-btn { background-color: #10b981; color: white; }
+        .approve-btn:hover { background-color: #059669; }
+        .reject-btn { background-color: #ef4444; color: white; }
+        .reject-btn:hover { background-color: #dc2626; }
+
+        /* Expense Items Table Styles */
+        .expense-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .expense-items-table th, .expense-items-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .expense-items-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .expense-items-table td:last-child {
+            text-align: right;
+            font-weight: 500;
+        }
 
         /* Responsive adjustments */
         @media (max-width: 1024px) {
-            .container { padding: 10px; }
+            .container { padding: 0 10px 10px; }
             .header { padding: 6px 15px; }
             .user-card { padding: 6px 12px; gap: 10px; max-width: 180px; }
             .user-card-icon { font-size: 1.3rem; }
@@ -836,7 +891,7 @@
         }
 
         @media (max-width: 768px) {
-            .container { padding: 8px; height: 100vh; }
+            .container { padding: 0 0 8px; height: 100vh; }
             .header { flex-wrap: nowrap; justify-content: space-between; padding: 6px 8px; z-index: 100; }
             .user-card { width: 100%; margin-bottom: 0; justify-content: flex-start; order: 2; flex-grow: 1; max-width: 150px; }
             .user-name { font-size: 0.7rem; }
@@ -844,7 +899,7 @@
             .header-buttons { width: auto; justify-content: flex-start; order: 1; flex-grow: 1; }
             .header-button { flex-grow: 0; padding: 5px 7px; font-size: 0.7rem; }
             .logout-button { width: 70px; display: none; }
-            .banner { padding: 6px 12px; gap: 8px; }
+            .banner { padding: 6px 12px; gap: 8px; border-radius: 0; margin-top: 0; }
             .company-logo { max-width: 40px; }
             .banner h1 { font-size: 1.2rem; }
             .banner .subtitle { font-size: 0.65rem; }
@@ -984,13 +1039,11 @@
             <div class="error-state" id="errorMasterList"><div class="error-icon">⚠️</div><div class="error-title">Master List Page Not Found</div><div class="error-text">The Master List file could not be loaded.</div></div>
             <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-        <!-- START: Added 'expensesView' container for the new page -->
         <div id="expensesView" class="full-page-view hidden">
             <div class="loading" id="loadingExpenses"><div class="spinner"></div><div class="loading-text">Loading Expenses...</div></div>
             <div class="error-state" id="errorExpenses"><div class="error-icon">⚠️</div><div class="error-title">Expenses Page Not Found</div><div class="error-text">The Expenses file could not be loaded.</div></div>
             <div class="iframe-container-fpv"><iframe src=""></iframe></div>
         </div>
-        <!-- END: Added 'expensesView' container for the new page -->
         <div id="nestedIframeView" class="full-page-view hidden">
             <div class="loading" id="loadingNestedIframe"><div class="spinner"></div><div class="loading-text">Loading...</div></div>
             <div class="error-state" id="errorNestedIframe"><div class="error-icon">⚠️</div><div class="error-title">Page Not Found</div><div class="error-text">The requested file could not be loaded.</div></div>
@@ -1011,7 +1064,7 @@
             <button id="sideMenuLogoutButton" class="side-menu-logout-button"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </div>
-   
+    
     <!-- Request Details Modal -->
     <div id="requestModal" class="custom-modal-overlay">
         <div class="custom-modal-content">
@@ -1030,20 +1083,38 @@
             </div>
         </div>
     </div>
+    
+    <!-- Expense Details Modal -->
+    <div id="expenseModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <div class="modal-header">
+                <h2 id="modalExpenseTitle">Expense Details</h2>
+                <button id="modalExpenseCloseButton" class="close-modal-button">&times;</button>
+            </div>
+            <div id="modalExpenseDetails" class="modal-body">
+                <!-- Expense details will be populated here -->
+            </div>
+            <div class="modal-footer">
+                <div class="action-buttons">
+                     <button id="expenseApproveBtn" class="approve-btn">Approve</button>
+                     <button id="expenseRejectBtn" class="reject-btn">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <script>
         const SUPABASE_URL = 'https://plmevfyxpngzymvzvkzn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-       
+        
         let currentActiveViewId = null;
         let loggedInUser = null;
-        let googleSheetData = [];
+        let masterlistData = []; // Changed from googleSheetData
         let lastPageHistory = [];
         let notificationChannel = null;
-
-        const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRGZVMTCJ53ACJBwYVpyBpCFyDn4lYfMlbbldKbRXfnmsN14APuBIJm2jlDMGhPpYi5xXUp4z1YFkte/pub?gid=0&single=true&output=csv';
+        let currentOpenExpenseId = null;
 
         const navConfig = {
             'home': {
@@ -1074,33 +1145,15 @@
             }
         };
 
-        async function fetchGoogleSheetData() {
+        // Fetches data from the 'masterlist' table in Supabase
+        async function fetchMasterlistData() {
             try {
-                // FIX: Add a cache-busting query parameter to ensure fresh data is fetched
-                const response = await fetch(`${GOOGLE_SHEET_URL}&_=${new Date().getTime()}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const csvText = await response.text();
-                googleSheetData = parseCSV(csvText);
+                let { data, error } = await supabase.from('masterlist').select('*');
+                if (error) throw error;
+                masterlistData = data;
             } catch (error) {
-                console.error('Error fetching or parsing Google Sheet data:', error);
+                console.error('Error fetching masterlist data:', error);
             }
-        }
-       
-        function parseCSV(csvText) {
-            const rows = csvText.split('\n').filter(row => row.trim() !== '');
-            if (rows.length === 0) return [];
-            const headers = rows[0].split(',').map(header => header.trim());
-            const data = [];
-
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i].split(',');
-                const rowObject = {};
-                headers.forEach((header, index) => {
-                    rowObject[header] = row[index] ? row[index].trim() : '';
-                });
-                data.push(rowObject);
-            }
-            return data;
         }
 
         function updateAndShowUserCard() {
@@ -1115,179 +1168,280 @@
                 document.getElementById('notificationBell').classList.add('hidden');
             }
         }
-       
+        
         async function fetchNotifications() {
             const notificationBell = document.getElementById('notificationBell');
-            const notificationCount = document.getElementById('notificationCount');
+            const bellIcon = notificationBell.querySelector('.fa-bell');
+            const notificationCountEl = document.getElementById('notificationCount');
             const notificationDropdown = document.getElementById('notificationDropdown');
 
-            if (!loggedInUser) return;
-
-            if (loggedInUser.title === 'Medical Representative') {
+            if (!loggedInUser || loggedInUser.title === 'Medical Representative') {
                 notificationBell.classList.add('hidden');
                 return;
             }
 
-            let query = supabase.from('requests').select('*').eq('status', 'Requested');
-           
-            if (loggedInUser.title === 'District Manager') {
-                const dmReps = googleSheetData
-                    .filter(row => row['District Manager'] === loggedInUser.username)
-                    .map(row => row['medical rep']);
-               
-                if (dmReps.length > 0) {
-                    query = query.in('medRep', dmReps);
-                } else {
-                    notificationBell.classList.add('hidden');
-                    return;
+            try {
+                // Define queries for requests and expenses
+                let requestsQuery = supabase.from('requests').select('*').eq('status', 'Requested');
+                let expensesQuery = supabase.from('expenses').select('*').eq('status', 'Pending');
+                
+                if (loggedInUser.title === 'District Manager') {
+                    const dmReps = masterlistData
+                        .filter(row => row['District Manager'] === loggedInUser.username)
+                        .map(row => row['medical rep']);
+                    
+                    if (dmReps.length > 0) {
+                        requestsQuery = requestsQuery.in('medRep', dmReps);
+                        expensesQuery = expensesQuery.in('employee_name', dmReps);
+                    } else {
+                        // If a DM has no reps, they have no notifications to see
+                        requestsQuery = requestsQuery.is('id', null); // empty query
+                        expensesQuery = expensesQuery.is('id', null);  // empty query
+                    }
                 }
-            }
-           
-            // FIX: Order by date descending to get the newest notifications first
-            const { data, error } = await query.order('date', { ascending: false });
 
-            if (error) {
-                console.error('Error fetching notifications:', error);
-                return;
-            }
+                // Fetch both in parallel
+                const [
+                    { data: requestsData, error: requestsError },
+                    { data: expensesData, error: expensesError }
+                ] = await Promise.all([
+                    requestsQuery,
+                    expensesQuery
+                ]);
 
-            if (data.length > 0) {
-                const currentCount = parseInt(notificationCount.textContent, 10);
-                notificationCount.textContent = data.length;
-                notificationBell.classList.remove('hidden');
+                if (requestsError) console.error('Error fetching requests:', requestsError);
+                if (expensesError) console.error('Error fetching expenses:', expensesError);
 
-                if (data.length > currentCount) {
-                    notificationCount.classList.add('updated');
-                    setTimeout(() => {
-                        notificationCount.classList.remove('updated');
-                    }, 600);
-                }
+                const formattedRequests = (requestsData || []).map(r => ({ ...r, type: 'request', date: r.date || r.created_at }));
+                const formattedExpenses = (expensesData || []).map(e => ({ ...e, type: 'expense', date: e.report_date || e.created_at }));
+                
+                const allNotifications = [...formattedRequests, ...formattedExpenses]
+                    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 notificationDropdown.innerHTML = '';
-                data.forEach(req => {
-                    const item = document.createElement('div');
-                    item.className = 'notification-item';
-                    item.dataset.requestId = req.id;
-                    const requestDate = new Date(req.date).toLocaleDateString('en-GB', {
-                        day: '2-digit', month: 'short', year: 'numeric'
+                const currentCount = parseInt(notificationCountEl.textContent, 10);
+                
+                if (allNotifications.length > 0) {
+                    notificationCountEl.textContent = allNotifications.length;
+                    notificationBell.classList.remove('hidden');
+                    
+                    if (allNotifications.length > currentCount) {
+                        notificationCountEl.classList.add('updated');
+                        bellIcon.classList.add('updated');
+                        setTimeout(() => {
+                            notificationCountEl.classList.remove('updated');
+                            bellIcon.classList.remove('updated');
+                        }, 800);
+                    }
+
+                    allNotifications.forEach(item => {
+                        const notificationItem = document.createElement('div');
+                        notificationItem.className = 'notification-item';
+                        
+                        if (item.type === 'request') {
+                            notificationItem.innerHTML = `
+                                <div class="notification-icon"><i class="fas fa-clipboard-list"></i></div>
+                                <div class="notification-content">
+                                    <div class="notification-title">${item.requestTitle}</div>
+                                    <div class="notification-rep">By: ${item.medRep}</div>
+                                    <div class="notification-date">${new Date(item.date).toLocaleDateString()}</div>
+                                </div>`;
+                            notificationItem.addEventListener('click', () => showRequestModal(item.id));
+                        } else if (item.type === 'expense') {
+                             const details = JSON.parse(item.details || '{}');
+                             let expenseTitle = 'Expense Report'; // Default title
+
+                             if (item.role === 'District Manager') {
+                                 if (details.reportType === 'Trip') {
+                                     expenseTitle = `Trip Report (${details.purpose})`;
+                                 } else {
+                                     expenseTitle = `Other Expenses`;
+                                 }
+                             } else { // Medical Representative
+                                 expenseTitle = `Daily Log`;
+                             }
+
+                             notificationItem.innerHTML = `
+                                <div class="notification-icon"><i class="fas fa-file-invoice-dollar" style="color: #10b981;"></i></div>
+                                <div class="notification-content">
+                                    <div class="notification-title">${expenseTitle}</div>
+                                    <div class="notification-rep">By: ${item.employee_name}</div>
+                                    <div class="notification-date">${new Date(item.date).toLocaleDateString()}</div>
+                                </div>`;
+                             notificationItem.addEventListener('click', () => showExpenseModal(item.id));
+                        }
+                        notificationDropdown.appendChild(notificationItem);
                     });
 
-                    item.innerHTML = `
-                        <div class="notification-title">${req.requestTitle}</div>
-                        <div class="notification-rep">By: ${req.medRep}</div>
-                        <div class="notification-date">${requestDate}</div>
-                    `;
-                    item.addEventListener('click', () => showRequestModal(req.id));
-                    // FIX: Use appendChild, as the data is already sorted correctly from the query.
-                    // This ensures the list renders in the correct chronological order (newest on top).
-                    notificationDropdown.appendChild(item);
-                });
+                } else {
+                    notificationBell.classList.add('hidden');
+                    notificationCountEl.textContent = '0';
+                    notificationDropdown.innerHTML = '<div class="no-notifications">No new notifications</div>';
+                }
 
-            } else {
-                notificationBell.classList.add('hidden');
+            } catch (err) {
+                console.error('Failed to fetch notifications:', err);
             }
         }
 
         function subscribeToNotifications() {
-            // FIX: This function sets up the real-time listener. When any change
-            // (insert, update, delete) happens in the 'requests' table, Supabase
-            // sends a message. The code then waits 500ms and re-fetches all
-            // notifications to ensure the UI is perfectly in sync. This is how
-            // new notifications appear without needing a page refresh.
             if (notificationChannel) {
                 supabase.removeChannel(notificationChannel);
                 notificationChannel = null;
             }
 
-            notificationChannel = supabase.channel('public:requests')
+            // Listen to both tables
+            notificationChannel = supabase.channel('public-notifications')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'requests' }, payload => {
-                    console.log('Real-time change received!', payload);
-                    setTimeout(fetchNotifications, 500); // Re-fetch data on any change
+                    console.log('Real-time change received on requests!', payload);
+                    setTimeout(fetchNotifications, 500); 
+                })
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'expenses' }, payload => {
+                    console.log('Real-time change received on expenses!', payload);
+                    setTimeout(fetchNotifications, 500); 
                 })
                 .subscribe((status, err) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('Successfully subscribed to real-time notifications!');
-                    }
-                    if (status === 'CHANNEL_ERROR') {
-                        console.error('Subscription error:', err);
-                    }
+                    if (status === 'SUBSCRIBED') console.log('Successfully subscribed to real-time notifications!');
+                    if (status === 'CHANNEL_ERROR') console.error('Subscription error:', err);
                 });
         }
-       
+        
+        // --- Request Modal Functions (Existing) ---
         async function showRequestModal(requestId) {
             const { data, error } = await supabase.from('requests').select('*').eq('id', requestId).single();
-
             if (error) {
                 console.error('Error fetching request details:', error);
                 showBlurredMessage('Could not load request details.', 1500);
                 return;
             }
-
-            const modal = document.getElementById('requestModal');
+            // ... (rest of the function is the same as original)
+             const modal = document.getElementById('requestModal');
             const modalTitle = document.getElementById('modalRequestTitle');
             const modalDetails = document.getElementById('modalRequestDetails');
             const modalStatusSelect = document.getElementById('modalStatusSelect');
 
             modalTitle.textContent = data.requestTitle;
-
             let detailsHtml = `
                 <div class="detail-pair"><strong>Medical Rep:</strong> <span>${data.medRep || 'N/A'}</span></div>
                 <div class="detail-pair"><strong>Area:</strong> <span>${data.area || 'N/A'}</span></div>
-                <div class="detail-pair"><strong>Date:</strong> <span>${new Date(data.date).toLocaleDateString()}</span></div>
-            `;
+                <div class="detail-pair"><strong>Date:</strong> <span>${new Date(data.date).toLocaleDateString()}</span></div>`;
 
             if (data.customerType && data.customerType.toLowerCase() !== 'personal') {
                  detailsHtml += `
-                     <div class="detail-pair"><strong>Customer Type:</strong> <span>${data.customerType}</span></div>
-                     <div class="detail-pair"><strong>Customer Name:</strong> <span>${data.customerName || 'N/A'}</span></div>
-                 `;
+                        <div class="detail-pair"><strong>Customer Type:</strong> <span>${data.customerType}</span></div>
+                        <div class="detail-pair"><strong>Customer Name:</strong> <span>${data.customerName || 'N/A'}</span></div>`;
             }
-
             detailsHtml += `<div class="detail-pair"><strong>Details:</strong> <span>${data.requestDetails || 'No details provided'}</span></div>`;
             modalDetails.innerHTML = detailsHtml;
 
             let statusOptions = '';
             if (data.customerType && data.customerType.toLowerCase() === 'personal') {
-                statusOptions = `
-                    <option value="Requested">Requested</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                `;
+                statusOptions = `<option value="Requested">Requested</option><option value="Approved">Approved</option><option value="Rejected">Rejected</option>`;
             } else {
-                statusOptions = `
-                    <option value="Requested">Requested</option>
-                    <option value="Scheduled">Scheduled</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Postponed">Postponed</option>
-                    <option value="Done">Done</option>
-                    <option value="Rejected">Rejected</option>
-                    <option value="Approved">Approved</option>
-                `;
+                statusOptions = `<option value="Requested">Requested</option><option value="Scheduled">Scheduled</option><option value="Pending">Pending</option><option value="Postponed">Postponed</option><option value="Done">Done</option><option value="Rejected">Rejected</option><option value="Approved">Approved</option>`;
             }
             modalStatusSelect.innerHTML = statusOptions;
             modalStatusSelect.value = data.status;
-
             modalStatusSelect.onchange = null;
             modalStatusSelect.onchange = () => updateRequestStatus(requestId, modalStatusSelect.value);
-
             modal.classList.add('show');
         }
 
         async function updateRequestStatus(requestId, newStatus) {
             const { error } = await supabase.from('requests').update({ status: newStatus }).eq('id', requestId);
-
             if (error) {
                 console.error('Error updating status:', error);
                 showBlurredMessage('Failed to update status.', 1500);
             } else {
                 showBlurredMessage('Status updated successfully!', 1500);
                 closeRequestModal();
-                // No need to call fetchNotifications() here, the real-time subscription will trigger it automatically.
             }
         }
 
         function closeRequestModal() {
             document.getElementById('requestModal').classList.remove('show');
+        }
+        
+        // --- Expense Modal Functions (New) ---
+        async function showExpenseModal(expenseId) {
+             currentOpenExpenseId = expenseId;
+             const { data, error } = await supabase.from('expenses').select('*').eq('id', expenseId).single();
+             if (error) {
+                 console.error('Error fetching expense details:', error);
+                 showBlurredMessage('Could not load expense details.', 1500);
+                 return;
+             }
+
+             const modal = document.getElementById('expenseModal');
+             const modalTitle = document.getElementById('modalExpenseTitle');
+             const modalDetails = document.getElementById('modalExpenseDetails');
+             
+             modalTitle.textContent = data.report_type || 'Expense Details'; // Use report_type for the title
+             const details = JSON.parse(data.details || '{}');
+             const items = JSON.parse(data.items || '[]');
+
+             let detailsHtml = `
+                 <div class="detail-pair"><strong>Employee:</strong> <span>${data.employee_name}</span></div>
+                 <div class="detail-pair"><strong>Role:</strong> <span>${data.role}</span></div>
+                 <div class="detail-pair"><strong>Date:</strong> <span>${new Date(data.report_date).toLocaleDateString()}</span></div>
+                 <div class="detail-pair"><strong>Total Amount:</strong> <span>${parseFloat(data.total_amount).toFixed(2)} EGP</span></div>`;
+            
+             if(data.role === 'District Manager' && details.reportType === 'Trip') {
+                 detailsHtml += `
+                     <div class="detail-pair"><strong>Trip:</strong> <span>${details.from} to ${details.to}</span></div>
+                     <div class="detail-pair"><strong>Purpose:</strong> <span>${details.purpose}</span></div>
+                 `;
+             }
+
+            if (items.length > 0) {
+                detailsHtml += `
+                    <div class="detail-pair" style="margin-top: 15px;"><strong>Items:</strong></div>
+                    <table class="expense-items-table">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                items.forEach(item => {
+                    // Append KM if item type is 'Own Car Travel' and description exists
+                    const description = (item.type === 'Own Car Travel' && item.desc) 
+                        ? `${item.desc} KM` 
+                        : (item.desc || 'N/A');
+                    detailsHtml += `
+                        <tr>
+                            <td>${item.type}</td>
+                            <td>${description}</td>
+                            <td>${parseFloat(item.amount).toFixed(2)} EGP</td>
+                        </tr>
+                    `;
+                });
+                detailsHtml += '</tbody></table>';
+            }
+
+             modalDetails.innerHTML = detailsHtml;
+             modal.classList.add('show');
+        }
+
+        function closeExpenseModal() {
+            document.getElementById('expenseModal').classList.remove('show');
+            currentOpenExpenseId = null;
+        }
+        
+        async function updateExpenseStatus(newStatus) {
+            if (!currentOpenExpenseId) return;
+            const { error } = await supabase.from('expenses').update({ status: newStatus }).eq('id', currentOpenExpenseId);
+            
+            if (error) {
+                console.error('Error updating expense status:', error);
+                showBlurredMessage('Failed to update status.', 1500);
+            } else {
+                showBlurredMessage(`Expense ${newStatus.toLowerCase()} successfully!`, 1500);
+                closeExpenseModal();
+            }
         }
 
 
@@ -1308,7 +1462,7 @@
             document.getElementById('loginError').style.display = 'none';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-           
+            
             if (notificationChannel) {
                 supabase.removeChannel(notificationChannel);
                 notificationChannel = null;
@@ -1359,7 +1513,7 @@
                 card.addEventListener('click', () => loadPage(card.dataset.page));
             });
         }
-       
+        
         async function handleLogin() {
             const usernameInput = document.getElementById('username').value.trim();
             const passwordInput = document.getElementById('password').value.trim();
@@ -1396,7 +1550,6 @@
         }
 
         function showHome() {
-            // FIX: This function now manages the transition smoothly.
             const homeView = document.getElementById('homeView');
             const prevActiveView = document.getElementById(currentActiveViewId);
 
@@ -1407,20 +1560,17 @@
 
             if (prevActiveView && prevActiveView !== homeView) {
                 prevActiveView.classList.remove('active');
-                // Use a short delay to allow the CSS transition to play before hiding
                 setTimeout(() => {
                     prevActiveView.classList.add('hidden');
                     const iframe = prevActiveView.querySelector('iframe');
                     if (iframe) iframe.src = 'about:blank';
                     homeView.classList.remove('hidden');
-                    // Use a very short delay to re-apply the "active" class and start the entrance animation
                     setTimeout(() => {
                         homeView.classList.add('active');
-                        // Ensure the transition is reset before re-applying the class
                         homeView.classList.remove('active');
                         homeView.classList.add('active');
                     }, 10);
-                }, 200); // This delay should match or be slightly less than the CSS transition
+                }, 200);
             } else {
                 homeView.classList.remove('hidden');
                 homeView.classList.add('active');
@@ -1447,18 +1597,16 @@
 
             if (currentActiveViewId !== viewId) {
                  if (currentActiveViewId && currentActiveViewId !== 'homeView') {
-                     lastPageHistory.push(currentActiveViewId);
+                       lastPageHistory.push(currentActiveViewId);
                  }
             }
-           
-            // Immediately hide the home view
+            
             document.getElementById('homeView').classList.add('hidden');
             document.querySelector('.footer').classList.remove('show');
             document.getElementById('backButton').classList.remove('hidden');
             document.getElementById('refreshButton').classList.remove('hidden');
             document.getElementById('logoutButton').classList.add('hidden');
 
-            // Hide the previously active view with a transition
             if (prevActiveView && prevActiveView !== targetView) {
                 prevActiveView.classList.remove('active');
                 setTimeout(() => {
@@ -1468,7 +1616,6 @@
                 }, 200);
             }
 
-            // Show the target view after a slight delay for a smooth transition effect
             setTimeout(() => {
                 targetView.classList.remove('hidden');
                 setTimeout(() => targetView.classList.add('active'), 10);
@@ -1484,13 +1631,12 @@
                 const loadingOverlay = targetView.querySelector('.loading');
                 const errorState = targetView.querySelector('.error-state');
                 const iframe = targetView.querySelector('iframe');
-               
+                
                 loadingOverlay.classList.add('show');
                 errorState.classList.remove('show');
-               
-                // FIX: Add a timestamp to the URL to bypass browser cache on every load.
+                
                 iframe.src = `${fileName}?t=${new Date().getTime()}`;
-               
+                
                 const sendDataToIframe = () => {
                     if (loggedInUser && iframe.contentWindow) {
                         const message = { user: loggedInUser };
@@ -1508,7 +1654,7 @@
                         iframe.contentWindow.postMessage(message, '*');
                     }
                 };
-               
+                
                 iframe.onload = () => {
                     loadingOverlay.classList.remove('show');
                     sendDataToIframe();
@@ -1599,42 +1745,42 @@
                 }
             });
         }
-       
+        
         document.addEventListener('DOMContentLoaded', async function() {
             const introOverlay = document.getElementById('introOverlay');
             setTimeout(() => {
                 introOverlay.classList.add('fade-out');
-                setTimeout(() => introOverlay.remove(), 500);
+                setTimeout(() => {
+                    if(introOverlay) introOverlay.remove()
+                }, 500);
             }, 3000);
 
-            await fetchGoogleSheetData();
+            await fetchMasterlistData();
             const storedUser = localStorage.getItem('loggedInUser');
             const lastPage = localStorage.getItem('currentPage');
 
-            setTimeout(() => {
-                if (storedUser) {
-                    loggedInUser = JSON.parse(storedUser);
-                    showAppContent();
-                    if (lastPage && lastPage !== 'home' && lastPage !== 'null') {
-                        const allPages = [...navConfig.home.pages, ...(navConfig.home.pages.find(p => p.id === 'dm-crm')?.subPages || [])];
-                        const targetPage = allPages.find(p => p.id === lastPage);
-                        if (targetPage && (targetPage.roles.includes(loggedInUser.title) || loggedInUser.title === 'admin')) {
-                            if (targetPage.isNested) {
-                                loadPage('dm-crm');
-                                setTimeout(() => loadPage(lastPage), 500);
-                            } else {
-                                loadPage(lastPage);
-                            }
+            if (storedUser) {
+                loggedInUser = JSON.parse(storedUser);
+                showAppContent();
+                if (lastPage && lastPage !== 'home' && lastPage !== 'null') {
+                    const allPages = [...navConfig.home.pages, ...(navConfig.home.pages.find(p => p.id === 'dm-crm')?.subPages || [])];
+                    const targetPage = allPages.find(p => p.id === lastPage);
+                    if (targetPage && (targetPage.roles.includes(loggedInUser.title) || loggedInUser.title === 'admin')) {
+                        if (targetPage.isNested) {
+                            loadPage('dm-crm');
+                            setTimeout(() => loadPage(lastPage), 500);
                         } else {
-                            showHome();
+                            loadPage(lastPage);
                         }
                     } else {
                         showHome();
                     }
                 } else {
-                    showLoginPage();
+                    showHome();
                 }
-            }, 3500);
+            } else {
+                showLoginPage();
+            }
 
             document.getElementById('loginButton').addEventListener('click', handleLogin);
             document.getElementById('logoutButton').addEventListener('click', handleLogout);
@@ -1654,33 +1800,26 @@
             document.getElementById('mobileMenuButton').addEventListener('click', openSideMenu);
             document.getElementById('closeMenuButton').addEventListener('click', closeSideMenu);
             document.getElementById('sideMenuOverlay').addEventListener('click', closeSideMenu);
-           
+            
             document.getElementById('refreshButton').addEventListener('click', async () => {
-                // FIX: Refresh logic now re-fetches all necessary data and forces a cache-less reload.
                 showBlurredMessage('Refreshing...', 1000);
-                await fetchGoogleSheetData(); // Re-fetch sheet data for user mapping
-                fetchNotifications(); // Re-fetch notifications
+                await fetchMasterlistData();
+                fetchNotifications(); 
 
                 if (!currentActiveViewId) return;
-
                 const activeView = document.getElementById(currentActiveViewId);
                 if (!activeView) return;
 
                 if (currentActiveViewId === 'homeView') {
                     renderMainGrid();
-                } 
-                else if (currentActiveViewId === 'dmCrmView') {
+                } else if (currentActiveViewId === 'dmCrmView') {
                     const config = navConfig.home.pages.find(p => p.id === 'dm-crm');
-                    if (config) {
-                        renderSubCards(document.getElementById('dmCrmSubGrid'), config.subPages);
-                    }
-                }
-                else {
+                    if (config) renderSubCards(document.getElementById('dmCrmSubGrid'), config.subPages);
+                } else {
                     const iframe = activeView.querySelector('iframe');
                     if (iframe && iframe.contentWindow) {
                         const loadingOverlay = activeView.querySelector('.loading');
                         if (loadingOverlay) loadingOverlay.classList.add('show');
-                        // Force a reload by changing the src to a new unique URL
                         const currentSrc = iframe.src.split('?')[0];
                         iframe.src = `${currentSrc}?t=${new Date().getTime()}`;
                     }
@@ -1699,13 +1838,20 @@
                     notificationDropdown.classList.add('hidden');
                 }
             });
-           
+            
             document.getElementById('modalCloseButton').addEventListener('click', closeRequestModal);
             document.getElementById('requestModal').addEventListener('click', (event) => {
-                if (event.target.id === 'requestModal') {
-                    closeRequestModal();
-                }
+                if (event.target.id === 'requestModal') closeRequestModal();
             });
+
+            // New Expense Modal Listeners
+            document.getElementById('modalExpenseCloseButton').addEventListener('click', closeExpenseModal);
+            document.getElementById('expenseModal').addEventListener('click', (event) => {
+                if (event.target.id === 'expenseModal') closeExpenseModal();
+            });
+            document.getElementById('expenseApproveBtn').addEventListener('click', () => updateExpenseStatus('Approved'));
+            document.getElementById('expenseRejectBtn').addEventListener('click', () => updateExpenseStatus('Rejected'));
+
         });
     </script>
 </body>
