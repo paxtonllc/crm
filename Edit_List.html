@@ -9,131 +9,116 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
+
     <style>
         :root {
-            --primary-color: #3b82f6; /* blue-500 */
-            --primary-hover: #2563eb; /* blue-600 */
-            --danger-color: #ef4444;  /* red-500 */
-            --danger-hover: #dc2626;  /* red-600 */
-            --dark-gray: #1f2937;    /* gray-800 */
-            --medium-gray: #6b7280; /* gray-500 */
-            --light-gray: #f3f4f6;   /* gray-100 */
-            --border-color: #e5e7eb; /* gray-200 */
-            --background-color: #f9fafb; /* gray-50 */
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --dark-gray: #1f2937;
+            --medium-gray: #6b7280;
+            --light-gray: #f3f4f6;
+            --border-color: #e5e7eb;
+            --background-color: #f9fafb;
+            --duplicate-yellow: #fef3c7;
+            --original-green: #dcfce7;
         }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background: var(--background-color);
             min-height: 100vh;
-            padding: 16px;
+            padding: 12px;
             color: var(--dark-gray);
-            font-size: 14px;
-            line-height: 1.5;
+            font-size: 13px;
+            line-height: 1.4;
         }
-
         .container {
             width: 100%;
             max-width: none;
             margin: 0 auto;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            border-radius: 10px;
+            box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
             overflow: hidden;
         }
-
-        /* Header */
         .header {
             background: var(--dark-gray);
             color: white;
-            padding: 24px 32px;
+            padding: 18px 24px;
             border-bottom: 1px solid var(--border-color);
         }
-
         .header h1 {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 700;
             margin-bottom: 4px;
         }
-
         .header p {
             opacity: 0.8;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 400;
         }
-
-        /* Filters */
         .filters-section {
-            padding: 16px 32px;
+            padding: 12px 24px;
             background: #ffffff;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
             flex-wrap: wrap;
         }
-
         .search-section {
             flex-grow: 1;
             position: relative;
         }
-        
         .search-section .fa-search {
             position: absolute;
-            left: 14px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--medium-gray);
-            font-size: 14px;
+            font-size: 13px;
         }
-
         .search-input {
             width: 100%;
-            padding: 10px 12px 10px 40px;
+            padding: 8px 10px 8px 36px;
             border: 1px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 6px;
+            font-size: 13px;
             background: white;
             color: #374151;
             transition: all 0.2s ease-in-out;
         }
-
         .search-input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
         }
-
-        /* Action Buttons */
         .action-buttons {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
+            gap: 8px;
         }
-
         .action-button {
             background: var(--dark-gray);
             color: white;
             border: 1px solid transparent;
-            padding: 10px 16px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             transition: all 0.2s ease-in-out;
         }
-        
         .action-button.primary {
             background: var(--primary-color);
         }
@@ -154,18 +139,15 @@
         .action-button.delete-btn:hover {
             background-color: var(--danger-hover);
         }
-
-        /* Stats */
         .stats-bar {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             background: white;
             border-bottom: 1px solid var(--border-color);
         }
-
         .stats-item {
             text-align: left;
-            padding: 20px 32px;
+            padding: 14px 20px;
             cursor: default;
             transition: background-color 0.2s ease;
             border-right: 1px solid var(--border-color);
@@ -177,9 +159,8 @@
             background-color: var(--light-gray);
             cursor: pointer;
         }
-
         .stats-number {
-            font-size: 28px;
+            font-size: 22px;
             font-weight: 700;
             color: var(--dark-gray);
             display: block;
@@ -188,36 +169,31 @@
         .stats-number.red {
             color: var(--danger-color);
         }
-
         .stats-label {
-            font-size: 13px;
+            font-size: 12px;
             color: var(--medium-gray);
-            margin-top: 6px;
+            margin-top: 4px;
         }
-
-        /* Table */
         .table-container {
             padding: 0;
             overflow-x: auto;
         }
-
         .hcp-table {
             width: 100%;
             border-collapse: collapse;
             background: white;
-            min-width: 1800px;
+            min-width: 1600px;
         }
-
         .hcp-table th {
             background: var(--light-gray);
             color: #374151;
-            padding: 12px 16px;
+            padding: 10px 12px;
             text-align: left;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -230,43 +206,38 @@
         }
         .hcp-table th.filter-active {
             color: var(--primary-color);
-            background-color: #dbeafe; /* blue-200 */
+            background-color: #dbeafe;
         }
         .hcp-table th.filter-active::after {
-            content: ' \f0b0'; /* Font Awesome filter icon */
+            content: ' \f0b0';
             font-family: 'Font Awesome 6 Free';
             font-weight: 900;
         }
-
         .hcp-table td {
-            padding: 14px 16px;
+            padding: 10px 12px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
+            font-size: 13px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            max-width: 200px;
+            max-width: 180px;
         }
-        
         .hcp-table td[contenteditable="true"]:hover {
-            background-color: #eff6ff; /* blue-100 */
+            background-color: #eff6ff;
         }
         .hcp-table td[contenteditable="true"]:focus {
-            background-color: #dbeafe; /* blue-200 */
-            outline: 2px solid var(--primary-color);
-            outline-offset: -2px;
+            background-color: #dbeafe;
+            outline: 1px solid var(--primary-color);
+            outline-offset: -1px;
         }
-        
         .cell-editing {
-            background-color: #fee2e2 !important; /* red-100 */
-            outline: 2px solid var(--danger-color) !important;
-            outline-offset: -2px;
+            background-color: #fee2e2 !important;
+            outline: 1px solid var(--danger-color) !important;
+            outline-offset: -1px;
         }
-
         .hcp-table tr:hover {
             background: var(--light-gray);
         }
-
         .editable-cell {
             cursor: pointer;
             position: relative;
@@ -274,16 +245,20 @@
         .editable-cell::after {
             content: "✎";
             color: #9ca3af;
-            margin-left: 8px;
-            font-size: 12px;
+            margin-left: 6px;
+            font-size: 11px;
             opacity: 0;
             transition: opacity 0.2s;
         }
         .hcp-table tr:hover .editable-cell::after {
             opacity: 1;
         }
-
-        /* Modal */
+        .duplicate-hcp {
+            background-color: var(--duplicate-yellow);
+        }
+        .original-hcp {
+            background-color: var(--original-green);
+        }
         .modal {
             display: none;
             position: fixed;
@@ -295,52 +270,46 @@
             background: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 16px;
         }
-
         .modal-content {
             background: white;
             width: 100%;
-            max-width: 500px;
+            max-width: 450px;
             max-height: 90vh;
             overflow-y: auto;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             display: flex;
             flex-direction: column;
         }
-        
         .modal-add {
-            max-width: 900px;
+            max-width: 800px;
         }
-        
         .modal-add .modal-body {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
         }
-
         .modal-header {
             background: var(--dark-gray);
             color: white;
-            padding: 20px 24px;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-
         .modal-header h2 {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             margin: 0;
         }
-
         .close {
             color: white;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -350,50 +319,42 @@
         .close:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
         .modal-body {
-            padding: 24px;
+            padding: 18px;
             flex-grow: 1;
         }
-        
         .modal-footer {
-            padding: 16px 24px;
+            padding: 12px 20px;
             background: var(--light-gray);
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
+            gap: 8px;
         }
-        
         .form-input, .form-select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 8px 10px;
             border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 5px;
+            font-size: 13px;
             background: white;
             color: #374151;
         }
-
         .form-input:focus, .form-select:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
         }
-
         .no-results {
             text-align: center;
-            padding: 60px 20px;
+            padding: 40px 16px;
             color: var(--medium-gray);
         }
-
         .no-results i {
-            font-size: 48px;
-            margin-bottom: 16px;
+            font-size: 36px;
+            margin-bottom: 12px;
             opacity: 0.5;
         }
-
-        /* Loading */
         .loading-overlay {
             display: flex;
             justify-content: center;
@@ -407,63 +368,58 @@
             z-index: 1001;
             transition: opacity 0.3s ease;
         }
-
         .spinner {
-            border: 4px solid #f3f4f6;
-            border-top: 4px solid var(--primary-color);
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid var(--primary-color);
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 32px;
+            height: 32px;
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
         #scrollToTopBtn {
             display: none;
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 16px;
+            right: 16px;
             z-index: 99;
             border: none;
             outline: none;
             background-color: var(--dark-gray);
             color: white;
             cursor: pointer;
-            padding: 12px 14px;
+            padding: 10px 12px;
             border-radius: 50%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
         }
         #scrollToTopBtn:hover {
             background-color: #000;
-            transform: translateY(-2px);
+            transform: translateY(-1px);
         }
-
-        /* Dropdown Filter Menu */
         .filter-dropdown {
             position: absolute;
             background: white;
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             z-index: 20;
-            width: 250px;
-            max-height: 300px;
+            width: 220px;
+            max-height: 280px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
         .filter-dropdown .filter-search-wrapper {
-            padding: 8px;
+            padding: 6px;
             border-bottom: 1px solid var(--border-color);
         }
         .filter-dropdown .filter-search {
             width: 100%;
-            padding: 8px;
+            padding: 6px;
             border: 1px solid var(--border-color);
             border-radius: 4px;
         }
@@ -473,27 +429,25 @@
         }
         .filter-dropdown label {
             display: block;
-            padding: 8px 12px;
+            padding: 6px 10px;
             cursor: pointer;
             user-select: none;
-            font-size: 13px;
+            font-size: 12px;
         }
         .filter-dropdown label:hover {
             background-color: var(--light-gray);
         }
         .filter-dropdown label input {
-            margin-right: 8px;
+            margin-right: 6px;
         }
-        
         .update-name-buttons-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 8px;
         }
-        
         @media (max-width: 768px) {
             body {
-                padding: 8px;
+                padding: 6px;
             }
             .filters-section {
                 flex-direction: column;
@@ -510,8 +464,8 @@
                 border-bottom: none;
             }
             .header, .filters-section, .stats-bar {
-                padding-left: 16px;
-                padding-right: 16px;
+                padding-left: 12px;
+                padding-right: 12px;
             }
         }
     </style>
@@ -520,13 +474,11 @@
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
     </div>
-
     <div class="container">
         <div class="header">
             <h1>Healthcare Professional Database</h1>
             <p>Comprehensive HCP Management System</p>
         </div>
-
         <div class="filters-section">
             <div class="search-section">
                  <i class="fas fa-search"></i>
@@ -541,7 +493,6 @@
                 </button>
             </div>
         </div>
-
         <div class="stats-bar">
             <div class="stats-item">
                 <span class="stats-number" id="totalHCPs">0</span>
@@ -556,7 +507,6 @@
                 <span class="stats-label">Duplicated Names (Click to Show)</span>
             </div>
         </div>
-
         <div class="table-container">
             <table class="hcp-table" id="hcpTable">
                 <thead>
@@ -592,12 +542,11 @@
             </div>
         </div>
     </div>
-    
-    <button onclick="topFunction()" id="scrollToTopBtn" title="Go to top">
+
+    <button onclick="scrollToTableTop()" id="scrollToTopBtn" title="Go to top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
-    <!-- Add/Edit HCP Modal -->
     <div id="addModal" class="modal">
         <div class="modal-content modal-add">
             <div class="modal-header">
@@ -606,7 +555,6 @@
             </div>
             <form id="addForm">
                 <div class="modal-body">
-                    <!-- Form fields will be dynamically added here -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="addFormCancel" class="action-button secondary">Cancel</button>
@@ -616,8 +564,7 @@
         </div>
     </div>
 
-    <!-- Confirm Modal -->
-    <div id="confirmModal" class="modal">
+    <div id="confirmModal" class="modal" style="z-index: 1002;">
         <div class="modal-content">
             <div class="modal-header">
                 <h2>Confirmation</h2>
@@ -633,50 +580,45 @@
         </div>
     </div>
 
-    <!-- Dynamic Dropdown Modal for Rep/Manager Name Updates -->
-    <div id="updateNameModal" class="modal">
-        <div class="modal-content" style="max-width: 500px;">
+    <div id="updateNameModal" class="modal" style="z-index: 1001;">
+        <div class="modal-content" style="max-width: 450px;">
             <div class="modal-header">
                 <h2 id="updateNameModalTitle">Update Name</h2>
                 <span class="close" id="closeUpdateNameModal">&times;</span>
             </div>
             <div class="modal-body">
                 <p>You are updating the name from "<strong><span id="oldNameSpan"></span></strong>".</p>
-                <div style="margin-top: 16px;">
+                <div style="margin-top: 12px;">
                     <label for="newNameInput" class="block text-sm font-medium text-gray-700 mb-1">Enter new name:</label>
                     <input type="text" id="newNameInput" class="form-input">
                 </div>
-                <div style="margin-top: 16px;">
+                <div style="margin-top: 12px;">
                     <label for="selectNewName" class="block text-sm font-medium text-gray-700 mb-1">Or select an existing name:</label>
                     <select id="selectNewName" class="form-select">
-                        <!-- Options populated dynamically -->
+                        <option value="">Select an existing name</option>
                     </select>
                 </div>
-                <p style="margin-top: 24px; margin-bottom: 16px;">Apply this change to:</p>
+                <p style="margin-top: 18px; margin-bottom: 12px;">Apply this change to:</p>
                 <div class="update-name-buttons-container">
                     <button id="updateSingleBtn" class="action-button secondary" type="button">This row only</button>
-                    <button id="updateAllBtn" class="action-button primary" type="button">All related rows</button>
+                    <button id="updateAllFilteredBtn" class="action-button primary" type="button">All filtered rows</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Supabase configuration
         const SUPABASE_URL = 'https://plmevfyxpngzymvzvkzn.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsbWV2Znl4cG5nenltdnp2a3puIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3NjM5NDEsImV4cCI6MjA2NjMzOTk0MX0.lUm3efHFCL3aAB-PL7H54BpnvcpbXxp1BeUzw0yjp5c';
         const TABLE_NAME = 'masterlist';
-
         const { createClient } = supabase;
         const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
         let allData = [];
         let filteredData = [];
         let uniqueValues = {};
         const headers = ["no", "District Manager", "Governorate", "medical rep", "area", "HCPS", "Speciality", "Class", "T.V", "Brick", "account", "Address", "Mobile", "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"];
         const dropdownHeaders = ["District Manager", "Governorate", "medical rep", "area", "Speciality", "Class", "T.V", "Brick"];
         let currentFilters = {};
-
         const loadingOverlay = document.getElementById('loadingOverlay');
         const searchInput = document.getElementById('searchInput');
         const hcpTable = document.getElementById('hcpTable');
@@ -684,16 +626,16 @@
         const totalCountSpan = document.getElementById('totalHCPs');
         const filteredCountSpan = document.getElementById('filteredHCPs');
         const duplicateCountSpan = document.getElementById('duplicatedHCPs');
-
         const addModal = document.getElementById('addModal');
         const confirmModal = document.getElementById('confirmModal');
         const updateNameModal = document.getElementById('updateNameModal');
-        
         const confirmMessage = document.getElementById('confirmMessage');
         const confirmProceedBtn = document.getElementById('confirmProceedBtn');
         const confirmCancelBtn = document.getElementById('confirmCancelBtn');
         const updateSingleBtn = document.getElementById('updateSingleBtn');
-        const updateAllBtn = document.getElementById('updateAllBtn');
+        const updateAllFilteredBtn = document.getElementById('updateAllFilteredBtn');
+        let scrollClickCount = 0;
+        let isShowingDuplicates = false;
 
         function showLoading() {
             if (loadingOverlay) {
@@ -710,7 +652,7 @@
                 }, 300);
             }
         }
-        
+
         function debounce(func, delay) {
             let timeout;
             return function(...args) {
@@ -723,6 +665,7 @@
             if (!confirmModal) return false;
             confirmMessage.textContent = message;
             confirmModal.style.display = 'flex';
+            updateNameModal.style.display = 'none';
             return new Promise((resolve) => {
                 const onProceed = () => {
                     cleanup();
@@ -738,33 +681,30 @@
                     document.getElementById('closeConfirmModal').removeEventListener('click', onCancel);
                     confirmModal.style.display = 'none';
                 }
-
                 confirmProceedBtn.addEventListener('click', onProceed);
                 confirmCancelBtn.addEventListener('click', onCancel);
                 document.getElementById('closeConfirmModal').addEventListener('click', onCancel);
             });
         }
-        
+
         async function fetchAllData() {
             showLoading();
             let data = [];
             let offset = 0;
-            const limit = 1000; // Supabase default limit
+            const limit = 1000;
             let hasMore = true;
-
             while (hasMore) {
                 const { data: fetchedData, error } = await supabaseClient
                     .from(TABLE_NAME)
                     .select('*')
                     .order('no', { ascending: true })
                     .range(offset, offset + limit - 1);
-                
+
                 if (error) {
                     console.error('Error fetching data:', error);
                     hideLoading();
-                    return []; // Return empty on error
+                    return [];
                 }
-
                 if (fetchedData && fetchedData.length > 0) {
                     data = data.concat(fetchedData);
                     offset += fetchedData.length;
@@ -775,11 +715,9 @@
                     hasMore = false;
                 }
             }
-            
             hideLoading();
             return data;
         }
-
 
         function calculateInitialMetrics(data) {
             if (totalCountSpan) totalCountSpan.textContent = data.length;
@@ -803,39 +741,33 @@
                 }
             });
         }
-        
-        function applyFilters() {
-            let tempFilteredData = allData;
-            
-            const activeFilters = Object.keys(currentFilters).filter(column => currentFilters[column]?.length > 0);
 
+        function applyFilters() {
+            let tempFilteredData = [...allData];
+            const activeFilters = Object.keys(currentFilters).filter(column => currentFilters[column]?.length > 0);
             if (activeFilters.length > 0) {
-                 tempFilteredData = tempFilteredData.filter(row => {
+                tempFilteredData = tempFilteredData.filter(row => {
                     return activeFilters.every(column => {
                         return currentFilters[column].includes(row[column]);
                     });
                 });
             }
-            
             const searchTerm = searchInput.value.toLowerCase().trim();
             if (searchTerm) {
-                tempFilteredData = tempFilteredData.filter(row => 
+                tempFilteredData = tempFilteredData.filter(row =>
                     Object.values(row).some(value => String(value).toLowerCase().includes(searchTerm))
                 );
             }
-
             renderTable(tempFilteredData);
             updateHeaderFilterStates();
         }
-        
+
         function renderTable(data) {
             if (!tableBody) return;
             tableBody.innerHTML = '';
             filteredData = data;
-            
             if (filteredCountSpan) filteredCountSpan.textContent = data.length;
-            
-            // Calculate and display duplicates for the currently visible data
+
             const hcpsMap = {};
             data.forEach(row => {
                 const hcpsName = (row.HCPS || '').toLowerCase().trim();
@@ -843,16 +775,23 @@
                     hcpsMap[hcpsName] = (hcpsMap[hcpsName] || 0) + 1;
                 }
             });
+
             const duplicateCount = Object.values(hcpsMap).filter(count => count > 1).length;
             if (duplicateCountSpan) duplicateCountSpan.textContent = duplicateCount;
 
             const noResults = document.getElementById('noResults');
             noResults.style.display = data.length === 0 ? 'block' : 'none';
 
+            const hcpsDuplicateMap = {};
+            Object.keys(hcpsMap).forEach(name => {
+                if (hcpsMap[name] > 1) {
+                    hcpsDuplicateMap[name] = true;
+                }
+            });
+
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.dataset.id = row.no;
-                
                 headers.forEach(header => {
                     const td = document.createElement('td');
                     td.textContent = row[header];
@@ -860,18 +799,26 @@
                     if (header !== 'no' && header !== 'Mobile' && header !== 'Actions') {
                         td.contentEditable = true;
                     }
-                    if (header === 'medical rep' || header === 'District Manager') {
+                    if (header === 'medical rep' || header === 'District Manager' || header === 'Governorate' || header === 'area') {
                         td.classList.add('editable-cell');
+                    }
+                    if (header === 'HCPS') {
+                        td.style.fontWeight = 'bold';
+                        const hcpsName = (row.HCPS || '').toLowerCase().trim();
+                        if (isShowingDuplicates && hcpsDuplicateMap[hcpsName]) {
+                            td.classList.add('duplicate-hcp');
+                        } else if (isShowingDuplicates) {
+                            td.classList.add('original-hcp');
+                        }
                     }
                     tr.appendChild(td);
                 });
-
                 const deleteTd = document.createElement('td');
                 const deleteBtn = document.createElement('button');
                 deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
                 deleteBtn.classList.add('action-button', 'delete-btn');
                 deleteBtn.title = "Delete Row";
-                deleteBtn.style.padding = "8px 10px";
+                deleteBtn.style.padding = "6px 8px";
                 deleteBtn.onclick = async (e) => {
                     e.stopPropagation();
                     const confirmation = await showConfirm('Are you sure you want to delete this row? This action cannot be undone.');
@@ -882,7 +829,7 @@
                             alert('Failed to delete row.');
                         } else {
                             allData = allData.filter(item => item.no != row.no);
-                            applyFilters(); // Re-apply filters to refresh view
+                            applyFilters();
                         }
                     }
                 };
@@ -896,18 +843,14 @@
             event.preventDefault();
             const pastedText = (event.clipboardData || window.clipboardData).getData('text');
             const rows = pastedText.trim().split('\n');
-            
             if (rows.length > 1) {
                 alert(`Pasted data for multiple rows. Only the first row will be used to fill the form.`);
             }
-            
             const columns = rows[0].trim().split('\t');
             const formHeaders = headers.filter(h => h !== 'no' && h !== 'Actions');
-
             formHeaders.forEach((header, i) => {
                 const value = columns[i] || '';
                 const element = document.querySelector(`#addForm [name="${header}"]`);
-                
                 if (element) {
                     if (element.tagName === 'SELECT') {
                         let optionExists = Array.from(element.options).some(opt => opt.value === value);
@@ -926,27 +869,25 @@
                 }
             });
         }
-        
+
         function setupAddForm() {
             const addForm = document.getElementById('addForm');
             if (!addForm) return;
             const modalBody = addForm.querySelector('.modal-body');
             if (!modalBody) return;
             modalBody.innerHTML = '';
-            
             const pasteContainer = document.createElement('div');
             pasteContainer.style.gridColumn = '1 / -1';
             pasteContainer.innerHTML = `
-                <div style="border: 1px dashed #ccc; padding: 16px; border-radius: 8px; background: #fdfdfd; margin-bottom: 20px;">
+                <div style="border: 1px dashed #ccc; padding: 12px; border-radius: 6px; background: #fdfdfd; margin-bottom: 16px;">
                     <button type="button" id="togglePasteBtn" class="action-button secondary"><i class="fas fa-paste"></i> Paste From Spreadsheet</button>
-                    <div id="pasteSection" style="display: none; margin-top: 12px;">
-                        <p style="color: var(--medium-gray); margin-bottom: 8px;">Paste one row of tab-separated data below (e.g., from Excel).</p>
-                        <textarea id="pasteTextarea" class="form-input" style="min-height: 100px; font-family: monospace; resize: vertical;" placeholder="Paste data here..."></textarea>
+                    <div id="pasteSection" style="display: none; margin-top: 8px;">
+                        <p style="color: var(--medium-gray); margin-bottom: 6px;">Paste one row of tab-separated data below (e.g., from Excel).</p>
+                        <textarea id="pasteTextarea" class="form-input" style="min-height: 80px; font-family: monospace; resize: vertical;" placeholder="Paste data here..."></textarea>
                     </div>
                 </div>
             `;
             modalBody.appendChild(pasteContainer);
-            
             document.getElementById('togglePasteBtn').addEventListener('click', () => {
                 const pasteSection = document.getElementById('pasteSection');
                 pasteSection.style.display = pasteSection.style.display === 'none' ? 'block' : 'none';
@@ -955,9 +896,7 @@
                 }
             });
             document.getElementById('pasteTextarea').addEventListener('paste', handlePaste);
-
             let maxNo = allData.length > 0 ? Math.max(...allData.map(d => parseInt(d.no) || 0)) : 0;
-            
             headers.forEach(header => {
                 if (header === "Actions") return;
                 const container = document.createElement('div');
@@ -965,7 +904,6 @@
                 label.textContent = header;
                 label.className = 'block text-sm font-medium text-gray-700 mb-1';
                 container.appendChild(label);
-                
                 if (header === 'no') {
                     const input = document.createElement('input');
                     input.type = 'text';
@@ -984,7 +922,6 @@
                     });
                     select.innerHTML += `<option value="other">Other...</option>`;
                     container.appendChild(select);
-                    
                     const otherInput = document.createElement('input');
                     otherInput.type = 'text';
                     otherInput.name = `${header}_other`;
@@ -992,7 +929,6 @@
                     otherInput.className = 'form-input mt-2';
                     otherInput.style.display = 'none';
                     container.appendChild(otherInput);
-                    
                     select.addEventListener('change', () => {
                         otherInput.style.display = select.value === 'other' ? 'block' : 'none';
                     });
@@ -1006,16 +942,14 @@
                 modalBody.appendChild(container);
             });
         }
-        
+
         async function handleCellUpdate(cell, column, oldValue, newValue, rowNo) {
             if (newValue.trim() === '') {
                 cell.textContent = oldValue;
                 return;
             }
-            
             const updates = { [column]: newValue };
             const { error } = await supabaseClient.from(TABLE_NAME).update(updates).eq('no', rowNo);
-
             if (error) {
                 console.error('Error updating cell:', error);
                 alert('Failed to update cell.');
@@ -1026,116 +960,116 @@
                 applyFilters();
             }
         }
-        
+
         function setupCellEditing() {
             if (!hcpTable) return;
-            
+            let currentRowNo, currentColumn;
             hcpTable.addEventListener('click', (e) => {
                 const cell = e.target.closest('td.editable-cell');
                 if (!cell) return;
-                
                 e.preventDefault();
-                const column = cell.dataset.column;
-                const rowNo = cell.closest('tr').dataset.id;
+                currentColumn = cell.dataset.column;
+                currentRowNo = cell.closest('tr').dataset.id;
                 const oldValue = cell.textContent.trim();
-
                 document.getElementById('oldNameSpan').textContent = oldValue;
-                document.getElementById('updateNameModalTitle').textContent = `Update ${column}`;
+                document.getElementById('updateNameModalTitle').textContent = `Update ${currentColumn}`;
                 const nameInput = document.getElementById('newNameInput');
                 const nameSelect = document.getElementById('selectNewName');
-                
                 nameInput.value = '';
                 nameSelect.innerHTML = `<option value="">Select an existing name</option>`;
-                
-                const uniqueNames = [...new Set(allData.map(item => item[column]).filter(Boolean))].sort();
+                const uniqueNames = [...new Set(allData.map(item => item[currentColumn]).filter(Boolean))].sort();
                 uniqueNames.forEach(name => {
                     nameSelect.innerHTML += `<option value="${name}">${name}</option>`;
                 });
-                
                 updateNameModal.style.display = 'flex';
-                
-                const updateHandler = async (type) => {
-                    let newValue = (nameInput.value || nameSelect.value || '').trim();
-                    if (!newValue || newValue === 'other' || newValue === oldValue) {
-                        updateNameModal.style.display = 'none';
-                        return;
-                    }
-                    
-                    let confirmationMessage = '';
-                    if (type === 'all') {
-                        confirmationMessage = `Are you sure you want to change all instances of "${oldValue}" to "${newValue}" in the '${column}' column?`;
-                    } else {
-                        confirmationMessage = `Are you sure you want to change "${oldValue}" to "${newValue}" for this row only?`;
-                    }
-
-                    const confirmation = await showConfirm(confirmationMessage);
-                    if (!confirmation) {
-                        updateNameModal.style.display = 'none';
-                        return;
-                    }
-                    
-                    showLoading();
-                    const updates = { [column]: newValue };
-                    let query = supabaseClient.from(TABLE_NAME).update(updates);
-                    
-                    query = (type === 'all') ? query.eq(column, oldValue) : query.eq('no', rowNo);
-                    
-                    const { error } = await query;
-                    
-                    if (error) {
-                        console.error('Error updating name(s):', error);
-                        alert('Failed to update.');
-                    } else {
-                        await init();
-                    }
-                    hideLoading();
-                    updateNameModal.style.display = 'none';
-                };
-
-                updateSingleBtn.onclick = () => updateHandler('single');
-                updateAllBtn.onclick = () => updateHandler('all');
             });
-            
+
+            updateSingleBtn.onclick = async () => {
+                const newValue = (document.getElementById('newNameInput').value || document.getElementById('selectNewName').value || '').trim();
+                if (!newValue || newValue === 'other' || newValue === document.getElementById('oldNameSpan').textContent) {
+                    updateNameModal.style.display = 'none';
+                    return;
+                }
+                const confirmation = await showConfirm(`Are you sure you want to change "${document.getElementById('oldNameSpan').textContent}" to "${newValue}" for this row only?`);
+                if (!confirmation) {
+                    updateNameModal.style.display = 'none';
+                    return;
+                }
+                showLoading();
+                const updates = { [currentColumn]: newValue };
+                const { error } = await supabaseClient.from(TABLE_NAME).update(updates).eq('no', currentRowNo);
+                if (error) {
+                    console.error('Error updating name:', error);
+                    alert('Failed to update.');
+                } else {
+                    await init();
+                }
+                hideLoading();
+                updateNameModal.style.display = 'none';
+            };
+
+            updateAllFilteredBtn.onclick = async () => {
+                const newValue = (document.getElementById('newNameInput').value || document.getElementById('selectNewName').value || '').trim();
+                if (!newValue || newValue === 'other' || newValue === document.getElementById('oldNameSpan').textContent) {
+                    updateNameModal.style.display = 'none';
+                    return;
+                }
+                const oldValue = document.getElementById('oldNameSpan').textContent;
+                const confirmation = await showConfirm(`Are you sure you want to change "${oldValue}" to "${newValue}" for all filtered rows with "${oldValue}" in ${currentColumn}?`);
+                if (!confirmation) {
+                    updateNameModal.style.display = 'none';
+                    return;
+                }
+                showLoading();
+                const nosToUpdate = filteredData
+                    .filter(row => row[currentColumn] === oldValue)
+                    .map(row => row.no);
+                const updatePromises = nosToUpdate.map(no =>
+                    supabaseClient.from(TABLE_NAME).update({ [currentColumn]: newValue }).eq('no', no)
+                );
+                const results = await Promise.all(updatePromises);
+                const errors = results.filter(result => result.error);
+                if (errors.length > 0) {
+                    console.error('Error updating names:', errors);
+                    alert('Failed to update some rows.');
+                } else {
+                    await init();
+                }
+                hideLoading();
+                updateNameModal.style.display = 'none';
+            };
+
             hcpTable.addEventListener('dblclick', (e) => {
                 const cell = e.target.closest('td[contenteditable="true"]');
                 if (!cell || cell.classList.contains('editable-cell') || document.querySelector('.cell-editing')) {
                     return;
                 }
-
                 cell.classList.add('cell-editing');
                 const originalValue = cell.textContent.trim();
-                
                 cell.focus();
                 const selection = window.getSelection();
                 const range = document.createRange();
                 range.selectNodeContents(cell);
                 selection.removeAllRanges();
                 selection.addRange(range);
-
                 let hasCleanedUp = false;
-
                 const endEditSession = async (isCancelled = false) => {
                     if (hasCleanedUp) return;
                     hasCleanedUp = true;
-
                     document.removeEventListener('mousedown', mousedownHandler, true);
                     cell.removeEventListener('keydown', keydownHandler);
                     cell.removeEventListener('blur', blurFallbackHandler);
                     cell.classList.remove('cell-editing');
                     cell.blur();
-
                     if (isCancelled) {
                         cell.textContent = originalValue;
                         return;
                     }
-
                     const newValue = cell.textContent.trim();
-
                     if (newValue === originalValue || newValue === '') {
                         cell.textContent = originalValue;
                         return;
                     }
-
                     const confirmation = await showConfirm(`Save changes for ${cell.dataset.column}?\n\nFrom: "${originalValue}"\nTo: "${newValue}"`);
                     if (confirmation) {
                         const rowNo = cell.closest('tr').dataset.id;
@@ -1144,7 +1078,6 @@
                         cell.textContent = originalValue;
                     }
                 };
-
                 const keydownHandler = (evt) => {
                     if (evt.key === 'Enter') {
                         evt.preventDefault();
@@ -1154,36 +1087,32 @@
                         endEditSession(true);
                     }
                 };
-
                 const mousedownHandler = (event) => {
                     if (!cell.contains(event.target)) {
                         endEditSession(false);
                     }
                 };
-                
                 const blurFallbackHandler = () => {
-                     setTimeout(() => endEditSession(false), 50); 
+                     setTimeout(() => endEditSession(false), 50);
                 };
-
                 cell.addEventListener('keydown', keydownHandler);
                 cell.addEventListener('blur', blurFallbackHandler);
                 document.addEventListener('mousedown', mousedownHandler, true);
             });
         }
-        
+
         function setupEventListeners() {
             document.getElementById('addHCPBtn').addEventListener('click', () => {
                 setupAddForm();
                 addModal.style.display = 'flex';
             });
-            
             document.getElementById('resetBtn').addEventListener('click', () => {
                 searchInput.value = '';
                 currentFilters = {};
+                isShowingDuplicates = false;
                 updateHeaderFilterStates();
                 renderTable(allData);
             });
-
             document.getElementById('addForm').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 showLoading();
@@ -1199,9 +1128,7 @@
                         newRow[key] = value;
                     }
                 }
-                
                 const { error } = await supabaseClient.from(TABLE_NAME).insert([newRow]);
-                
                 if (error) {
                     console.error('Error adding new row:', error);
                     alert('Failed to add new HCP.');
@@ -1211,26 +1138,26 @@
                 }
                 hideLoading();
             });
-
             searchInput.addEventListener('keyup', debounce(applyFilters, 300));
-            
             document.getElementById('duplicatedHCPsStat').addEventListener('click', () => {
-                const hcpsMap = {};
-                // Use filteredData to find duplicates within the current view
-                filteredData.forEach(row => {
-                    const hcpsName = (row.HCPS || '').toLowerCase().trim();
-                    if (hcpsName) {
-                        hcpsMap[hcpsName] = (hcpsMap[hcpsName] || 0) + 1;
-                    }
-                });
-                const duplicateNames = Object.keys(hcpsMap).filter(name => hcpsMap[name] > 1);
-                // Filter the already filteredData to show only the duplicates from the current view
-                const duplicatesToShow = filteredData
-                    .filter(row => duplicateNames.includes((row.HCPS || '').toLowerCase().trim()))
-                    .sort((a, b) => a.HCPS.localeCompare(b.HCPS));
-                renderTable(duplicatesToShow);
+                isShowingDuplicates = !isShowingDuplicates;
+                if (isShowingDuplicates) {
+                    const hcpsMap = {};
+                    filteredData.forEach(row => {
+                        const hcpsName = (row.HCPS || '').toLowerCase().trim();
+                        if (hcpsName) {
+                            hcpsMap[hcpsName] = (hcpsMap[hcpsName] || 0) + 1;
+                        }
+                    });
+                    const duplicateNames = Object.keys(hcpsMap).filter(name => hcpsMap[name] > 1);
+                    const duplicatesToShow = filteredData
+                        .filter(row => duplicateNames.includes((row.HCPS || '').toLowerCase().trim()))
+                        .sort((a, b) => a.HCPS.localeCompare(b.HCPS));
+                    renderTable(duplicatesToShow);
+                } else {
+                    renderTable(filteredData);
+                }
             });
-            
             window.onscroll = () => {
                 const scrollToTopBtn = document.getElementById("scrollToTopBtn");
                 if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
@@ -1239,7 +1166,6 @@
                     scrollToTopBtn.style.display = "none";
                 }
             };
-            
             document.getElementById('closeAddModal').onclick = () => addModal.style.display = 'none';
             document.getElementById('addFormCancel').onclick = () => addModal.style.display = 'none';
             document.getElementById('closeUpdateNameModal').onclick = () => updateNameModal.style.display = 'none';
@@ -1248,45 +1174,36 @@
                     event.target.style.display = "none";
                 }
             }
-
             document.querySelectorAll('#hcpTable th[data-column]').forEach(header => {
                 header.addEventListener('click', (e) => {
                     const column = e.currentTarget.dataset.column;
                     if (!dropdownHeaders.includes(column)) return;
-
                     const rect = e.currentTarget.getBoundingClientRect();
                     document.querySelector('.filter-dropdown')?.remove();
-
                     const dropdown = document.createElement('div');
                     dropdown.className = 'filter-dropdown';
                     dropdown.dataset.column = column;
                     dropdown.style.top = `${rect.bottom + window.scrollY + 5}px`;
                     dropdown.style.left = `${rect.left + window.scrollX}px`;
-                    
                     dropdown.innerHTML = `
                         <div class="filter-search-wrapper">
                             <input type="text" class="filter-search" placeholder="Search options...">
                         </div>
                         <div class="filter-options"></div>
                     `;
-                    
                     const optionsContainer = dropdown.querySelector('.filter-options');
                     const uniqueOptions = uniqueValues[column] || [];
-
                     uniqueOptions.forEach(optionText => {
                         const isChecked = currentFilters[column]?.includes(optionText);
                         optionsContainer.innerHTML += `<label><input type="checkbox" value="${optionText}" ${isChecked ? 'checked' : ''}> ${optionText}</label>`;
                     });
-                    
                     document.body.appendChild(dropdown);
-                    
                     dropdown.querySelector('.filter-search').addEventListener('keyup', (evt) => {
                         const searchTerm = evt.target.value.toLowerCase();
                         optionsContainer.querySelectorAll('label').forEach(label => {
                            label.style.display = label.textContent.toLowerCase().includes(searchTerm) ? 'block' : 'none';
                         });
                     });
-                    
                     optionsContainer.addEventListener('change', () => {
                         const checkedOptions = Array.from(optionsContainer.querySelectorAll('input:checked')).map(input => input.value);
                         currentFilters[column] = checkedOptions;
@@ -1294,14 +1211,27 @@
                     });
                 });
             });
-
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('#hcpTable th') && !e.target.closest('.filter-dropdown')) {
                     document.querySelector('.filter-dropdown')?.remove();
                 }
             });
         }
-        
+
+        function scrollToTableTop() {
+            scrollClickCount++;
+            if (scrollClickCount === 1) {
+                const tableContainer = document.querySelector('.table-container');
+                tableContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => {
+                    scrollClickCount = 0;
+                }, 1000);
+            } else if (scrollClickCount === 2) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                scrollClickCount = 0;
+            }
+        }
+
         async function init() {
             const data = await fetchAllData();
             allData = data;
@@ -1312,11 +1242,6 @@
             setupCellEditing();
         }
 
-        function topFunction() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-        
         window.onload = init;
     </script>
 </body>
