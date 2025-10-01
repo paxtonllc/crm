@@ -446,7 +446,7 @@
     .clear-search:hover {
       color: #6b7280;
     }
-    .search-box:valid + .clear-search {
+    .search-box:not(:placeholder-shown) + .clear-search {
       display: block;
     }
     /* Notification Styles */
@@ -536,7 +536,7 @@
             </div>
             <div class="card-body">
               <div style="position: relative; margin-bottom: 1rem;">
-                <input type="text" id="searchInput" class="search-box" placeholder="Search users..." onkeyup="searchUsers()" required>
+                <input type="text" id="searchInput" class="search-box" placeholder="Search users..." onkeyup="searchUsers()">
                 <button type="button" id="clearSearch" class="clear-search" onclick="clearSearch()">×</button>
               </div>
               <div id="usersList" class="loading">Loading users...</div>
@@ -723,7 +723,7 @@
     }
 
     function searchUsers() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const searchTerm = document.getElementById('searchInput').value.trim().toLowerCase();
       if (!searchTerm) {
         displayUsers();
         return;
@@ -736,7 +736,9 @@
     }
 
     function clearSearch() {
-      document.getElementById('searchInput').value = '';
+      const searchInput = document.getElementById('searchInput');
+      searchInput.value = '';
+      searchInput.focus();
       displayUsers();
     }
 
