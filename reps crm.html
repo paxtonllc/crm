@@ -1218,7 +1218,7 @@
                                     <option value="Meeting">Meeting</option>
                                     <option value="Training">Training</option>
                                     <option value="Event">Event</option>
-                                    <option value="Official vacation">Official vacation</option>
+                                    <option value="Instead Leave">Instead Leave</option>
                                     <option value="Annual leave">Annual leave</option>
                                     <option value="Sick leave">Sick leave</option>
                                     <option value="Casual leave">Casual leave</option>
@@ -1415,6 +1415,7 @@
                                 <option value="Annual Leave">Annual Leave</option>
                                 <option value="Sick Leave">Sick Leave</option>
                                 <option value="Unpaid Leave">Unpaid Leave</option>
+                                <option value="instead Leave">instead Leave</option>
                             </select>
                             <div id="personalRequestTitleError" class="error">This field is required.</div>
                             <label for="personalRequestDetails">Request Details:</label>
@@ -2096,7 +2097,7 @@
                             commentError = this.validateComment(formData.commentsEvent);
                             if (commentError) throw new Error(commentError);
                             if (!formData.eventType || !formData.eventActivity || !formData.dateEvent) throw new Error('Please fill in all required fields for the event form');
-                            const leaveTypes = ['Annual leave', 'Sick leave', 'Casual leave', 'Official vacation'];
+                            const leaveTypes = ['Annual leave', 'Sick leave', 'Casual leave', 'Instead Leave'];
                             if (leaveTypes.includes(formData.eventType)) {
                                 await this.storeLeaveInSupabase(formData);
                                 showAlert('Leave request successfully stored!', 'success');
